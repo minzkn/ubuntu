@@ -10,7 +10,7 @@ FROM ubuntu:16.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
 LABEL description="HWPORT Ubuntu 16.04 dev environment"
-LABEL name="HWPORT-UBUNTU-16.04-DEV"
+LABEL name="hwport/ubuntu:16.04"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.0"
