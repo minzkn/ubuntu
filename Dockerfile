@@ -6,11 +6,11 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:12.04
+FROM ubuntu:16.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 12.04 dev environment"
-LABEL name="hwport/ubuntu:12.04"
+LABEL description="HWPORT Ubuntu 16.04 dev environment"
+LABEL name="hwport/ubuntu:16.04"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.0"
@@ -51,7 +51,8 @@ RUN rm /usr/sbin/policy-rc.d; \
     dpkg-divert --rename --remove /sbin/initctl
 
 # generate a nice UTF-8 locale for our use
-RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
+RUN apt-get install -y locales; \
+    locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
 
 # remove some pointless services
 RUN /usr/sbin/update-rc.d -f ondemand remove; \
@@ -134,10 +135,10 @@ RUN apt-get install -y \
     cscope \
     exuberant-ctags \
     ftp
-#RUN apt-get install -y xmlto
-#RUN apt-get install -y libboost-dev
-#RUN apt-get install -y python-dev
-#RUN apt-get install -y python-software-properties
+RUN apt-get install -y xmlto
+RUN apt-get install -y libboost-dev
+RUN apt-get install -y python-dev
+RUN apt-get install -y python-software-properties
 
 # installing ftp server
 RUN echo "proftpd-basic shared/proftpd/inetd_or_standalone select standalone" | debconf-set-selections; \
@@ -149,22 +150,22 @@ COPY ./proftpd.conf /etc/proftpd/proftpd.conf
 EXPOSE 21 65000 65001 65002 65003 65004 65005 65006 65007 65008 65009
 
 # installing xinetd service (with tftpd)
-#RUN apt-get install -y --no-install-recommends xinetd
-#RUN apt-get install tftpd
-#COPY ./tftp /etc/xinet.d/tftp
-#EXPOSE 69
+RUN apt-get install -y xinetd tftpd tftp
+COPY ./tftp /etc/xinet.d/tftp
+EXPOSE 69
 
 # install misc (optional)
-#RUN apt-get install -y libjpeg-dev
-#RUN apt-get install -y libpng-dev
-#RUN apt-get install -y libgif-dev
-#RUN apt-get install -y libssl-dev libcurl4-openssl-dev
-#RUN apt-get install -y libssh2-1-dev
-#RUN apt-get install -y libsqlite3-dev
-#RUN apt-get install -y freetds-dev
-#RUN apt-get install -y libpq-dev
-#RUN apt-get install -y libmysqlclient-dev
-#RUN apt-get install -y openjdk-7-jdk
+RUN apt-get install -y \
+    libjpeg-dev \
+    libpng-dev \
+    libgif-dev \
+    libssl-dev libcurl4-openssl-dev \
+    libssh2-1-dev \
+    libsqlite3-dev \
+    freetds-dev \
+    libpq-dev \
+    libmysqlclient-dev \
+    default-jdk
 
 # install mips toolchain
 #ADD https://sourcery.mentor.com/public/gnu_toolchain/mips-linux-gnu/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 /tmp/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2
