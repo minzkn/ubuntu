@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker build --tag "hwport/ubuntu:16.04" .
+docker build --tag "hwport/ubuntu:18.04" .

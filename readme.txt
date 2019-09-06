@@ -35,7 +35,7 @@ Docker 환경 구축 방법
   # sudo docker run -d -p 2222:22 --name mydev hwport-ubuntu-16.04-dev            ("mydev"라는 Container 로 image를 실행하는 명령입니다.)
 
 5. 이제 실행된 Container로 접속하려면 크게 3가지 명령이 가능합니다.
-  - Container의 SSH로 접속하는 방법 (dev 계정의 초기 암호는 "duftlagl"이며 root계정의 암호는 "docker.io"입니다.)
+  - Container의 SSH로 접속하는 방법 (dev 계정의 초기 암호는 "docker.io"이며 root계정의 암호도 "docker.io"입니다.)
     # ssh dev@localhost -p 2222
 
   - 직접 docker exec로 쉘을 실행하여 접근하는 방법 (환경변수등이 일반 로그인과 다를 수 있으며 root계정으로 접근하기 때문에 임시조치등을 위해서만 사용하는게 좋습니다.) 
@@ -45,3 +45,7 @@ Docker 환경 구축 방법
     # sudo docker exec -i -t mydev /bin/login
 
 6. 이제 Docker 세상에 접근하였습니다. 뭐든 만들어 보십시요. 
+
+7. docker 실행 후 root 및 dev 계정의 password 를 변경하는 것 잊지 마세요 !
+  # sudo passwd root
+  # sudo passwd dev

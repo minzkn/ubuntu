@@ -1,25 +1,26 @@
 #
-#   Copyright (C) 2015 HWPORT.COM
+#   Copyright (C) 2019 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 16.04 dev environment"
-LABEL name="hwport/ubuntu:16.04"
+LABEL description="HWPORT Ubuntu 18.04 dev environment"
+LABEL name="hwport/ubuntu:18.04"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
-LABEL version="1.0"
+LABEL version="1.1"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 
 # let Upstart know it's in a container
 ENV container docker
+ENV EDITER vim
 
 # ----
 
@@ -27,7 +28,6 @@ RUN apt-get autoclean -y; \
     apt-get clean; \
     apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/*; \
-    sed -i -e "s/archive\.ubuntu\.com/kr\.archive\.ubuntu\.com/g" "/etc/apt/sources.list"; \
     apt-get update --list-cleanup; \
     apt-get install -y apt-utils debconf-utils
 
@@ -42,8 +42,6 @@ RUN apt-get install -y ssh; \
     echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config; \
     echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
 EXPOSE 22 2222
-
-ADD init-fake.conf /etc/init/fake-container-events.conf
 
 # undo some leet hax of the base image
 RUN rm /usr/sbin/policy-rc.d; \
@@ -84,7 +82,7 @@ RUN /usr/sbin/useradd \
     -m \
     -s /bin/bash \
     dev
-RUN echo "dev:duftlagl" | chpasswd
+RUN echo "dev:docker.io" | chpasswd
 
 # installing essential
 # already installed ? bash coreutils diffutils findutils
@@ -138,21 +136,8 @@ RUN apt-get install -y \
 RUN apt-get install -y xmlto
 RUN apt-get install -y libboost-dev
 RUN apt-get install -y python-dev
-RUN apt-get install -y python-software-properties
-
-# installing ftp server
-RUN echo "proftpd-basic shared/proftpd/inetd_or_standalone select standalone" | debconf-set-selections; \
-    apt-get install -y \
-    proftpd
-RUN cp -f /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.org
-COPY ./proftpd.conf /etc/proftpd/proftpd.conf
-#COPY ./xproftpd /etc/xinet.d/xproftpd
-EXPOSE 21 65000 65001 65002 65003 65004 65005 65006 65007 65008 65009
-
-# installing xinetd service (with tftpd)
-RUN apt-get install -y xinetd tftpd tftp
-COPY ./tftp /etc/xinet.d/tftp
-EXPOSE 69
+#RUN apt-get install -y python-software-properties
+RUN apt-get install -y nodejs
 
 # install misc (optional)
 RUN apt-get install -y \
@@ -186,7 +171,7 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # ----
 
 WORKDIR /
-CMD ["/sbin/init"]
+CMD ["/usr/sbin/sshd -D"]
 
 # ----
 
