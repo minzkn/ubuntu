@@ -34,6 +34,8 @@ RUN apt-get autoclean -y; \
 # we're going to want this bad boy installed so we can connect :)
 RUN apt-get install -y ssh; \
     sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd; \
+    mkdir /run/sshd; \
+    cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org; \
     cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org; \
     sed -ri "s/^PermitRootLogin\s+.*/PermitRootLogin yes/" /etc/ssh/sshd_config; \
     sed -i -e "s/^Port\s22$/Port 22\nPort 2222/g" /etc/ssh/sshd_config; \
@@ -43,10 +45,10 @@ RUN apt-get install -y ssh; \
     echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
 EXPOSE 22 2222
 
-# undo some leet hax of the base image
-RUN rm /usr/sbin/policy-rc.d; \
-    rm /sbin/initctl; \
-    dpkg-divert --rename --remove /sbin/initctl
+## undo some leet hax of the base image
+#RUN rm /usr/sbin/policy-rc.d; \
+#    rm /sbin/initctl; \
+#    dpkg-divert --rename --remove /sbin/initctl
 
 # generate a nice UTF-8 locale for our use
 RUN apt-get install -y locales; \
