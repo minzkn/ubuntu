@@ -42,7 +42,8 @@ RUN apt-get install -y ssh; \
     echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config; \
     echo "GatewayPorts yes" >> /etc/ssh/sshd_config; \
     echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config; \
-    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
+    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config; \
+    service ssh start
 EXPOSE 22 2222
 
 ## undo some leet hax of the base image
@@ -173,7 +174,7 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # ----
 
 WORKDIR /
-CMD ["/usr/sbin/sshd -D"]
+CMD ["/sbin/init"]
 
 # ----
 
