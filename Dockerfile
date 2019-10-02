@@ -129,6 +129,7 @@ RUN apt-get install -y \
     unzip \
     zlib1g-dev \
     lib32z1 \
+    man-db \
     cscope \
     exuberant-ctags \
     ftp \
