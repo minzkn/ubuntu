@@ -29,19 +29,43 @@ Docker 환경 구축 방법
   # sudo docker images
   REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
   hwport/ubuntu             latest              43789521063b        23 seconds ago      445.8 MB
-  ubuntu                    16.04               5b117edd0b76        8 days ago          103.6 MB
+  ubuntu                    12.04               5b117edd0b76        8 days ago          103.6 MB
 
 4. Docker 를 사용하기 위해서는 run 또는 create + start 단계를 통해서 Container로 실행해줘야 합니다.
-  # sudo docker run -d -p 2222:22 --name mydev hwport-ubuntu-16.04-dev            ("mydev"라는 Container 로 image를 실행하는 명령입니다.)
+  예1)
+  # docker run -d -h <hostname> --name <container-name> --privileged=true -v <src-volume>:<dst-volume> hwport/ubuntu:12.04
+  예2)
+  # docker run -d -h ubuntu-12.04-dev --name mydev --privileged=true -p 2222:22 hwport/ubuntu:12.04
+  예3)
+  # docker run -d -h ubuntu-12.04-dev --name mydev --privileged=true -p 2222:22 -v /mnt/build-cache:/home hwport/ubuntu:12.04
 
-5. 이제 실행된 Container로 접속하려면 크게 3가지 명령이 가능합니다.
-  - Container의 SSH로 접속하는 방법 (dev 계정의 초기 암호는 "duftlagl"이며 root계정의 암호는 "docker.io"입니다.)
+5. 실행된 Container 에 대한 admin 계정 추가를 해야 합니다.
+  # docker exec -i -t mydev /bin/bash
+  root@ubuntu-12.04-dev:/# useradd -c "<comment>" -d /home/<myid> -g users -G users,adm,sudo -m -s /bin/bash <myid>
+  root@ubuntu-12.04-dev:/# passwd <myid>
+  Enter new UNIX password: ****
+  Retype new UNIX password: ****
+  passwd: password updated successfully
+  root@ubuntu-12.04-dev:/# exit
+
+6. 이제 실행된 Container로 접속하려면 크게 3가지 명령이 가능합니다.
+  - Container의 SSH로 접속하는 방법
     # ssh dev@localhost -p 2222
 
   - 직접 docker exec로 쉘을 실행하여 접근하는 방법 (환경변수등이 일반 로그인과 다를 수 있으며 root계정으로 접근하기 때문에 임시조치등을 위해서만 사용하는게 좋습니다.) 
-    # sudo docker exec -i -t mydev /bin/bash
+    # docker exec -i -t mydev /bin/bash
 
   - 직접 docker exec로 로그인을 통해서 실행하는 방법
-    # sudo docker exec -i -t mydev /bin/login
+    # docker exec -i -t mydev /bin/login
 
-6. 이제 Docker 세상에 접근하였습니다. 뭐든 만들어 보십시요. 
+7. 이제 Docker 세상에 접근하였습니다. 뭐든 만들어 보십시요.
+
+
+그 밖에 주요 docker 명령 ...
+  - container 시작 : docker start <container-name>
+  - container 종료 : docker stop <container-name>
+  - container 삭제 : docker container rm <container-name>
+                     docker rm <container-name>
+  - container 목록 조회 : docker container ls --all
+                          docker ps --all
+  - image 삭제 : docker rmi <image-name>
