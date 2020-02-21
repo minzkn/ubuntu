@@ -34,7 +34,7 @@ RUN apt-get autoclean -y && \
     rm -rf /var/lib/apt/lists/* && \
     sed -i -e "s/archive\.ubuntu\.com/kr\.archive\.ubuntu\.com/g" "/etc/apt/sources.list" && \
     apt-get update --list-cleanup && \
-    apt-get install -y apt-utils debconf-utils ssh && \
+    apt-get install -y apt-utils debconf-utils locales ca-certificates ssh && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
     sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
