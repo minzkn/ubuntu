@@ -29,6 +29,9 @@ ENV EDITER vim
 
 # ----
 
+# download mips toolchain
+ADD https://sourcery.mentor.com/public/gnu_toolchain/mips-linux-gnu/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 /tmp/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2
+COPY init-fake.conf /etc/init/fake-container-events.conf
 RUN apt-get autoclean -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -123,47 +126,16 @@ RUN apt-get autoclean -y && \
         libsqlite3-dev \
         freetds-dev \
         libpq-dev \
-        libmysqlclient-dev
-
-#RUN apt-get install -y openjdk-7-jdk
-
-ADD init-fake.conf /etc/init/fake-container-events.conf
-
-## set a cheap, simple password for great convenience
-#RUN echo 'root:docker.io' | chpasswd
-#RUN /usr/sbin/useradd \
-#    -c "Default dev account" \
-#    -d "/home/dev" \
-#    -g users \
-#    -G users,adm,sudo \
-#    -m \
-#    -s /bin/bash \
-#    dev
-#RUN echo "dev:docker.io" | chpasswd
-
-## installing ftp server
-#RUN echo "proftpd-basic shared/proftpd/inetd_or_standalone select standalone" | debconf-set-selections; \
-#    apt-get install -y \
-#    proftpd
-#RUN cp -f /etc/proftpd/proftpd.conf /etc/proftpd/proftpd.conf.org
-#COPY ./proftpd.conf /etc/proftpd/proftpd.conf
-##COPY ./xproftpd /etc/xinet.d/xproftpd
-#EXPOSE 21 65000 65001 65002 65003 65004 65005 65006 65007 65008 65009
-
-# installing xinetd service (with tftpd)
-#RUN apt-get install -y --no-install-recommends xinetd
-#RUN apt-get install tftpd
-#COPY ./tftp /etc/xinet.d/tftp
-#EXPOSE 69
-
-# install mips toolchain
-ADD https://sourcery.mentor.com/public/gnu_toolchain/mips-linux-gnu/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 /opt
-
-# clean meta
-RUN apt-get autoclean -y && \
+        libmysqlclient-dev \
+        && \
+    tar -xjf /tmp/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 -C /opt/ && \
+    rm -f /tmp/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 && \
+    apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+#RUN apt-get install -y openjdk-7-jdk
 
 # ----
 
