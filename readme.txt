@@ -29,24 +29,24 @@ Docker 환경 구축 방법
   # sudo docker images
   REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
   hwport/ubuntu             latest              43789521063b        23 seconds ago      445.8 MB
-  ubuntu                    12.04               5b117edd0b76        8 days ago          103.6 MB
+  ubuntu                    smp86xx             5b117edd0b76        8 days ago          103.6 MB
 
 4. Docker 를 사용하기 위해서는 run 또는 create + start 단계를 통해서 Container로 실행해줘야 합니다.
   예1)
-  # docker run -d -h <hostname> --name <container-name> --privileged=true -v <src-volume>:<dst-volume> hwport/ubuntu:12.04
+  # docker run -d -h <hostname> --name <container-name> --privileged=true -v <src-volume>:<dst-volume> hwport/ubuntu:smp86xx
   예2)
-  # docker run -d -h ubuntu-12.04-dev --name mydev --privileged=true -p 2222:22 hwport/ubuntu:12.04
+  # docker run -d -h ubuntu-smp86xx-dev --name mydev --privileged=true -p 2222:22 hwport/ubuntu:smp86xx
   예3)
-  # docker run -d -h ubuntu-12.04-dev --name mydev --privileged=true -p 2222:22 -v /mnt/build-cache:/home hwport/ubuntu:12.04
+  # docker run -d -h ubuntu-smp86xx-dev --name mydev --privileged=true -p 2222:22 -v /mnt/build-cache:/home hwport/ubuntu:smp86xx
 
 5. 실행된 Container 에 대한 admin 계정 추가를 해야 합니다.
   # docker exec -i -t mydev /bin/bash
-  root@ubuntu-12.04-dev:/# useradd -c "<comment>" -d /home/<myid> -g users -G users,adm,sudo -m -s /bin/bash <myid>
-  root@ubuntu-12.04-dev:/# passwd <myid>
+  root@ubuntu-smp86xx-dev:/# useradd -c "<comment>" -d /home/<myid> -g users -G users,adm,sudo -m -s /bin/bash <myid>
+  root@ubuntu-smp86xx-dev:/# passwd <myid>
   Enter new UNIX password: ****
   Retype new UNIX password: ****
   passwd: password updated successfully
-  root@ubuntu-12.04-dev:/# exit
+  root@ubuntu-smp86xx-dev:/# exit
 
 6. 이제 실행된 Container로 접속하려면 크게 3가지 명령이 가능합니다.
   - Container의 SSH로 접속하는 방법

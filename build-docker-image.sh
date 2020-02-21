@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker build --tag "hwport/ubuntu:12.04" .
+docker build --tag "hwport/ubuntu:smp86xx" .
