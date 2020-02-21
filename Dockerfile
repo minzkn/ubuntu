@@ -123,8 +123,9 @@ RUN apt-get autoclean -y && \
         libsqlite3-dev \
         freetds-dev \
         libpq-dev \
-        libmysqlclient-dev \
-        openjdk-7-jdk
+        libmysqlclient-dev
+
+#RUN apt-get install -y openjdk-7-jdk
 
 ADD init-fake.conf /etc/init/fake-container-events.conf
 
