@@ -29,11 +29,15 @@ Docker 환경 구축 방법
   # sudo docker images
   REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
   hwport/ubuntu             latest              43789521063b        23 seconds ago      445.8 MB
-  ubuntu                    16.04               5b117edd0b76        8 days ago          103.6 MB
+  ubuntu                    14.04               5b117edd0b76        8 days ago          103.6 MB
 
 4. Docker 를 사용하기 위해서는 run 또는 create + start 단계를 통해서 Container로 실행해줘야 합니다.
-  # docker run -d -p 2222:22 --name mydev --cap-add SYS_ADMIN -v /sys/fs/cgroup:/sys/fs/cgroup:ro hwport/ubuntu:18.04
-    ("mydev"라는 Container 로 image를 실행하는 명령입니다.)
+  예1)
+  # docker run -d -h <hostname> --name <container-name> --privileged=true -v <src-volume>:<dst-volume> hwport/ubuntu:14.04
+  예2)
+  # docker run -d -h myhostname --name mydev --privileged=true -p 2222:22 hwport/ubuntu:14.04
+  예3)
+  # docker run -d -h myhostname --name mydev --privileged=true -p 2222:22 -v /mnt/build-cache/home-ngfw-dev-env:/home hwport/ubuntu:14.04
   # docker container ls -a
     (container 가 실행되었는지 확인)
 
