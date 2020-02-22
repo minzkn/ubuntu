@@ -28,11 +28,15 @@ Docker 환경 구축 방법
 3. 이제 build된 Docker image는 다음과 같은 명령으로 확인할 수 있습니다.
   # sudo docker images
   REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-  hwport/ubuntu             latest              43789521063b        23 seconds ago      445.8 MB
-  ubuntu                    16.04               5b117edd0b76        8 days ago          103.6 MB
+  hwport/ubuntu             kvm                 43789521063b        23 seconds ago      445.8 MB
+  ubuntu                    18.04               5b117edd0b76        8 days ago          103.6 MB
 
-4. Docker 를 사용하기 위해서는 run 또는 create + start 단계를 통해서 Container로 실행해줘야 합니다.
-  # docker run -d -p 2222:22 --name mydev --cap-add SYS_ADMIN -v /sys/fs/cgroup:/sys/fs/cgroup:ro hwport/ubuntu:18.04
+4. Docker 를 사용하n 위해서는 run 또는 create + start 단계를 통해서 Container로 실행해줘야 합니다.
+  !!! 반드시 KVM(Kernel-level Virtualization) 을 docker 상에서 실행(run)하려면 "--privileged" 옵션이 필요합니다.
+  !!! 사용자 계정에서 libvirt 에 접근하기 위해서 "libvirt" group 에 추가하셔야 합니다. 
+  !!! xrdp 가 기본설치되므로 원격데스크톱으로 접속 가능합니다. (사용자 계정을 추가한 후에 접속 가능)
+
+  # docker run -d -p 2222:22 -p 3389:3389 -p 5900:5900 -h myhostname --name mydev --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro hwport/ubuntu:kvm
     ("mydev"라는 Container 로 image를 실행하는 명령입니다.)
   # docker container ls -a
     (container 가 실행되었는지 확인)

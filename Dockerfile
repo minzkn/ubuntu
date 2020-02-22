@@ -9,11 +9,11 @@
 FROM ubuntu:18.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 18.04 dev environment"
-LABEL name="hwport/ubuntu:18.04"
+LABEL description="HWPORT xrdp+kvm environment (Ubuntu 18.04 LTS base)"
+LABEL name="hwport/ubuntu:kvm"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
-LABEL version="1.1"
+LABEL version="1.0"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
@@ -54,68 +54,39 @@ RUN apt-get autoclean -y && \
     echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config && \
     systemctl enable ssh.service && \
     apt-get install -y \
-        dpkg-dev \
         sudo \
-        build-essential \
-        kernel-package \
-        binutils \
-        gcc \
-        g++ \
-        libc-dev \
-        gdb \
-        perl \
-        make \
-        m4 \
-        autoconf \
-        automake \
-        libtool \
-        cmake \
-        scons \
-        bison \
-        gawk \
-        gettext \
-        grep \
-        sed \
-        patch \
-        linux-headers-generic \
         vim \
-        net-tools \
-        ccache \
-        subversion \
-        git \
-        wget \
-        curl \
-        genromfs \
-        rsync \
-        texinfo \
-        libncurses5-dev \
-        ncurses-term \
-        openssl \
-        tar \
-        gzip \
-        bzip2 \
-        xz-utils \
-        unzip \
-        zlib1g-dev \
-        lib32z1 \
-        man-db \
-        cscope \
-        exuberant-ctags \
-        ftp \
-        xmlto \
-        libboost-dev \
-        python-dev \
-        nodejs \
-        libjpeg-dev \
-        libpng-dev \
-        libgif-dev \
-        libssl-dev libcurl4-openssl-dev \
-        libssh2-1-dev \
-        libsqlite3-dev \
-        freetds-dev \
-        libpq-dev \
-        libmysqlclient-dev \
-        default-jdk && \
+        xfce4 \
+        xfce4-terminal \
+        libfontenc1 \
+        libxfont2 \
+        xfonts-encodings \
+        xfonts-utils \
+        xfonts-base \
+        xfonts-75dpi \
+        xrdp \
+        language-pack-ko \
+        fonts-unfonts-core \
+        fonts-unfonts-extra \
+        fonts-baekmuk \
+        fonts-nanum \
+        fonts-nanum-coding \
+        fonts-nanum-extra \
+        ibus \
+        ibus-hangul \
+        im-config \
+        zenity \
+        qemu-kvm \
+        libvirt-bin \
+        ovmf \
+        ubuntu-vm-builder \
+        bridge-utils \
+        virt-manager \
+        ssh-askpass-gnome \
+        virtualbox \
+        && \
+    systemctl enable xrdp.service && \
+    systemctl enable libvirtd.service && \
     apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
@@ -123,7 +94,7 @@ RUN apt-get autoclean -y && \
 
 # ----
 
-EXPOSE 22
+EXPOSE 22 3389 5900
 #VOLUME ["/test-share1", "/test-share2", "/test-share3"]
 #VOLUME ["/sys/fs/cgroup"]
 #VOLUME ["/run"]
@@ -131,8 +102,8 @@ WORKDIR /
 #STOPSIGNAL SIGTERM
 #CMD ["/lib/systemd/systemd"]
 #CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-CMD ["/usr/sbin/sshd", "-D"]
-#CMD ["/sbin/init"]
+#CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/sbin/init"]
 
 # ----
 
