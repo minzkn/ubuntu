@@ -85,6 +85,7 @@ RUN apt-get autoclean -y && \
         git \
         wget \
         curl \
+        screen \
         genromfs \
         rsync \
         texinfo \
