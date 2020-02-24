@@ -28,28 +28,23 @@ Docker 환경 구축 방법
 	smp86xx: Pulling from hwport/sigmadesigns
 	...
 	Status: Downloaded newer image for hwport/sigmadesigns:smp86xx
-
 	# docker images
 	REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
 	hwport/sigmadesigns   smp86xx             <image-id>          <created-time>      <image-size>
 	...
-
 	# docker run -d -h "<container-hostname>" --name "<container-name>" -p <SSH-host-port>:22 [--privileged] [-v "<local-volume-path>:<container-volume-path>"] "hwport/sigmadesigns:smp86xx"
 	...
-
 	# docker container ls --all
 	CONTAINER ID        IMAGE                         COMMAND             CREATED             STATUS              PORTS                             NAMES
 	<container-id>      hwport/sigmadesigns:smp86xx   "/sbin/init"        <created-time>      <status>            0.0.0.0:<SSH-host-port>->22/tcp   <container-name>
 	...
-
 	# docker exec -i -t <container-name> /bin/bash
-	root@<container-name>:/# useradd -c "<comment>" -d "/home/<myaccount>" -g users -G users,adm,sudo -m -s /bin/bash <myaccount>
-	root@<container-name>:/# passwd <myaccount>
+	root@<container-hostname>:/# useradd -c "<comment>" -d "/home/<myaccount>" -g users -G users,adm,sudo -m -s /bin/bash <myaccount>
+	root@<container-hostname>:/# passwd <myaccount>
 	Enter new UNIX password: <myaccount's password>
 	Retype new UNIX password: <myaccount's password>
 	passwd: password updated successfully
-	root@<container-name>:/# exit
-
+	root@<container-hostname>:/# exit
 	# ssh -o port=<SSH-host-port> <myaccount>@localhost
 	The authenticity of host '[localhost]:<SSH-host-port> ([::1]:<SSH-host-port>)' can't be established.
 	ECDSA key fingerprint is SHA256:<...>.
@@ -57,4 +52,3 @@ Docker 환경 구축 방법
 	Warning: Permanently added '[localhost]:<SSH-host-port>' (ECDSA) to the list of known hosts.
 	<myaccount>@localhost's password: <myaccount's password>
 	<myaccount>@<container-hostname>:~$ <in-container environment now...>
-
