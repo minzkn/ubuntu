@@ -22,50 +22,39 @@ Docker 환경 구축 방법
     # sudo apt-get install docker.io
   - (선택사항) docker를 실행하는데 매번 root 권한이 필요하기 때문에 "docker" group 에 사용자를 등록해두면 sudo 실행이나 root로그인 없이 관리하기 편합니다.
 
-2. Docker build script인 "build-docker-image.sh"을 실행하여 Docker image를 빌드합니다.
-  # sudo ./build-docker-image.sh
+2. docker hub (hub.docker.com)에서 다운로드(pull)하여 실행하는 방법
 
-3. 이제 build된 Docker image는 다음과 같은 명령으로 확인할 수 있습니다.
-  # sudo docker images
-  REPOSITORY                TAG                 IMAGE ID            CREATED             SIZE
-  hwport/ubuntu             latest              43789521063b        23 seconds ago      445.8 MB
-  ubuntu                    smp86xx             5b117edd0b76        8 days ago          103.6 MB
+	# docker pull hwport/sigmadesigns:smp86xx
+	smp86xx: Pulling from hwport/sigmadesigns
+	...
+	Status: Downloaded newer image for hwport/sigmadesigns:smp86xx
 
-4. Docker 를 사용하기 위해서는 run 또는 create + start 단계를 통해서 Container로 실행해줘야 합니다.
-  예1)
-  # docker run -d -h <hostname> --name <container-name> --privileged=true -v <src-volume>:<dst-volume> hwport/ubuntu:smp86xx
-  예2)
-  # docker run -d -h ubuntu-smp86xx-dev --name mydev --privileged=true -p 2222:22 hwport/ubuntu:smp86xx
-  예3)
-  # docker run -d -h ubuntu-smp86xx-dev --name mydev --privileged=true -p 2222:22 -v /mnt/build-cache:/home hwport/ubuntu:smp86xx
+	# docker images
+	REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+	hwport/sigmadesigns   smp86xx             <image-id>          <created-time>      <image-size>
+	...
 
-5. 실행된 Container 에 대한 admin 계정 추가를 해야 합니다.
-  # docker exec -i -t mydev /bin/bash
-  root@ubuntu-smp86xx-dev:/# useradd -c "<comment>" -d /home/<myid> -g users -G users,adm,sudo -m -s /bin/bash <myid>
-  root@ubuntu-smp86xx-dev:/# passwd <myid>
-  Enter new UNIX password: ****
-  Retype new UNIX password: ****
-  passwd: password updated successfully
-  root@ubuntu-smp86xx-dev:/# exit
+	# docker run -d -h "<container-hostname>" --name "<container-name>" -p <SSH-host-port>:22 [-v "<local-volume-path>:<container-volume-path>"] "hwport/sigmadesigns:smp86xx"
+	...
 
-6. 이제 실행된 Container로 접속하려면 크게 3가지 명령이 가능합니다.
-  - Container의 SSH로 접속하는 방법
-    # ssh dev@localhost -p 2222
+	# docker container ls --all
+	CONTAINER ID        IMAGE                         COMMAND             CREATED             STATUS              PORTS                             NAMES
+	<container-id>      hwport/sigmadesigns:smp86xx   "/sbin/init"        <created-time>      <status>            0.0.0.0:<SSH-host-port>->22/tcp   <container-name>
+	...
 
-  - 직접 docker exec로 쉘을 실행하여 접근하는 방법 (환경변수등이 일반 로그인과 다를 수 있으며 root계정으로 접근하기 때문에 임시조치등을 위해서만 사용하는게 좋습니다.) 
-    # docker exec -i -t mydev /bin/bash
+	# docker exec -i -t <container-name> /bin/bash
+	root@<container-name>:/# useradd -c "<comment>" -d "/home/<myaccount>" -g users -G users,adm,sudo -m -s /bin/bash <myaccount>
+	root@<container-name>:/# passwd <myaccount>
+	Enter new UNIX password: <myaccount's password>
+	Retype new UNIX password: <myaccount's password>
+	passwd: password updated successfully
+	root@<container-name>:/# exit
 
-  - 직접 docker exec로 로그인을 통해서 실행하는 방법
-    # docker exec -i -t mydev /bin/login
+	# ssh -o port=<SSH-host-port> <myaccount>@localhost
+	The authenticity of host '[localhost]:<SSH-host-port> ([::1]:<SSH-host-port>)' can't be established.
+	ECDSA key fingerprint is SHA256:<...>.
+	Are you sure you want to continue connecting (yes/no)? yes
+	Warning: Permanently added '[localhost]:<SSH-host-port>' (ECDSA) to the list of known hosts.
+	<myaccount>@localhost's password: <myaccount's password>
+	<myaccount>@<container-hostname>:~$ <in-container environment now...>
 
-7. 이제 Docker 세상에 접근하였습니다. 뭐든 만들어 보십시요.
-
-
-그 밖에 주요 docker 명령 ...
-  - container 시작 : docker start <container-name>
-  - container 종료 : docker stop <container-name>
-  - container 삭제 : docker container rm <container-name>
-                     docker rm <container-name>
-  - container 목록 조회 : docker container ls --all
-                          docker ps --all
-  - image 삭제 : docker rmi <image-name>
