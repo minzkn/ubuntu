@@ -34,7 +34,7 @@ Docker 환경 구축 방법
 	hwport/sigmadesigns   smp86xx             <image-id>          <created-time>      <image-size>
 	...
 
-	# docker run -d -h "<container-hostname>" --name "<container-name>" -p <SSH-host-port>:22 [-v "<local-volume-path>:<container-volume-path>"] "hwport/sigmadesigns:smp86xx"
+	# docker run -d -h "<container-hostname>" --name "<container-name>" -p <SSH-host-port>:22 [--privileged] [-v "<local-volume-path>:<container-volume-path>"] "hwport/sigmadesigns:smp86xx"
 	...
 
 	# docker container ls --all
