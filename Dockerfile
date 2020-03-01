@@ -10,7 +10,7 @@ FROM ubuntu:18.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
 LABEL description="HWPORT Ubuntu 18.04 dev environment"
-LABEL name="hwport/ubuntu:18.04"
+LABEL name="hwport/ubuntu:latest"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
@@ -116,7 +116,9 @@ RUN apt-get autoclean -y && \
         freetds-dev \
         libpq-dev \
         libmysqlclient-dev \
-        default-jdk && \
+        default-jdk \
+        whois \
+	&& \
     apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
