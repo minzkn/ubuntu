@@ -116,7 +116,9 @@ RUN apt-get autoclean -y && \
         freetds-dev \
         libpq-dev \
         libmysqlclient-dev \
-        default-jdk && \
+        default-jdk \
+        whois \
+	&& \
     apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
