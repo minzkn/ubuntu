@@ -17,9 +17,15 @@ LABEL version="1.0"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
+ARG LC_ALL=C
+ARG LANG=en_US.UTF-8
 
-# let Upstart know it's in a container
 ENV container docker
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM xterm
+ENV LC_ALL C
+ENV LANG en_US.UTF-8
+ENV EDITER vim
 
 # ----
 
