@@ -18,13 +18,13 @@ LABEL version="1.0"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
-ARG LANG=un_US.UTF-8
+ARG LANG=en_US.UTF-8
 
 ENV container docker
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV LC_ALL C
-ENV LANG un_US.UTF-8
+ENV LANG en_US.UTF-8
 ENV EDITER vim
 
 # ----
