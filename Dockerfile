@@ -36,7 +36,8 @@ ENV EDITER vim
 EXPOSE 22
 #VOLUME ["/test-share1", "/test-share2", "/test-share3"]
 WORKDIR /
-CMD ["/sbin/init"]
+#CMD ["/sbin/init"]
+CMD ["/usr/sbin/sshd", "-D"]
 
 # ----
 
