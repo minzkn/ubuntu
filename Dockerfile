@@ -41,6 +41,7 @@ RUN apt-get autoclean -y && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
     sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
+    mkdir -p /var/run/sshd && \
     cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
     echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
     echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
