@@ -148,6 +148,7 @@ RUN rm -rf /var/lib/apt/lists/* && \
         curl \
         groff \
         groff-base \
+        dnsutils \
         && \
     mkdir -p /var/run/sshd && \
     sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
