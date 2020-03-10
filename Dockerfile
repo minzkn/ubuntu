@@ -119,6 +119,7 @@ RUN apt-get autoclean -y && \
         default-jdk \
         iproute2 \
         whois \
+        dnsutils \
 	&& \
     apt-get autoclean -y && \
     apt-get clean && \
