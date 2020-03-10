@@ -128,6 +128,7 @@ RUN apt-get autoclean -y && \
         freetds-dev \
         libpq-dev \
         libmysqlclient-dev \
+        dnsutils \
         && \
     tar -xjf /tmp/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 -C /opt/ && \
     rm -f /tmp/mips-4.3-51-mips-linux-gnu-i686-pc-linux-gnu.tar.bz2 && \
