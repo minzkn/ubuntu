@@ -34,6 +34,7 @@ RUN apt-get autoclean -y && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update --list-cleanup && \
+    yes | unminimize && \
     apt-get install -y apt-utils debconf-utils locales dbus systemd ssh ca-certificates && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
