@@ -6,11 +6,11 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 18.04 dev environment"
-LABEL name="hwport/ubuntu:latest"
+LABEL description="HWPORT Ubuntu 20.04 dev environment"
+LABEL name="hwport/ubuntu:20.04"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
