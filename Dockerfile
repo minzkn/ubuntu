@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2019 HWPORT.COM
+#   Copyright (C) 2020 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -15,13 +15,15 @@ LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
 
+# environment for build
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 
+# environment for run
 ENV container docker
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV LC_ALL C
 ENV LANG en_US.UTF-8
@@ -29,13 +31,22 @@ ENV EDITER vim
 
 # ----
 
-RUN apt-get autoclean -y && \
-    apt-get clean && \
-    apt-get autoremove -y && \
+# pre setup
+ADD linuxrc /
+RUN apt autoclean -y && \
+    apt clean && \
+    apt autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
-    apt-get update --list-cleanup && \
+    apt update --list-cleanup && \
     yes | unminimize && \
-    apt-get install -y apt-utils debconf-utils locales dbus systemd ssh ca-certificates && \
+    apt install -y \
+        apt-utils \
+        debconf-utils \
+        locales \
+        dbus \
+        systemd \
+        ssh \
+        ca-certificates && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
     find /etc/systemd/system \
@@ -46,15 +57,21 @@ RUN apt-get autoclean -y && \
         -not -name '*systemd-user-sessions*' \
         -exec rm \{} \; && \
     systemctl set-default multi-user.target && \
-    sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
+    chown root:root /linuxrc && \
+    chmod u=rwx,g=r,o=r /linuxrc
+
+# sshd setup
+RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
     mkdir /run/sshd && \
     cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
     echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
     echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
     echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
     echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config && \
-    systemctl enable ssh.service && \
-    apt-get install -y \
+    systemctl enable ssh.service
+
+# dev packages install
+RUN apt install -y \
         dpkg-dev \
         sudo \
         build-essential \
@@ -90,7 +107,7 @@ RUN apt-get autoclean -y && \
         genromfs \
         rsync \
         texinfo \
-        libncurses5-dev \
+        libncurses-dev \
         ncurses-term \
         openssl \
         tar \
@@ -106,13 +123,13 @@ RUN apt-get autoclean -y && \
         ftp \
         xmlto \
         libboost-dev \
-        python-dev \
+        python3-dev \
         nodejs \
         libjpeg-dev \
         libpng-dev \
         libgif-dev \
         libssl-dev libcurl4-openssl-dev \
-        libssh2-1-dev \
+        libssh-dev \
         libsqlite3-dev \
         freetds-dev \
         libpq-dev \
@@ -120,11 +137,13 @@ RUN apt-get autoclean -y && \
         default-jdk \
         iproute2 \
         whois \
-        dnsutils \
-	&& \
-    apt-get autoclean -y && \
-    apt-get clean && \
-    apt-get autoremove -y && \
+	dnsutils \
+        inetutils-ping
+
+# cleanup
+RUN apt autoclean -y && \
+    apt clean && \
+    apt autoremove -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----
@@ -137,8 +156,10 @@ WORKDIR /
 #STOPSIGNAL SIGTERM
 #CMD ["/lib/systemd/systemd"]
 #CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/usr/sbin/sshd", "-D"]
 #CMD ["/sbin/init"]
+#CMD ["/bin/bash", "-c", "exec /linuxrc"]
+CMD ["/linuxrc"]
 
 # ----
 
