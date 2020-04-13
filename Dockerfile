@@ -21,7 +21,7 @@ ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 
 ENV container docker
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV LC_ALL C
 ENV LANG en_US.UTF-8
@@ -34,10 +34,23 @@ ENV EDITER vim
 # ----
 
 EXPOSE 22
+
 #VOLUME ["/test-share1", "/test-share2", "/test-share3"]
+#VOLUME ["/sys/fs/cgroup"]
+#VOLUME ["/run"]
+
 WORKDIR /
-#CMD ["/sbin/init"]
+
+#STOPSIGNAL SIGTERM
+
+#HEALTHCHECK --interval=1m --timeout=3s --retries=3 CMD curl -f http://localhost || exit 1
+
+ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/bin/bash"]
+#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
+#CMD ["/sbin/init"]
 
 # ----
 
