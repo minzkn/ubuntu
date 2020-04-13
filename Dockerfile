@@ -21,7 +21,7 @@ ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 
 ENV container docker
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV LC_ALL C
 ENV LANG en_US.UTF-8
@@ -29,14 +29,58 @@ ENV EDITER vim
 
 # ----
 
-RUN rm -rf /var/lib/apt/lists/* && \
+# pre setup
+COPY ["entrypoint.sh", "/entrypoint.sh"]
+RUN apt-get autoclean -y && \
+    apt-get clean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* && \
     sed -i -e "s/archive\.ubuntu\.com/kr\.archive\.ubuntu\.com/g" "/etc/apt/sources.list" && \
     apt-get update --list-cleanup && \
-    apt-get remove -y nano vim-tiny cloud-init && \
-    apt-get install -y apt-utils debconf-utils locales ca-certificates && \
+    apt-get install -y \
+        apt-utils \
+        debconf-utils \
+        locales \
+        dbus \
+        systemd \
+        ssh \
+        ca-certificates && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
-    apt-get install -y vim ssh \
+    rm /usr/sbin/policy-rc.d && \
+    rm /sbin/initctl && \
+    dpkg-divert --rename --remove /sbin/initctl && \
+    /usr/sbin/update-rc.d -f ondemand remove && \
+    for f in \
+        /etc/init/u*.conf \
+        /etc/init/mounted-dev.conf \
+        /etc/init/mounted-proc.conf \
+        /etc/init/mounted-run.conf \
+        /etc/init/mounted-tmp.conf \
+        /etc/init/mounted-var.conf \
+        /etc/init/hostname.conf \
+        /etc/init/networking.conf \
+        /etc/init/tty*.conf \
+        /etc/init/plymouth*.conf \
+        /etc/init/hwclock*.conf \
+        /etc/init/module*.conf\
+    ; do \
+        dpkg-divert --local --rename --add "$f"; \
+    done && \
+    echo '# /lib/init/fstab: cleared out for bare-bones Docker' > /lib/init/fstab && \
+    chown root:root /entrypoint.sh && \
+    chmod u=rwx,g=r,o=r /entrypoint.sh
+
+# sshd setup
+RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
+    mkdir /run/sshd && \
+    cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
+    echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
+    echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
+    echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
+    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
+
+RUN apt-get install -y vim ssh \
         bash \
         coreutils \
         diffutils \
@@ -148,16 +192,12 @@ RUN rm -rf /var/lib/apt/lists/* && \
         curl \
         groff \
         groff-base \
-        dnsutils \
-        && \
-    mkdir -p /var/run/sshd && \
-    sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
-    cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
-    echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
-    echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config && \
-    apt-get autoclean -y && \
+        dnsutils
+
+#RUN pip3 install jsmin
+
+# cleanup
+RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -165,11 +205,23 @@ RUN rm -rf /var/lib/apt/lists/* && \
 # ----
 
 EXPOSE 22
+
 #VOLUME ["/test-share1", "/test-share2", "/test-share3"]
-#STOPSIGNAL SIGTERM
-#HEALTHCHECK --interval=1m --timeout=3s --retries=3 CMD curl -f http://localhost || exit 1
+#VOLUME ["/sys/fs/cgroup"]
+#VOLUME ["/run"]
+
 WORKDIR /
-CMD ["/usr/sbin/sshd","-D"]
+
+#STOPSIGNAL SIGTERM
+
+#HEALTHCHECK --interval=1m --timeout=3s --retries=3 CMD curl -f http://localhost || exit 1
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/bin/bash"]
+#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
+#CMD ["/sbin/init"]
 
 # ----
 
