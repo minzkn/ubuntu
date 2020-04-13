@@ -32,7 +32,7 @@ ENV EDITER vim
 # ----
 
 # pre setup
-ADD linuxrc /
+COPY ["entrypoint.sh", "/entrypoint.sh"]
 RUN apt autoclean -y && \
     apt clean && \
     apt autoremove -y && \
@@ -57,8 +57,8 @@ RUN apt autoclean -y && \
         -not -name '*systemd-user-sessions*' \
         -exec rm \{} \; && \
     systemctl set-default multi-user.target && \
-    chown root:root /linuxrc && \
-    chmod u=rwx,g=r,o=r /linuxrc
+    chown root:root /entrypoint.sh && \
+    chmod u=rwx,g=r,o=r /entrypoint.sh
 
 # sshd setup
 RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
@@ -149,17 +149,22 @@ RUN apt autoclean -y && \
 # ----
 
 EXPOSE 22
+
 #VOLUME ["/test-share1", "/test-share2", "/test-share3"]
 #VOLUME ["/sys/fs/cgroup"]
 #VOLUME ["/run"]
+
 WORKDIR /
+
 #STOPSIGNAL SIGTERM
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/bin/bash"]
 #CMD ["/lib/systemd/systemd"]
 #CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-#CMD ["/usr/sbin/sshd", "-D"]
 #CMD ["/sbin/init"]
-#CMD ["/bin/bash", "-c", "exec /linuxrc"]
-CMD ["/linuxrc"]
 
 # ----
 
