@@ -108,6 +108,7 @@ RUN apt install -y \
         genromfs \
         rsync \
         texinfo \
+        libelf-dev \
         libncurses-dev \
         ncurses-term \
         openssl \
