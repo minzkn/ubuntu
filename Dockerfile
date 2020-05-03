@@ -90,6 +90,7 @@ RUN apt install -y \
         cmake \
         scons \
         bison \
+        flex \
         gawk \
         gettext \
         grep \
