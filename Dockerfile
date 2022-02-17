@@ -83,6 +83,7 @@ RUN apt install -y \
         gdb \
         perl \
         make \
+	pkg-config \
         m4 \
         autoconf \
         automake \
@@ -97,6 +98,14 @@ RUN apt install -y \
         sed \
         patch \
         linux-headers-generic \
+	clang \
+	llvm \
+	libelf-dev \
+	libpcap-dev \
+	gcc-multilib \
+	build-essential \
+	linux-tools-common \
+	linux-tools-generic \
         vim \
         net-tools \
         ccache \
