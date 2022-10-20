@@ -33,7 +33,6 @@ ENV EDITER vim
 
 # pre setup
 COPY ["entrypoint.sh", "/entrypoint.sh"]
-COPY ["gbox", "/usr/local/bin/gbox"]
 RUN chown root:root /entrypoint.sh && \
     chmod u=rwx,g=r,o=r /entrypoint.sh
 RUN apt-get autoclean -y && \
