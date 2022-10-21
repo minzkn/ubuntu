@@ -16,6 +16,7 @@ set -euo pipefail
 # === BEGIN : EDIT FOR YOU ===
 
 #/usr/sbin/sshd -D
+exec apache2-foreground
 
 # === END   : EDIT FOR YOU ===
 

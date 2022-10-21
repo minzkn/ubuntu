@@ -6,27 +6,33 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+#FROM ubuntu/apache2:latest
+FROM ubuntu/apache2:2.4-20.04_beta
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 20.04 dev environment"
-LABEL name="hwport/ubuntu:20.04"
+LABEL description="HWPORT www (Ubuntu/apache2 BASE)"
+LABEL name="hwport/ubuntu:www"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
 
 # environment for build
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TZ=Asia/Seoul
 ARG TERM=xterm
-ARG LC_ALL=C
-ARG LANG=en_US.UTF-8
+ARG LC_ALL=ko_KR.UTF-8
+ARG LANG=ko_KR.UTF-8
+ARG LANGUAGE=ko_KR:en_US
+ARG DEBCONF_NOWARNINGS=yes
 
 # environment for run
 ENV container docker
+ENV TZ Asia/Seoul
 #ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
-ENV LC_ALL C
-ENV LANG en_US.UTF-8
+ENV LC_ALL ko_KR.UTF-8
+ENV LANG ko_KR.UTF-8
+ENV LANGUAGE ko_KR:en_US
 ENV EDITER vim
 
 # ----
@@ -40,81 +46,29 @@ RUN apt-get autoclean -y && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update --list-cleanup && \
-    DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils && \
-    apt-get upgrade -y
-RUN yes | unminimize
-RUN apt-get install -y \
+    LC_ALL=C apt-get upgrade -y
+RUN LC_ALL=C apt-get install -y \
         locales \
-        ca-certificates && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8
+        ca-certificates \
+	ssl-cert && \
+    LC_ALL=C locale-gen ko_KR.UTF-8 && \
+    update-locale LANG=ko_KR.UTF-8 LANGUAGE=ko_KR:en_US
 
-# sshd setup
+# add packages install
 RUN apt-get install -y \
-	ssh \
-        sed && \
-    sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
-    mkdir /run/sshd && \
-    cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
-    echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
-    echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
+	apache2 \
+	libapache2-mod-security2 \
+	php php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick \
+	imagemagick \
+	zip \
+	enscript \
+	rcs \
+	vim \
+	ffmpeg
 
-# dev packages install
-RUN apt-get install -y \
-        sudo \
-        build-essential \
-        kernel-package \
-        binutils \
-        gcc \
-        g++ \
-        libc-dev \
-        gdb \
-        perl \
-        make \
-	pkg-config \
-        m4 autoconf automake libtool \
-        cmake \
-        bison \
-        flex \
-        gawk \
-        grep \
-        gettext \
-        patch \
-        linux-headers-generic \
-	clang llvm \
-	libelf-dev \
-	libpcap-dev \
-	dwarves \
-	gcc-multilib \
-	linux-tools-common \
-	linux-tools-generic \
-        vim \
-        net-tools \
-        ccache \
-        git subversion \
-        wget curl \
-        screen \
-        genromfs \
-        rsync \
-        texinfo \
-        libncurses-dev ncurses-term \
-        openssl \
-        tar gzip bzip2 xz-utils unzip zlib1g-dev lib32z1 \
-        man-db \
-        cscope \
-        exuberant-ctags \
-        ftp \
-        xmlto \
-        libboost-dev \
-        python3-dev \
-        libssl-dev libcurl4-openssl-dev \
-        libssh-dev \
-        iproute2 \
-        whois \
-	dnsutils \
-        inetutils-ping
+# enable modules
+RUN a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel
+RUN a2ensite default-ssl.conf
 
 # cleanup
 RUN apt-get autoclean -y && \
@@ -124,7 +78,8 @@ RUN apt-get autoclean -y && \
 
 # ----
 
-EXPOSE 22
+EXPOSE 80
+EXPOSE 443
 
 #VOLUME ["/test-share1", "/test-share2", "/test-share3"]
 #VOLUME ["/sys/fs/cgroup"]
@@ -133,14 +88,16 @@ EXPOSE 22
 WORKDIR /
 
 #STOPSIGNAL SIGTERM
+STOPSIGNAL SIGWINCH
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/usr/sbin/sshd", "-D"]
 #CMD ["/bin/bash"]
 #CMD ["/lib/systemd/systemd"]
 #CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
 #CMD ["/sbin/init"]
+#CMD ["apache2-foreground"]
 
 # ----
 

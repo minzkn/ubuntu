@@ -6,35 +6,33 @@
 
 version: "2.1"
 services:
-  mzdev-test:
-          #    image: hwport/ubuntu:20.04
-    image: hwport/ubuntu:latest
-    container_name: mzdev-test
-    hostname: mzdev-test
-    privileged: true
-    #    cap_add:
-    #      - "SYS_ADMIN"
-    #      - "SYS_RESOURCE"
-    #      - "SYS_PTRACE"
-    #      - "NET_ADMIN"
-    #      - "NET_BIND_SERVICE"
-    #      - "NET_BROADCAST"
-    #      - "NET_RAW"
-    #      - "BPF" # >= Linux Kernel v5.8
-    environment:
-      - container=docker
-      - TZ=Asia/Seoul
-      - TERM=xterm
-      - LC_ALL=C
-      - LANG=ko_KR.UTF-8
-      - EDITOR=vim
-    volumes:
-      - /sys/kernel/debug:/sys/kernel/debug
-        #    networks:
-        #      - default
+  www-test:
+    image: hwport/ubuntu:www
+    container_name: www-test
+    hostname: www-test
+    privileged: false
+    #    environment:
+    #      - container=docker
+    #      - TZ=Asia/Seoul
+    #      - TERM=xterm
+    #      - LC_ALL=ko_KR.UTF-8
+    #      - LANG=ko_KR.UTF-8
+    #      - LANGUAGE=ko_KR:en_US
+    #      - EDITOR=vim
+    #    volumes:
+    #      - /etc/letsencrypt:/etc/letsencrypt:ro
+    #      - /var/log/apache2:/var/log/apache2
+    #      - ./ports.conf:/etc/apache2/ports.conf:ro
+    #      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
+    #      - ./default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf:ro
+    #      - ./hiddenserver.conf:/etc/modsecurity/hiddenserver.conf:ro
+    #    networks:
+    #      - default
+    #    network_mode: host
     network_mode: bridge
     ports:
-      - "2222:22"
+      - "8080:80"
+      - "8443:443"
     restart: unless-stopped
     #networks:
     #    default:

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-g_docker_container_name=mzdev-test
+g_docker_container_name=www-test
 
 docker-compose up -d ${g_docker_container_name}
 
