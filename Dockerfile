@@ -103,7 +103,7 @@ RUN apt-get install -y vim ssh \
         libtool \
         pkg-config \
         make \
-        cmake \
+        cmake3 \
         ccache \
         cpio \
         exuberant-ctags \
