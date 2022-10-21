@@ -33,46 +33,36 @@ ENV EDITER vim
 
 # pre setup
 COPY ["entrypoint.sh", "/entrypoint.sh"]
-RUN apt autoclean -y && \
-    apt clean && \
-    apt autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt update --list-cleanup && \
-    yes | unminimize && \
-    apt install -y \
-        apt-utils \
-        debconf-utils \
+RUN chown root:root /entrypoint.sh && \
+    chmod u=rwx,g=r,o=r /entrypoint.sh
+RUN apt-get autoclean -y && \
+    apt-get clean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+RUN apt-get update --list-cleanup && \
+    DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils && \
+    apt-get upgrade -y
+RUN yes | unminimize
+RUN apt-get install -y \
         locales \
-        dbus \
-        systemd \
-        ssh \
         ca-certificates && \
     locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 && \
-    find /etc/systemd/system \
-        /lib/systemd/system \
-        -path '*.wants/*' \
-        -not -name '*journald*' \
-        -not -name '*systemd-tmpfiles*' \
-        -not -name '*systemd-user-sessions*' \
-        -exec rm \{} \; && \
-    systemctl set-default multi-user.target && \
-    chown root:root /entrypoint.sh && \
-    chmod u=rwx,g=r,o=r /entrypoint.sh
+    update-locale LANG=en_US.UTF-8
 
 # sshd setup
-RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
+RUN apt-get install -y \
+	ssh \
+        sed && \
+    sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
     mkdir /run/sshd && \
     cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
     echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
     echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
     echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config && \
-    systemctl enable ssh.service
+    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
 
 # dev packages install
-RUN apt install -y \
-        dpkg-dev \
+RUN apt-get install -y \
         sudo \
         build-essential \
         kernel-package \
@@ -84,50 +74,34 @@ RUN apt install -y \
         perl \
         make \
 	pkg-config \
-        m4 \
-        autoconf \
-        automake \
-        libtool \
+        m4 autoconf automake libtool \
         cmake \
-        scons \
         bison \
         flex \
         gawk \
-        gettext \
         grep \
-        sed \
+        gettext \
         patch \
         linux-headers-generic \
-	clang \
-	llvm \
+	clang llvm \
 	libelf-dev \
 	libpcap-dev \
+	dwarves \
 	gcc-multilib \
-	build-essential \
 	linux-tools-common \
 	linux-tools-generic \
         vim \
         net-tools \
         ccache \
-        subversion \
-        git \
-        wget \
-        curl \
+        git subversion \
+        wget curl \
         screen \
         genromfs \
         rsync \
         texinfo \
-        libelf-dev \
-        libncurses-dev \
-        ncurses-term \
+        libncurses-dev ncurses-term \
         openssl \
-        tar \
-        gzip \
-        bzip2 \
-        xz-utils \
-        unzip \
-        zlib1g-dev \
-        lib32z1 \
+        tar gzip bzip2 xz-utils unzip zlib1g-dev lib32z1 \
         man-db \
         cscope \
         exuberant-ctags \
@@ -135,26 +109,17 @@ RUN apt install -y \
         xmlto \
         libboost-dev \
         python3-dev \
-        nodejs \
-        libjpeg-dev \
-        libpng-dev \
-        libgif-dev \
         libssl-dev libcurl4-openssl-dev \
         libssh-dev \
-        libsqlite3-dev \
-        freetds-dev \
-        libpq-dev \
-        libmysqlclient-dev \
-        default-jdk \
         iproute2 \
         whois \
 	dnsutils \
         inetutils-ping
 
 # cleanup
-RUN apt autoclean -y && \
-    apt clean && \
-    apt autoremove -y && \
+RUN apt-get autoclean -y && \
+    apt-get clean && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----
