@@ -99,6 +99,7 @@ RUN apt-get install -y vim ssh \
         autoconf \
         automake \
         autotools-dev \
+        autopoint \
         m4 \
         libtool \
         pkg-config \
