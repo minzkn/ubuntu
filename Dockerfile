@@ -56,6 +56,7 @@ RUN LC_ALL=C apt-get install -y \
 
 # add packages install
 RUN apt-get install -y \
+	git-core \
 	apache2 \
 	libapache2-mod-security2 \
 	php php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick \
@@ -67,7 +68,7 @@ RUN apt-get install -y \
 	ffmpeg
 
 # enable modules
-RUN a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel
+RUN a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel cgi
 RUN a2ensite default-ssl.conf
 
 # cleanup
