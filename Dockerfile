@@ -114,7 +114,6 @@ RUN apt-get install -y \
         xz-utils \
         unzip \
         zlib1g-dev \
-        lib32z1 \
         man-db \
         cscope \
         exuberant-ctags \
