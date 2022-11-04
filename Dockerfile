@@ -141,8 +141,6 @@ RUN apt-get install -y vim ssh \
         libnl-dev \
         rats \
         dos2unix \
-        ruby-uglifier \
-        node-uglify \
         yui-compressor \
         guile-2.0-dev \
         scons \
