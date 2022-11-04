@@ -89,7 +89,6 @@ RUN apt-get install -y vim ssh \
         dpkg-dev \
         build-essential \
         kernel-package \
-        gcc-multilib \
         linux-headers-generic \
         gdb \
         binutils \
