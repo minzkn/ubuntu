@@ -140,7 +140,6 @@ RUN apt-get install -y vim ssh \
         libnl1 \
         libnl-dev \
         rats \
-        nodejs \
         npm \
         dos2unix \
         ruby-uglifier \
