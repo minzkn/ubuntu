@@ -87,7 +87,6 @@ RUN apt-get install -y \
 	libelf-dev \
 	libpcap-dev \
 	dwarves \
-	gcc-multilib \
 	linux-tools-common \
 	linux-tools-generic \
         vim \
@@ -101,7 +100,7 @@ RUN apt-get install -y \
         texinfo \
         libncurses-dev ncurses-term \
         openssl \
-        tar gzip bzip2 xz-utils unzip zlib1g-dev lib32z1 \
+        tar gzip bzip2 xz-utils unzip zlib1g-dev \
         man-db \
         cscope \
         exuberant-ctags \
