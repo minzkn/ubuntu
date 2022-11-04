@@ -154,7 +154,6 @@ RUN apt-get install -y vim ssh \
         sshpass \
         lrzsz \
         zlib1g-dev \
-        lib32z1 \
         unzip \
         zip \
         gzip \
