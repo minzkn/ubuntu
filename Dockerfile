@@ -161,7 +161,6 @@ RUN apt-get install -y vim ssh \
         libnetaddr-ip-perl \
         libnet-dns-perl \
         linuxdoc-tools \
-        sparse \
         libncurses5 \
         libncurses5-dev \
         ncurses-term \
