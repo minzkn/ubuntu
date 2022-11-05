@@ -6,10 +6,10 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT strongswan (Ubuntu 18.04 LTS base)"
+LABEL description="HWPORT strongswan (Ubuntu 20.04 LTS base)"
 LABEL name="hwport/ubuntu:strongswan"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
