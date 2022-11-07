@@ -38,7 +38,7 @@ RUN apt-get autoclean -y && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update --list-cleanup && \
     apt-get remove nano vim-tiny cloud-init && \
-    apt-get install -y apt-utils ca-certificates iproute2 iputils-ping strongswan && \
+    apt-get install -y ca-certificates iproute2 iputils-ping strongswan && \
     apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
