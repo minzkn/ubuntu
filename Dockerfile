@@ -29,19 +29,16 @@ ENV EDITER vim
 
 # ----
 
+COPY ["entrypoint.sh", "/entrypoint.sh"]
+RUN chown root:root /entrypoint.sh && \
+    chmod u=rwx,g=r,o=r /entrypoint.sh
 RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get update --list-cleanup && \
     apt-get remove nano vim-tiny cloud-init && \
-    apt-get install -y apt-utils debconf-utils locales dbus systemd ca-certificates vim && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 && \
-    apt-get install -y \
-        strongswan \
-	&& \
-    systemctl enable ipsec.service && \
+    apt-get install -y apt-utils ca-certificates iproute2 iputils-ping strongswan && \
     apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
@@ -49,17 +46,12 @@ RUN apt-get autoclean -y && \
 
 # ----
 
-EXPOSE 500 4500
-#VOLUME ["/test-share1", "/test-share2", "/test-share3"]
-#VOLUME ["/sys/fs/cgroup"]
-#VOLUME ["/run"]
+EXPOSE 500/udp 4500/udp
 WORKDIR /
 #STOPSIGNAL SIGTERM
-#CMD ["/lib/systemd/systemd"]
-#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-#CMD ["/usr/sbin/sshd", "-D"]
-#CMD ["/bin/bash", "-c", "/etc/init.d/ipsec start"]
-CMD ["/sbin/init"]
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["/usr/sbin/ipsec", "start"]
 
 # ----
 
