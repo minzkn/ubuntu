@@ -6,11 +6,10 @@
 
 version: "2.1"
 services:
-  mzdev-test:
-          #    image: hwport/ubuntu:20.04
-    image: hwport/ubuntu:latest
-    container_name: mzdev-test
-    hostname: mzdev-test
+  ubuntu-systemd:
+    image: hwport/ubuntu:20.04-systemd
+    container_name: ubuntu-systemd
+    hostname: ubuntu-systemd
     privileged: true
     #    cap_add:
     #      - "SYS_ADMIN"
@@ -26,32 +25,15 @@ services:
       - TZ=Asia/Seoul
       - TERM=xterm
       - LC_ALL=C
-      - LANG=ko_KR.UTF-8
+      - LANG=en_US.UTF-8
       - EDITOR=vim
     volumes:
-      - /sys/kernel/debug:/sys/kernel/debug
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
         #    networks:
         #      - default
     network_mode: bridge
-    ports:
-      - "2222:22"
+    #    ports:
+    #      - "2222:22"
     restart: unless-stopped
-    #networks:
-    #    default:
-    #      external:
-    #        name: bridge
-    #networks:
-    #    default:
-    #      driver: bridge
-    #      enable_ipv6: true
-    #      driver_opts:
-    #        com.docker.network.enable_ipv6: "false" 
-    #      ipam:
-    #        driver: default
-    #        config:
-    #          - subnet: 172.21.251.0/24
-    #            gateway: 172.21.251.1
-    #          - subnet: fec0:172:21:251::/64
-    #            #            gateway: fec0:172:21:251::1
 
 # End of docker-compose.yml
