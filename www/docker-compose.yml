@@ -1,0 +1,55 @@
+###
+#### Copyright (C) JAEHYUK CHO
+#### All rights reserved.
+#### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
+####
+
+version: "2.1"
+services:
+  www-test:
+    image: hwport/ubuntu:www
+    container_name: www-test
+    hostname: www-test
+    privileged: false
+    #    environment:
+    #      - container=docker
+    #      - TZ=Asia/Seoul
+    #      - TERM=xterm
+    #      - LC_ALL=ko_KR.UTF-8
+    #      - LANG=ko_KR.UTF-8
+    #      - LANGUAGE=ko_KR:en_US
+    #      - EDITOR=vim
+    #    volumes:
+    #      - /etc/letsencrypt:/etc/letsencrypt:ro
+    #      - /var/log/apache2:/var/log/apache2
+    #      - ./ports.conf:/etc/apache2/ports.conf:ro
+    #      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
+    #      - ./default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf:ro
+    #      - ./hiddenserver.conf:/etc/modsecurity/hiddenserver.conf:ro
+    #    networks:
+    #      - default
+    #    network_mode: host
+    network_mode: bridge
+    ports:
+      - "8080:80"
+      - "8443:443"
+    restart: unless-stopped
+    #networks:
+    #    default:
+    #      external:
+    #        name: bridge
+    #networks:
+    #    default:
+    #      driver: bridge
+    #      enable_ipv6: true
+    #      driver_opts:
+    #        com.docker.network.enable_ipv6: "false" 
+    #      ipam:
+    #        driver: default
+    #        config:
+    #          - subnet: 172.21.251.0/24
+    #            gateway: 172.21.251.1
+    #          - subnet: fec0:172:21:251::/64
+    #            #            gateway: fec0:172:21:251::1
+
+# End of docker-compose.yml

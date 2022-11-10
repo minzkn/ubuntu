@@ -1,0 +1,70 @@
+###
+#### Copyright (C) JAEHYUK CHO
+#### All rights reserved.
+#### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
+####
+
+version: "2.1"
+services:
+  strongswan:
+    image: hwport/ubuntu:strongswan
+    container_name: strongswan
+    hostname: strongswan
+    #    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_MODULE
+    environment:
+      - container=docker
+      - TZ=Asia/Seoul
+      - TERM=xterm
+      - LC_ALL=C
+      - LANG=ko_KR.UTF-8
+      - EDITOR=vim
+    volumes:
+      - ./charon.conf:/etc/strongswan.d/charon.conf
+      - ./ipsec.secrets:/etc/ipsec.secrets
+      - ./ipsec.conf:/etc/ipsec.conf
+        #    networks:
+        #      - default
+        #    networks:
+        #      internet:
+        #         ipv4_address: 192.168.0.2
+        #      intranet:
+        #         ipv4_address: 10.1.0.2
+    network_mode: bridge
+    ports:
+      - "500:500/udp"
+      - "4500:4500/udp"
+    restart: unless-stopped
+    #networks:
+    #    default:
+    #      external:
+    #        name: bridge
+    #networks:
+    #    default:
+    #      driver: bridge
+    #      enable_ipv6: true
+    #      driver_opts:
+    #        com.docker.network.enable_ipv6: "false" 
+    #      ipam:
+    #        driver: default
+    #        config:
+    #          - subnet: 172.21.251.0/24
+    #            gateway: 172.21.251.1
+    #          - subnet: fec0:172:21:251::/64
+    #            #            gateway: fec0:172:21:251::1
+    #networks:
+    #  internet:
+    #    ipam:
+    #      driver: default 
+    #      config:
+    #        - subnet: 192.168.0.0/24
+    #  intranet:
+    #     ipam:
+    #        driver: default
+    #        config:
+    #          - subnet: 10.1.0.0/16 
+
+# End of docker-compose.yml
