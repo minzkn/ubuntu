@@ -11,6 +11,8 @@ services:
     container_name: strongswan
     hostname: strongswan
     #    privileged: true
+    #    stdin_open: true
+    #    tty: true
     cap_add:
       - NET_ADMIN
       - SYS_ADMIN
@@ -23,9 +25,11 @@ services:
       - LANG=ko_KR.UTF-8
       - EDITOR=vim
     volumes:
-      - ./charon.conf:/etc/strongswan.d/charon.conf
-      - ./ipsec.secrets:/etc/ipsec.secrets
-      - ./ipsec.conf:/etc/ipsec.conf
+      - ./charon.conf:/etc/strongswan.d/charon.conf:ro
+      - ./strongswan.conf:/etc/strongswan.conf:ro
+      - ./ipsec.secrets:/etc/ipsec.secrets:ro
+      - ./ipsec.conf:/etc/ipsec.conf:ro
+        #      - ./ipsec.d:/etc/ipsec.d:ro
         #    networks:
         #      - default
         #    networks:
