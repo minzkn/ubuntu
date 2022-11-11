@@ -11,8 +11,8 @@ services:
     container_name: strongswan
     hostname: strongswan
     #    privileged: true
-    #    stdin_open: true
-    #    tty: true
+    stdin_open: true
+    tty: true
     cap_add:
       - NET_ADMIN
       - SYS_ADMIN
