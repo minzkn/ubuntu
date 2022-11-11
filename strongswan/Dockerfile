@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2019 HWPORT.COM
+#   Copyright (C) 2020 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -15,13 +15,15 @@ LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
 
+# environment for build
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 
+# environment for run
 ENV container docker
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm
 ENV LC_ALL C
 ENV LANG en_US.UTF-8
@@ -29,29 +31,31 @@ ENV EDITER vim
 
 # ----
 
-COPY ["entrypoint.sh", "/entrypoint.sh"]
-RUN chown root:root /entrypoint.sh && \
-    chmod u=rwx,g=r,o=r /entrypoint.sh
+# pre setup
 RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get update --list-cleanup && \
-    apt-get remove nano vim-tiny cloud-init && \
-    apt-get install -y ca-certificates iproute2 iputils-ping strongswan && \
-    apt-get autoclean -y && \
+    rm -rf /var/lib/apt/lists/*
+RUN apt-get update --list-cleanup
+RUN apt-get upgrade -y
+
+RUN apt-get install -y ca-certificates ssl-cert iproute2 iputils-ping strongswan
+EXPOSE 500/udp 4500/udp
+
+# cleanup
+RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----
 
-EXPOSE 500/udp 4500/udp
+VOLUME ["/sys/fs/cgroup"]
 WORKDIR /
-#STOPSIGNAL SIGTERM
-ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["/usr/sbin/ipsec", "start"]
+#STOPSIGNAL SIGTERM
+
+CMD ["/usr/lib/ipsec/charon"]
 
 # ----
 
