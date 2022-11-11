@@ -10,6 +10,8 @@ services:
     image: hwport/ubuntu:20.04-systemd
     container_name: ubuntu-systemd
     hostname: ubuntu-systemd
+    stdin_open: true
+    tty: true
     #    privileged: true
     cap_add:
       - "SYS_ADMIN"
