@@ -9,8 +9,8 @@
 FROM ubuntu:20.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 20.04 systemd+kvm+xrdp environment"
-LABEL name="hwport/ubuntu:kvm"
+LABEL description="HWPORT Ubuntu 20.04 xrdp environment"
+LABEL name="hwport/ubuntu:xrdp"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
@@ -39,9 +39,6 @@ RUN apt-get autoclean -y && \
 RUN apt-get update --list-cleanup
 RUN DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils
 RUN apt-get upgrade -y
-RUN LC_ALL=C apt-get install -y locales && \
-    LC_ALL=C locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 RUN apt-get install -y ca-certificates ssl-cert
 RUN apt-get install -y systemd systemd-sysv
 RUN (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1) && \
@@ -57,12 +54,29 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfil
         /lib/systemd/system/systemd-update-utmp*
 RUN systemctl set-default multi-user.target
 
-RUN apt-get install -y openssh-server
-
 RUN apt-get install -y \
-        qemu-kvm ovmf \
-        bridge-utils \
-        libvirt-daemon-system
+        xfce4 \
+        xfce4-terminal \
+        libfontenc1 \
+        libxfont2 \
+        xfonts-encodings \
+        xfonts-utils \
+        xfonts-base \
+        xfonts-75dpi \
+        xrdp \
+        language-pack-ko \
+        fonts-nanum \
+        fonts-nanum-coding \
+        fonts-nanum-extra \
+        ibus \
+        ibus-hangul \
+        im-config \
+        zenity
+RUN sed -i -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' "/etc/xrdp/startwm.sh"
+
+# Additional packages
+#RUN apt-get install -y putty
+#RUN apt-get install -y virt-manager ssh-askpass-gnome
 
 # cleanup
 RUN apt-get autoclean -y && \
@@ -72,7 +86,7 @@ RUN apt-get autoclean -y && \
 
 # ----
 
-EXPOSE 22 5900
+EXPOSE 3389
 
 VOLUME ["/sys/fs/cgroup"]
 WORKDIR /
@@ -80,7 +94,6 @@ WORKDIR /
 #STOPSIGNAL SIGTERM
 
 CMD ["/lib/systemd/systemd"]
-#CMD ["/usr/sbin/init"]
 
 # ----
 
