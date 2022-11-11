@@ -55,7 +55,8 @@ WORKDIR /
 
 #STOPSIGNAL SIGTERM
 
-CMD ["/usr/lib/ipsec/charon"]
+#CMD ["/usr/lib/ipsec/charon"]
+CMD ["/usr/lib/ipsec/starter", "--nofork", "--daemon", "charon"]
 
 # ----
 
