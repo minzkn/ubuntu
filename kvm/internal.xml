@@ -1,0 +1,5 @@
+<network connections='1'>
+  <name>internal</name>
+  <forward mode='bridge'/>
+  <bridge name='eth0'/>
+</network>

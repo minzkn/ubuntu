@@ -25,14 +25,17 @@ services:
       - TZ=Asia/Seoul
       - TERM=xterm
       - LC_ALL=C
-      - LANG=ko_KR.UTF-8
+      - LANG=en_US.UTF-8
       - EDITOR=vim
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - ./etc-libvirt:/etc/libvirt
+      - ./var-lib-libvirt:/var/lib/libvirt
         #      - /sys/kernel/debug:/sys/kernel/debug
         #    networks:
         #      - default
-    network_mode: bridge
+        #    network_mode: bridge
+    network_mode: host
     ports:
       - "2222:22"
       - "3389:3389"
