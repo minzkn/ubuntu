@@ -75,8 +75,9 @@ RUN apt-get install -y \
 RUN sed -i -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' "/etc/xrdp/startwm.sh"
 
 # Additional packages
-#RUN apt-get install -y putty
-#RUN apt-get install -y virt-manager ssh-askpass-gnome
+RUN apt-get install -y firefox
+RUN apt-get install -y putty
+RUN apt-get install -y virt-manager ssh-askpass-gnome
 
 # cleanup
 RUN apt-get autoclean -y && \
