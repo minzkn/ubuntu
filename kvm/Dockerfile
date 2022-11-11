@@ -57,7 +57,7 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfil
         /lib/systemd/system/systemd-update-utmp*
 RUN systemctl set-default multi-user.target
 
-RUN apt-get install -y openssh-server
+RUN apt-get install -y ssh
 
 RUN apt-get install -y \
         qemu-kvm ovmf \

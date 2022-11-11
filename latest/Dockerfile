@@ -39,15 +39,14 @@ RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
-RUN apt-get update --list-cleanup && \
-    DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils && \
-    apt-get upgrade -y
+RUN apt-get update --list-cleanup
+RUN DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils
+RUN apt-get upgrade -y
 RUN yes | unminimize
-RUN apt-get install -y \
-        locales \
-        ca-certificates && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8
+RUN LC_ALL=C apt-get install -y locales && \
+    LC_ALL=C locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
+RUN apt-get install -y ca-certificates ssl-cert
 
 # sshd setup
 RUN apt-get install -y \
