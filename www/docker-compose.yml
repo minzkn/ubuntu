@@ -10,6 +10,8 @@ services:
     image: hwport/ubuntu:www
     container_name: www-test
     hostname: www-test
+    stdin_open: true
+    tty: true
     privileged: false
     #    environment:
     #      - container=docker

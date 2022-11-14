@@ -39,10 +39,10 @@ RUN apt-get autoclean -y && \
 RUN apt-get update --list-cleanup
 RUN DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils
 RUN apt-get upgrade -y
+RUN yes | unminimize
 RUN LC_ALL=C apt-get install -y locales && \
     LC_ALL=C locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
-#RUN yes | unminimize
 RUN apt-get install -y ca-certificates ssl-cert
 RUN apt-get install -y systemd systemd-sysv
 RUN (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1) && \
@@ -74,8 +74,8 @@ WORKDIR /
 
 #STOPSIGNAL SIGTERM
 
-CMD ["/lib/systemd/systemd"]
 #CMD ["/usr/sbin/init"]
+CMD ["/lib/systemd/systemd"]
 
 # ----
 

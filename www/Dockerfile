@@ -38,25 +38,20 @@ ENV EDITER vim
 # ----
 
 # pre setup
-COPY ["entrypoint.sh", "/entrypoint.sh"]
-RUN chown root:root /entrypoint.sh && \
-    chmod u=rwx,g=r,o=r /entrypoint.sh
 RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update --list-cleanup && \
     LC_ALL=C apt-get upgrade -y
-RUN LC_ALL=C apt-get install -y \
-        locales \
-        ca-certificates \
-	ssl-cert && \
+RUN LC_ALL=C apt-get install -y locales && \
     LC_ALL=C locale-gen ko_KR.UTF-8 && \
     update-locale LANG=ko_KR.UTF-8 LANGUAGE=ko_KR:en_US
 
 # add packages install
 RUN apt-get install -y \
-	git-core \
+        ca-certificates \
+	ssl-cert \
 	apache2 \
 	libapache2-mod-security2 \
 	php php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick \
@@ -65,6 +60,7 @@ RUN apt-get install -y \
 	enscript \
 	rcs \
 	vim \
+	git-core \
 	ffmpeg
 
 # enable modules
@@ -82,7 +78,6 @@ RUN apt-get autoclean -y && \
 EXPOSE 80
 EXPOSE 443
 
-#VOLUME ["/test-share1", "/test-share2", "/test-share3"]
 #VOLUME ["/sys/fs/cgroup"]
 #VOLUME ["/run"]
 
@@ -91,14 +86,7 @@ WORKDIR /
 #STOPSIGNAL SIGTERM
 STOPSIGNAL SIGWINCH
 
-ENTRYPOINT ["/entrypoint.sh"]
-
-#CMD ["/usr/sbin/sshd", "-D"]
-#CMD ["/bin/bash"]
-#CMD ["/lib/systemd/systemd"]
-#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-#CMD ["/sbin/init"]
-#CMD ["apache2-foreground"]
+CMD ["/usr/bin/apache2-foreground"]
 
 # ----
 

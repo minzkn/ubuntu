@@ -39,7 +39,13 @@ RUN apt-get autoclean -y && \
 RUN apt-get update --list-cleanup
 RUN apt-get upgrade -y
 
-RUN apt-get install -y ca-certificates ssl-cert iproute2 iputils-ping strongswan
+RUN apt-get install -y \
+    ca-certificates \
+    ssl-cert \
+    openssl \
+    iproute2 \
+    iputils-ping \
+    strongswan
 EXPOSE 500/udp 4500/udp
 
 # cleanup

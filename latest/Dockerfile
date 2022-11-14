@@ -124,7 +124,6 @@ RUN apt-get autoclean -y && \
 
 EXPOSE 22
 
-#VOLUME ["/test-share1", "/test-share2", "/test-share3"]
 #VOLUME ["/sys/fs/cgroup"]
 #VOLUME ["/run"]
 
@@ -135,10 +134,6 @@ WORKDIR /
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["/usr/sbin/sshd", "-D"]
-#CMD ["/bin/bash"]
-#CMD ["/lib/systemd/systemd"]
-#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-#CMD ["/sbin/init"]
 
 # ----
 
