@@ -80,6 +80,7 @@ RUN apt-get install -y putty
 RUN apt-get install -y virt-manager ssh-askpass-gnome
 
 # cleanup
+RUN apt-get remove -y --purge avahi-daemon cups network-manager modemmanager wpasupplicant
 RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y && \
