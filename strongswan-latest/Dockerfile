@@ -55,7 +55,7 @@ RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" && \
   apt-get install -y $DEV_PACKAGES && \ 
   mkdir -p /strongswan-build && \
   cd /strongswan-build && \
-  wget https://download.strongswan.org/strongswan-$VERSION.tar.bz2 && \
+  wget --no-check-certificate https://download.strongswan.org/strongswan-$VERSION.tar.bz2 && \
   tar -xjf strongswan-$VERSION.tar.bz2 && \
   cd strongswan-$VERSION && \
   ./configure --prefix=/usr --sysconfdir=/etc \
@@ -66,14 +66,11 @@ RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" && \
     --enable-eap-identity --enable-eap-md5 --enable-eap-dynamic       \
     --enable-eap-tls --enable-updown --enable-vici                    \
     --enable-silent-rules  && \
-   make -j4 all && make install && \
+   make all && make install && \
    cd / && rm -R strongswan-build && \
    ln -s /usr/libexec/ipsec/charon charon && \
    apt-get remove -y --purge $DEV_PACKAGES
 EXPOSE 500/udp 4500/udp
-
-#--disable-defaults      \
-#
 
 # cleanup
 RUN apt-get autoclean -y && \
