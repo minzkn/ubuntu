@@ -63,7 +63,7 @@ RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" && \
     --enable-openssl --enable-pem --enable-x509 --enable-pubkey       \
     --enable-constraints --enable-pki --enable-socket-default         \
     --enable-kernel-netlink --enable-swanctl --enable-resolve         \
-    --enable-eap-identity --enable-eap-md5 --enable-eap-dynamic       \
+    --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-dynamic       \
     --enable-eap-tls --enable-updown --enable-vici                    \
     --enable-silent-rules  && \
    make all && make install && \
