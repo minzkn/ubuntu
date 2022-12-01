@@ -54,15 +54,24 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfil
         /lib/systemd/system/systemd-update-utmp*
 RUN systemctl set-default multi-user.target
 
+# install
 RUN apt-get install -y \
         xfce4 \
         xfce4-terminal \
+        xfce4-clipman-plugin \
+        xfce4-cpugraph-plugin \
+        xfce4-netload-plugin \
+        xfce4-screenshooter \
+        xfce4-taskmanager \
+        xfce4-xkb-plugin \
         libfontenc1 \
         libxfont2 \
         xfonts-encodings \
         xfonts-utils \
         xfonts-base \
         xfonts-75dpi \
+        xorgxrdp \
+        xprintidle \
         xrdp \
         language-pack-ko \
         fonts-nanum \
@@ -73,6 +82,7 @@ RUN apt-get install -y \
         im-config \
         zenity
 RUN sed -i -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' "/etc/xrdp/startwm.sh"
+RUN echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 
 # Additional packages
 RUN apt-get install -y firefox
@@ -80,10 +90,10 @@ RUN apt-get install -y putty
 RUN apt-get install -y virt-manager ssh-askpass-gnome
 
 # cleanup
-RUN apt-get remove -y --purge avahi-daemon cups network-manager modemmanager wpasupplicant
+RUN apt-get remove -y --purge avahi-daemon cups network-manager modemmanager wpasupplicant light-locker xscreensaver
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----
