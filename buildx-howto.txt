@@ -1,0 +1,14 @@
+
+하기 명령은 docker 의 CLI plugin 으로 buildx 를 추가하는 방법입니다. (선택사항)
+$ DOCKER_BUILDKIT=1 docker build --platform=local -o . https://github.com/docker/buildx.git
+$ mkdir -p ~/.docker/cli-plugins
+$ mv buildx ~/.docker/cli-plugins/docker-buildx
+$ docker buildx create --use                                   /* 자세한 사용법은 'docker buildx create --help' 로 확인 후 적절히 추가 옵션을 주어 사용하실 수 있습니다. */
+
+이 명령은 default builder 대신 새로운 빌더를 추가하여 사용하게 되는 명령입니다.
+$ docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+$ docker buildx create --name multiarch --driver docker-container --use
+$ docker buildx inspect --bootstrap
+
+docker buildx 로 Dockerfile 은 다음과 같이 build 및 push를 할 수 있습니다.
+$ docker buildx build --push --platform linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x --tag "<image-tag-name>" .
