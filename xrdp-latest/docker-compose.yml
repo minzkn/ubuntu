@@ -1,0 +1,40 @@
+###
+#### Copyright (C) JAEHYUK CHO
+#### All rights reserved.
+#### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
+####
+
+version: "2.1"
+services:
+  xrdp:
+    image: hwport/ubuntu:xrdp-latest
+    container_name: xrdp
+    hostname: xrdp
+    stdin_open: true
+    tty: true
+    #    privileged: true
+    cap_add:
+      - "SYS_ADMIN"
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - container=docker
+      - TZ=Asia/Seoul
+      - TERM=xterm
+      - LC_ALL=C
+      - LANG=en_US.UTF-8
+      - EDITOR=vim
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /run
+      - /run/lock
+        #    networks:
+        #      - default
+        #    network_mode: bridge
+    network_mode: bridge
+    ports:
+      - "3389:3389"
+    restart: unless-stopped
+
+# End of docker-compose.yml

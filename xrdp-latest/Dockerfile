@@ -6,11 +6,11 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 20.04 xrdp environment"
-LABEL name="hwport/ubuntu:xrdp"
+LABEL description="HWPORT Ubuntu 22.04 xrdp environment"
+LABEL name="hwport/ubuntu:xrdp-latest"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
