@@ -1,0 +1,46 @@
+###
+#### Copyright (C) JAEHYUK CHO
+#### All rights reserved.
+#### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
+####
+
+version: "2.1"
+services:
+  ubuntu-systemd:
+    image: hwport/ubuntu:22.04-systemd
+    container_name: ubuntu-systemd
+    hostname: ubuntu-systemd
+    stdin_open: true
+    tty: true
+    #    privileged: true
+    cap_add:
+      - "SYS_ADMIN"
+    #      - "SYS_RESOURCE"
+    #      - "SYS_PTRACE"
+    #      - "NET_ADMIN"
+    #      - "NET_BIND_SERVICE"
+    #      - "NET_BROADCAST"
+    #      - "NET_RAW"
+    #      - "BPF" # >= Linux Kernel v5.8
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - container=docker
+      - TZ=Asia/Seoul
+      - TERM=xterm
+      - LC_ALL=C
+      - LANG=en_US.UTF-8
+      - EDITOR=vim
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /run
+      - /run/lock
+        #    networks:
+        #      - default
+    network_mode: bridge
+    #    ports:
+    #      - "2222:22"
+    restart: unless-stopped
+
+# End of docker-compose.yml
