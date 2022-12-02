@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2019 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -33,7 +33,7 @@ ENV EDITER vim
 COPY ["entrypoint.sh", "/entrypoint.sh"]
 RUN apt autoclean -y && \
     apt clean && \
-    apt autoremove -y && \
+    apt autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* && \
     apt update --list-cleanup && \
     yes | unminimize && \
@@ -139,7 +139,7 @@ RUN apt-get install -y \
 # cleanup
 RUN apt autoclean -y && \
     apt clean && \
-    apt autoremove -y && \
+    apt autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----

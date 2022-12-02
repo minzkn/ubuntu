@@ -1,15 +1,15 @@
 #
-#   Copyright (C) 2020 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT strongswan (Ubuntu 20.04 LTS base)"
+LABEL description="HWPORT strongswan (Ubuntu 22.04 LTS base)"
 LABEL name="hwport/ubuntu:strongswan-latest"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
@@ -37,7 +37,7 @@ ENV VERSION="5.9.8"
 # pre setup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update --list-cleanup
 RUN apt-get upgrade -y
@@ -75,7 +75,7 @@ EXPOSE 500/udp 4500/udp
 # cleanup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----

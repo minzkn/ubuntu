@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2020 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -33,7 +33,7 @@ ENV EDITER vim
 COPY ["entrypoint.sh", "/entrypoint.sh"]
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* && \
     sed -i -e "s/archive\.ubuntu\.com/kr\.archive\.ubuntu\.com/g" "/etc/apt/sources.list" && \
     apt-get update --list-cleanup && \
@@ -193,7 +193,7 @@ RUN apt-get install -y vim ssh \
 # cleanup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----

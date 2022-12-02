@@ -40,7 +40,7 @@ ENV EDITER vim
 # pre setup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update --list-cleanup && \
     LC_ALL=C apt-get upgrade -y
@@ -70,7 +70,7 @@ RUN a2ensite default-ssl.conf
 # cleanup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----

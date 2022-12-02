@@ -1,16 +1,16 @@
 #
-#   Copyright (C) 2020 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 20.04 dev environment"
-LABEL name="hwport/ubuntu:20.04"
+LABEL description="HWPORT Ubuntu 22.04 dev environment"
+LABEL name="hwport/ubuntu:22.04"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
@@ -64,7 +64,6 @@ RUN apt-get install -y \
 RUN apt-get install -y \
         sudo \
         build-essential \
-        kernel-package \
         binutils \
         gcc \
         g++ \

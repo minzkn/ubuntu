@@ -1,15 +1,15 @@
 #
-#   Copyright (C) 2020 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 20.04 xrdp environment"
+LABEL description="HWPORT Ubuntu 22.04 xrdp environment"
 LABEL name="hwport/ubuntu:xrdp"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
@@ -34,7 +34,7 @@ ENV EDITER vim
 # pre setup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update --list-cleanup
 RUN DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils

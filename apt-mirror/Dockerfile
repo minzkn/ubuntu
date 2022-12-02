@@ -1,12 +1,12 @@
 #
-#   Copyright (C) 2020 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
 LABEL description="HWPORT Ubuntu apt-mirror"
@@ -37,7 +37,7 @@ RUN chown root:root /entrypoint.sh && \
     chmod u=rwx,g=r,o=r /entrypoint.sh
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update --list-cleanup
 RUN DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils
@@ -55,7 +55,7 @@ COPY crontab /etc/cron.d
 # cleanup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # ----

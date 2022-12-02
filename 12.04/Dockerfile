@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2015 HWPORT.COM
+#   Copyright (C) 2022 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -35,7 +35,7 @@ COPY init-fake.conf /etc/init/fake-container-events.conf
 
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/*
 # For old unsupported release patch
 RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
@@ -147,7 +147,7 @@ RUN apt-get install -y \
 # cleanup
 RUN apt-get autoclean -y && \
     apt-get clean && \
-    apt-get autoremove -y && \
+    apt-get autoremove -y --purge && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 #RUN apt-get install -y openjdk-7-jdk
