@@ -98,7 +98,7 @@ WORKDIR /
 #STOPSIGNAL SIGTERM
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/sbin/xrdp-sesman", "--nodaemon"]
+CMD ["/bin/bash"]
 
 # ----
 
