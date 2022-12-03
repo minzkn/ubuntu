@@ -34,6 +34,7 @@ services:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     tmpfs:
+      - /tmp
       - /run
       - /run/lock
         #    networks:
