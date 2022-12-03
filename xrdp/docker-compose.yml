@@ -12,11 +12,6 @@ services:
     hostname: xrdp
     stdin_open: true
     tty: true
-    #    privileged: true
-    cap_add:
-      - "SYS_ADMIN"
-    security_opt:
-      - seccomp:unconfined
     environment:
       - container=docker
       - TZ=Asia/Seoul
@@ -24,8 +19,8 @@ services:
       - LC_ALL=C
       - LANG=en_US.UTF-8
       - EDITOR=vim
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        #    volumes:
+        #      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     tmpfs:
       - /tmp
       - /run

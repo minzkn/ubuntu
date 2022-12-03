@@ -6,11 +6,11 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 20.04 xrdp environment"
-LABEL name="hwport/ubuntu:xrdp"
+LABEL description="HWPORT Ubuntu 22.04 xrdp environment"
+LABEL name="hwport/ubuntu:xrdp-latest"
 LABEL url="http://www.minzkn.com/"
 LABEL vendor="HWPORT"
 LABEL version="1.1"
@@ -32,6 +32,9 @@ ENV EDITER vim
 # ----
 
 # pre setup
+COPY ["entrypoint.sh", "/entrypoint.sh"]
+RUN chown root:root /entrypoint.sh && \
+    chmod u=rwx,g=r,o=r /entrypoint.sh
 RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y --purge && \
@@ -39,20 +42,11 @@ RUN apt-get autoclean -y && \
 RUN apt-get update --list-cleanup
 RUN DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils
 RUN apt-get upgrade -y
+#RUN yes | unminimize
+RUN LC_ALL=C apt-get install -y locales && \
+    LC_ALL=C locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 RUN apt-get install -y ca-certificates ssl-cert
-RUN apt-get install -y systemd systemd-sysv
-RUN (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1) && \
-    rm -f \
-        /lib/systemd/system/multi-user.target.wants/* \
-        /etc/systemd/system/*.wants/* \
-        /lib/systemd/system/local-fs.target.wants/* \
-        /lib/systemd/system/sockets.target.wants/*udev* \
-        /lib/systemd/system/sockets.target.wants/*initctl* \
-        /lib/systemd/system/basic.target.wants/* \
-        /lib/systemd/system/anaconda.target.wants/* \
-        /lib/systemd/system/plymouth* \
-        /lib/systemd/system/systemd-update-utmp*
-RUN systemctl set-default multi-user.target
 
 # install
 RUN apt-get install -y \
@@ -90,7 +84,6 @@ RUN apt-get install -y putty
 RUN apt-get install -y virt-manager ssh-askpass-gnome
 
 # cleanup
-RUN apt-get remove -y --purge avahi-daemon cups network-manager modemmanager wpasupplicant light-locker xscreensaver
 RUN apt-get autoclean -y && \
     apt-get clean && \
     apt-get autoremove -y --purge && \
@@ -100,12 +93,12 @@ RUN apt-get autoclean -y && \
 
 EXPOSE 3389
 
-VOLUME ["/sys/fs/cgroup"]
 WORKDIR /
 
 #STOPSIGNAL SIGTERM
 
-CMD ["/lib/systemd/systemd"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/sbin/xrdp-sesman", "--nodaemon"]
 
 # ----
 
