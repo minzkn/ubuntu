@@ -17,6 +17,7 @@ set -euo pipefail
 
 /usr/sbin/xrdp-sesman
 /usr/sbin/xrdp
+/usr/bin/pulseaudio --start
 
 # === END   : EDIT FOR YOU ===
 
