@@ -15,8 +15,7 @@ set -euo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
-/usr/sbin/xrdp-sesman
-/usr/sbin/xrdp
+/usr/sbin/service xrdp start
 
 # === END   : EDIT FOR YOU ===
 
