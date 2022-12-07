@@ -28,6 +28,10 @@ services:
     #      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
     #      - ./default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf:ro
     #      - ./hiddenserver.conf:/etc/modsecurity/hiddenserver.conf:ro
+    #    tmpfs:
+    #      - /tmp
+    #      - /run
+    #      - /run/lock
     #    networks:
     #      - default
     #    network_mode: host

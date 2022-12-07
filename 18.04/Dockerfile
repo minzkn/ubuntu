@@ -60,7 +60,7 @@ RUN apt autoclean -y && \
 
 # sshd setup
 RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
-    mkdir /run/sshd && \
+    mkdir -p /run/sshd && \
     cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
     echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
     echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \

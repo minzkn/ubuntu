@@ -74,7 +74,7 @@ RUN apt autoclean -y && \
 
 # sshd setup
 RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
-    mkdir /run/sshd && \
+    mkdir -p /run/sshd && \
     cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
     sed -ri "s/^PermitRootLogin\s+.*/PermitRootLogin yes/" /etc/ssh/sshd_config && \
     sed -i -e "s/^Port\s22$/Port 22\nPort 2222/g" /etc/ssh/sshd_config && \

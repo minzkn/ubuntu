@@ -29,6 +29,10 @@ services:
       - EDITOR=vim
         #    volumes:
         #      - /sys/kernel/debug:/sys/kernel/debug
+        #    tmpfs:
+        #      - /tmp
+        #      - /run
+        #      - /run/lock
         #    networks:
         #      - default
     network_mode: bridge

@@ -6,13 +6,11 @@
 
 version: "2.1"
 services:
-  smp86xx:
-    image: hwport/ubuntu:smp86xx
-    container_name: smp86xx
-    hostname: smp86xx
-    stdin_open: true
-    tty: true
-    #    privileged: true
+  mzdev-test:
+    image: hwport/ubuntu:18.04
+    container_name: mzdev-test
+    hostname: mzdev-test
+    privileged: true
     #    cap_add:
     #      - "SYS_ADMIN"
     #      - "SYS_RESOURCE"

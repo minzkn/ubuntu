@@ -21,6 +21,10 @@ services:
         #      - EDITOR=vim
     volumes:
       - ./apt-mirror-volume:/var/spool/apt-mirror
+        #    tmpfs:
+        #      - /tmp
+        #      - /run
+        #      - /run/lock
         #    networks:
         #      - default
     network_mode: bridge

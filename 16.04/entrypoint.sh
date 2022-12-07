@@ -15,6 +15,7 @@ set -euo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
+mkdir -p /run/sshd
 #/usr/sbin/sshd -D
 
 # === END   : EDIT FOR YOU ===
