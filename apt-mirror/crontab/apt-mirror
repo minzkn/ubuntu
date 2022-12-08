@@ -1,5 +1,0 @@
-# apt-mirror
-0 */12 * * *   /usr/bin/apt-mirror
-
-
-

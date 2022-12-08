@@ -35,6 +35,7 @@ services:
         #      - /tmp
         #      - /run
         #      - /run/lock
+        #      - /run/sshd
         #    networks:
         #      - default
     network_mode: bridge

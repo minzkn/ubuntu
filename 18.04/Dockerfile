@@ -6,162 +6,152 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
+# reference : https://docs.docker.com/engine/reference/builder/
+# FROM [--platform=<platform>] <image> [AS <name>]
+# FROM [--platform=<platform>] <image>[:<tag>] [AS <name>]
+# FROM [--platform=<platform>] <image>[@<digest>] [AS <name>]
+# RUN <command> (shell form, the command is run in a shell, which by default is /bin/sh -c on Linux or cmd /S /C on Windows)
+# RUN ["executable", "param1", "param2"] (exec form)
+# RUN --mount=[type=<TYPE>][,option=<value>[,option=<value>]...]
+# CMD ["executable","param1","param2"] (exec form, this is the preferred form)
+# CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+# CMD command param1 param2 (shell form)
+# LABEL <key>=<value> <key>=<value> <key>=<value> ...
+# MAINTAINER <name>
+# EXPOSE <port> [<port>/<protocol>...]
+# ENV <key>=<value> ...
+# ADD [--chown=<user>:<group>] [--checksum=<checksum>] <src>... <dest>
+# ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]
+# COPY [--chown=<user>:<group>] <src>... <dest>
+# COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
+# ENTRYPOINT ["executable", "param1", "param2"]
+# ENTRYPOINT command param1 param2
+# VOLUME ["/data"]
+# USER <user>[:<group>]
+# USER <UID>[:<GID>]
+# WORKDIR /path/to/workdir
+# ARG <name>[=<default value>]
+# ONBUILD <INSTRUCTION>
+# STOPSIGNAL signal
+# HEALTHCHECK [OPTIONS] CMD command (check container health by running a command inside the container)
+#     --interval=DURATION (default: 30s)
+#     --timeout=DURATION (default: 30s)
+#     --start-period=DURATION (default: 0s)
+#     --retries=N (default: 3)
+# HEALTHCHECK NONE (disable any healthcheck inherited from the base image)
+# SHELL ["executable", "parameters"]
+
+# ----
+
 FROM ubuntu:18.04
-MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
-LABEL description="HWPORT Ubuntu 18.04 dev environment"
-LABEL name="hwport/ubuntu:18.04"
-LABEL url="http://www.minzkn.com/"
-LABEL vendor="HWPORT"
-LABEL version="1.1"
-
+ARG HWPORT_NAMESPACE=hwport
+ARG HWPORT_IMAGE_NAME=ubuntu
+ARG HWPORT_IMAGE_TAG=18.04
+ARG HWPORT_VERSION=1.1
+ARG HWPORT_URL=https://www.minzkn.com/
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 
-ENV container docker
-#ENV DEBIAN_FRONTEND noninteractive
-ENV TERM xterm
-ENV LC_ALL C
-ENV LANG en_US.UTF-8
-ENV EDITER vim
+ENV \
+  container="docker" \
+  TERM="${TERM}" \
+  LC_ALL="${LC_ALL}" \
+  LANG="${LANG}" \
+  EDITER="${EDITER}"
 
-# ----
-
-# pre setup
-COPY ["entrypoint.sh", "/entrypoint.sh"]
-RUN apt autoclean -y && \
-    apt clean && \
-    apt autoremove -y --purge && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt update --list-cleanup && \
-    yes | unminimize && \
-    apt install -y \
-        apt-utils \
-        debconf-utils \
-        locales \
-        dbus \
-        systemd \
-        ssh \
-        ca-certificates && \
-    locale-gen en_US.UTF-8 && \
-    update-locale LANG=en_US.UTF-8 && \
-    find /etc/systemd/system \
-        /lib/systemd/system \
-        -path '*.wants/*' \
-        -not -name '*journald*' \
-        -not -name '*systemd-tmpfiles*' \
-        -not -name '*systemd-user-sessions*' \
-        -exec rm \{} \; && \
-    systemctl set-default multi-user.target && \
-    chown root:root /entrypoint.sh && \
-    chmod u=rwx,g=r,o=r /entrypoint.sh
-
-# sshd setup
-RUN sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd && \
-    mkdir -p /run/sshd && \
-    cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org && \
-    echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config && \
-    echo "GatewayPorts yes" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config && \
-    echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config && \
-    systemctl enable ssh.service
-
-# dev packages install
-RUN apt-get install -y \
-        dpkg-dev \
-        sudo \
-        build-essential \
-        kernel-package \
-        binutils \
-        gcc \
-        g++ \
-        libc-dev \
-        gdb \
-        perl \
-        make \
-        m4 \
-        autoconf \
-        automake \
-        libtool \
-        cmake \
-        scons \
-        bison \
-        gawk \
-        gettext \
-        grep \
-        sed \
-        patch \
-        linux-headers-generic \
-        vim \
-        net-tools \
-        ccache \
-        subversion \
-        git \
-        wget \
-        curl \
-        screen \
-        genromfs \
-        rsync \
-        texinfo \
-        libncurses5-dev \
-        ncurses-term \
-        openssl \
-        tar \
-        gzip \
-        bzip2 \
-        xz-utils \
-        unzip \
-        zlib1g-dev \
-        man-db \
-        cscope \
-        exuberant-ctags \
-        ftp \
-        xmlto \
-        libboost-dev \
-        python-dev \
-        nodejs \
-        libjpeg-dev \
-        libpng-dev \
-        libgif-dev \
-        libssl-dev libcurl4-openssl-dev \
-        libssh2-1-dev \
-        libsqlite3-dev \
-        freetds-dev \
-        libpq-dev \
-        libmysqlclient-dev \
-        default-jdk \
-        iproute2 \
-        whois \
-        dnsutils
-
-# cleanup
-RUN apt autoclean -y && \
-    apt clean && \
-    apt autoremove -y --purge && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# ----
-
-EXPOSE 22
-
-#VOLUME ["/test-share1", "/test-share2", "/test-share3"]
-#VOLUME ["/sys/fs/cgroup"]
-#VOLUME ["/run"]
+MAINTAINER HWPORT_MAINTAINER=JaeHyuk Cho <minzkn@minzkn.com>
+LABEL \
+  description="HWPORT ${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG} dev environment" \
+  name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
+  url="${HWPORT_URL}" \
+  vendor="${HWPORT_NAMESPACE}" \
+  version="${HWPORT_VERSION}"
 
 WORKDIR /
+RUN apt-get autoclean -y \
+  && apt-get clean -y \
+  && apt-get autoremove -y --purge \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get update --list-cleanup \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils \
+  && yes | unminimize \
+  && apt-get install -y ca-certificates openssl ssl-cert locales \
+  && locale-gen en_US.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
-#STOPSIGNAL SIGTERM
+RUN apt-get install -y ssh sed \
+  && mkdir -p /run/sshd \
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
+  && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
+  && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
+  && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
+  && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
 
-ENTRYPOINT ["/entrypoint.sh"]
+RUN apt-get install -y \
+  sudo \
+  build-essential \
+  binutils \
+  gcc \
+  g++ \
+  libc-dev \
+  gdb \
+  perl \
+  make \
+  pkg-config \
+  m4 autoconf automake libtool \
+  cmake \
+  bison \
+  flex \
+  gawk \
+  grep \
+  gettext \
+  patch \
+  linux-headers-generic \
+  clang llvm \
+  libelf-dev \
+  libpcap-dev \
+  dwarves \
+  linux-tools-common \
+  linux-tools-generic \
+  vim \
+  net-tools \
+  ccache \
+  git subversion \
+  wget curl \
+  screen \
+  genromfs \
+  rsync \
+  texinfo \
+  libncurses-dev ncurses-term \
+  openssl \
+  tar gzip bzip2 xz-utils unzip zlib1g-dev \
+  man-db \
+  cscope \
+  exuberant-ctags \
+  ftp \
+  xmlto \
+  libboost-dev \
+  python3-dev \
+  libssl-dev libcurl4-openssl-dev \
+  libssh-dev \
+  iproute2 \
+  whois \
+  dnsutils \
+  inetutils-ping
 
+RUN apt-get autoclean -y \
+  && apt-get clean -y \
+  && apt-get autoremove -y --purge \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 22/tcp
+STOPSIGNAL SIGTERM
+HEALTHCHECK NONE
 CMD ["/usr/sbin/sshd", "-D"]
-#CMD ["/bin/bash"]
-#CMD ["/lib/systemd/systemd"]
-#CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
-#CMD ["/sbin/init"]
-
-# ----
 
 # End of Dockerfile

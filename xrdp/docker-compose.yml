@@ -21,10 +21,10 @@ services:
       - EDITOR=vim
         #    volumes:
         #      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    tmpfs:
-      - /tmp
-      - /run
-      - /run/lock
+        #    tmpfs:
+        #      - /tmp
+        #      - /run
+        #      - /run/lock
         #    networks:
         #      - default
         #    network_mode: bridge

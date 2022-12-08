@@ -33,8 +33,9 @@ services:
         #      - /sys/kernel/debug:/sys/kernel/debug
         #    tmpfs:
         #      - /tmp
-        #      - /var/run
-        #      - /var/run/lock
+        #      - /run
+        #      - /run/lock
+        #      - /run/sshd
         #    networks:
         #      - default
     network_mode: bridge

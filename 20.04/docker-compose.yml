@@ -8,12 +8,11 @@ version: "2.1"
 services:
   mzdev-test:
     image: hwport/ubuntu:20.04
-    #    image: hwport/ubuntu:latest
     container_name: mzdev-test
     hostname: mzdev-test
     stdin_open: true
     tty: true
-    privileged: true
+    #    privileged: true
     #    cap_add:
     #      - "SYS_ADMIN"
     #      - "SYS_RESOURCE"
@@ -30,12 +29,13 @@ services:
       - LC_ALL=C
       - LANG=ko_KR.UTF-8
       - EDITOR=vim
-    volumes:
-      - /sys/kernel/debug:/sys/kernel/debug
+        #    volumes:
+        #      - /sys/kernel/debug:/sys/kernel/debug
         #    tmpfs:
         #      - /tmp
         #      - /run
         #      - /run/lock
+        #      - /run/sshd
         #    networks:
         #      - default
     network_mode: bridge

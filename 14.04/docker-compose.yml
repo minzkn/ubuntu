@@ -10,7 +10,9 @@ services:
     image: hwport/ubuntu:14.04
     container_name: mzdev-test
     hostname: mzdev-test
-    privileged: true
+    stdin_open: true
+    tty: true
+    #    privileged: true
     #    cap_add:
     #      - "SYS_ADMIN"
     #      - "SYS_RESOURCE"
@@ -33,6 +35,7 @@ services:
         #      - /tmp
         #      - /run
         #      - /run/lock
+        #      - /run/sshd
         #    networks:
         #      - default
     network_mode: bridge
