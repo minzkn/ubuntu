@@ -1,0 +1,63 @@
+###
+#### Copyright (C) JAEHYUK CHO
+#### All rights reserved.
+#### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
+####
+
+version: "2.1"
+services:
+  cron:
+    image: hwport/ubuntu:cron
+    container_name: cron
+    hostname: cron
+    stdin_open: true
+    tty: true
+    #    privileged: true
+    #    cap_add:
+    #      - "SYS_ADMIN"
+    #      - "SYS_RESOURCE"
+    #      - "SYS_PTRACE"
+    #      - "NET_ADMIN"
+    #      - "NET_BIND_SERVICE"
+    #      - "NET_BROADCAST"
+    #      - "NET_RAW"
+    #      - "BPF" # >= Linux Kernel v5.8
+    environment:
+      #      - container=docker
+      - TZ=Asia/Seoul
+        #      - TERM=xterm
+        #      - LC_ALL=C
+        #      - LANG=ko_KR.UTF-8
+        #      - EDITOR=vim
+        #    volumes:
+        #      - /sys/kernel/debug:/sys/kernel/debug
+        #      - ./crontabs:/var/spool/cron/crontabs
+        #    tmpfs:
+        #      - /tmp
+        #      - /run
+        #      - /run/lock
+        #    networks:
+        #      - default
+    network_mode: bridge
+    ports:
+      - "2222:22"
+    restart: unless-stopped
+    #networks:
+    #    default:
+    #      external:
+    #        name: bridge
+    #networks:
+    #    default:
+    #      driver: bridge
+    #      enable_ipv6: true
+    #      driver_opts:
+    #        com.docker.network.enable_ipv6: "false" 
+    #      ipam:
+    #        driver: default
+    #        config:
+    #          - subnet: 172.21.251.0/24
+    #            gateway: 172.21.251.1
+    #          - subnet: fec0:172:21:251::/64
+    #            #            gateway: fec0:172:21:251::1
+
+# End of docker-compose.yml
