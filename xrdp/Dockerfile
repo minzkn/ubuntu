@@ -47,6 +47,7 @@ RUN apt-get autoclean -y \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
 RUN apt-get install -y \
+  sudo \
   xfce4 \
   xfce4-terminal \
   xfce4-clipman-plugin \
