@@ -42,6 +42,7 @@ RUN apt-get autoclean -y \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils \
+  && yes | unminimize \
   && apt-get install -y ca-certificates openssl ssl-cert locales \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
@@ -77,6 +78,7 @@ RUN apt-get install -y \
   virt-manager \
   libreoffice \
   librecad \
+  gimp \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
