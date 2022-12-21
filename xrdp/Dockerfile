@@ -79,6 +79,7 @@ RUN apt-get install -y \
   libreoffice \
   librecad \
   gimp \
+  vlc \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
