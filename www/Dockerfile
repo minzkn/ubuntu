@@ -6,9 +6,7 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-#FROM ubuntu/apache2:latest
-#FROM ubuntu/apache2:2.4-22.04_beta
-FROM ubuntu/apache2:2.4-20.04_beta
+FROM ubuntu:20.04
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
@@ -36,6 +34,7 @@ LABEL \
   version="${HWPORT_VERSION}"
 
 WORKDIR /
+COPY --chown=root:root ["./apache2-foreground", "/usr/bin/apache2-foreground"]
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
@@ -53,11 +52,13 @@ RUN apt-get install -y \
   php php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick \
   imagemagick \
   zip \
+  p7zip \
   enscript \
   rcs \
   vim \
   git-core \
   ffmpeg \
+  libsubtitles-perl \
   && a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel cgi \
   && a2ensite default-ssl.conf
 
