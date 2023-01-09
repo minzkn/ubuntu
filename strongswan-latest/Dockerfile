@@ -48,7 +48,7 @@ RUN apt-get install -y \
   iputils-ping \
   libgmp10
 
-RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.8 \
+RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.9 \
   && apt-get install -y $DEV_PACKAGES \ 
   && mkdir -p /strongswan-build \
   && cd /strongswan-build \
