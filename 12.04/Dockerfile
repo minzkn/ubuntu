@@ -103,7 +103,7 @@ RUN apt-get install -y \
   perl \
   make \
   pkg-config \
-  m4 autoconf automake libtool \
+  m4 autoconf automake autopoint libtool \
   cmake \
   bison \
   flex \
@@ -117,6 +117,7 @@ RUN apt-get install -y \
   libpcap-dev \
   dwarves \
   linux-tools-common \
+  gperf \
   vim \
   net-tools \
   ccache \

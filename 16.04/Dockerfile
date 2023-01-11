@@ -102,7 +102,7 @@ RUN apt-get install -y \
   perl \
   make \
   pkg-config \
-  m4 autoconf automake libtool \
+  m4 autoconf automake autopoint libtool \
   cmake \
   bison \
   flex \
@@ -117,6 +117,7 @@ RUN apt-get install -y \
   dwarves \
   linux-tools-common \
   linux-tools-generic \
+  gperf \
   vim \
   net-tools \
   ccache \
