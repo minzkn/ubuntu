@@ -57,6 +57,7 @@ RUN apt-get install -y \
   rcs \
   vim \
   git-core \
+  iputils-ping \
   ffmpeg \
   libsubtitles-perl \
   && a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel cgi \
