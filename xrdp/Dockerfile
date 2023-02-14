@@ -75,6 +75,7 @@ RUN apt-get install -y \
   im-config \
   zenity \
   ssh-askpass-gnome \
+  putty \
   virt-manager \
   libreoffice \
   librecad \
