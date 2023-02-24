@@ -47,9 +47,14 @@ RUN apt-get autoclean -y \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
+# fix for mozilla-firefox without snap
 RUN add-apt-repository -y ppa:mozillateam/ppa \
-  && echo -e 'Package: *\nPin: release o=LP-PPA-mozillateam\nPin-Priority: 1001' | tee /etc/apt/preferences.d/mozilla-firefox \
-  && apt-get install -y \
+  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+
+RUN apt-get install -y \
   sudo \
   xfce4 \
   xfce4-terminal \
