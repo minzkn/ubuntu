@@ -47,12 +47,13 @@ RUN apt-get autoclean -y \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
-# fix for mozilla-firefox without snap
+# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
 RUN add-apt-repository -y ppa:mozillateam/ppa \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && apt-get update --list-cleanup
 
 RUN apt-get install -y \
   sudo \
@@ -83,12 +84,12 @@ RUN apt-get install -y \
   zenity \
   ssh-askpass-gnome \
   putty \
-  firefox \
   virt-manager \
   libreoffice \
   librecad \
   gimp \
   vlc \
+  firefox \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \

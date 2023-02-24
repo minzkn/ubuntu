@@ -40,7 +40,7 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common \
   && apt-get install -y ca-certificates openssl ssl-cert
 
 RUN apt-get install -y \
@@ -63,7 +63,7 @@ RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.9 \
     --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-dynamic       \
     --enable-eap-tls --enable-updown --enable-vici                    \
     --enable-silent-rules \
-   && make all && make install \
+   && make -j4 all && make install \
    && cd / && rm -R strongswan-build \
    && ln -s /usr/libexec/ipsec/charon charon \
    && apt-get remove -y --purge $DEV_PACKAGES
