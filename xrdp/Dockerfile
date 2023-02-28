@@ -55,7 +55,7 @@ RUN add-apt-repository -y ppa:mozillateam/ppa \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
 
 # additional repository setup : for android-studio
-RUN add-apt-repository ppa:maarten-fonville/android-studio
+RUN add-apt-repository -y ppa:maarten-fonville/android-studio
 
 RUN apt-get update --list-cleanup \
   && apt-get install -y \
