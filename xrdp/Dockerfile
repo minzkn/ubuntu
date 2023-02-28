@@ -53,9 +53,12 @@ RUN add-apt-repository -y ppa:mozillateam/ppa \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && apt-get update --list-cleanup
 
-RUN apt-get install -y \
+# additional repository setup : for android-studio
+RUN add-apt-repository ppa:maarten-fonville/android-studio
+
+RUN apt-get update --list-cleanup \
+  && apt-get install -y \
   sudo \
   xfce4 \
   xfce4-terminal \
@@ -90,6 +93,7 @@ RUN apt-get install -y \
   gimp \
   vlc \
   firefox \
+  android-studio \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
