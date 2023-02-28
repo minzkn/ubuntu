@@ -52,7 +52,7 @@ RUN add-apt-repository -y ppa:mozillateam/ppa \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
 
 # additional repository setup : for android-studio
 RUN add-apt-repository -y ppa:maarten-fonville/android-studio
