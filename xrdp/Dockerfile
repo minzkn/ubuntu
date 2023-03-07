@@ -41,9 +41,9 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https wget ca-certificates gnupg2 ubuntu-keyring \
   && yes | unminimize \
-  && apt-get install -y ca-certificates openssl ssl-cert locales \
+  && apt-get install -y ca-certificates openssl ssl-cert locales wget \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
@@ -82,6 +82,7 @@ RUN apt-get update --list-cleanup \
   fonts-nanum \
   fonts-nanum-coding \
   fonts-nanum-extra \
+  fonts-naver-d2coding \
   ibus \
   ibus-hangul \
   im-config \
@@ -92,6 +93,7 @@ RUN apt-get update --list-cleanup \
   libreoffice \
   librecad \
   gimp \
+  ffmpeg \
   vlc \
   firefox \
   && sed -i \
