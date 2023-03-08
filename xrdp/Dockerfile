@@ -41,9 +41,9 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https wget ca-certificates gnupg2 ubuntu-keyring \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
   && yes | unminimize \
-  && apt-get install -y ca-certificates openssl ssl-cert locales wget \
+  && apt-get install -y ca-certificates openssl ssl-cert locales wget curl \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
@@ -60,7 +60,11 @@ RUN add-apt-repository -y ppa:maarten-fonville/android-studio
 RUN apt-get update --list-cleanup \
   && apt-get install -y \
   sudo \
+  tar gzip bzip2 xz-utils unzip zlib1g-dev \
+  iproute2 \
+  inetutils-ping \
   vim \
+  build-essential dpkg-dev libpulse-dev git autoconf libtool \
   xfce4 \
   xfce4-terminal \
   xfce4-clipman-plugin \
@@ -69,6 +73,7 @@ RUN apt-get update --list-cleanup \
   xfce4-screenshooter \
   xfce4-taskmanager \
   xfce4-xkb-plugin \
+  xfce4-goodies \
   libfontenc1 \
   libxfont2 \
   xfonts-encodings \
@@ -87,6 +92,7 @@ RUN apt-get update --list-cleanup \
   ibus-hangul \
   im-config \
   zenity \
+  gvfs-backends smbclient \
   ssh-askpass-gnome \
   putty \
   virt-manager \
