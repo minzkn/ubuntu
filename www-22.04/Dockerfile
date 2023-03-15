@@ -42,7 +42,7 @@ RUN apt-get autoclean -y \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common \
-  && apt-get install -y ca-certificates openssl ssl-cert locales \
+  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 

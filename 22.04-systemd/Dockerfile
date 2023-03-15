@@ -43,7 +43,7 @@ RUN apt-get autoclean -y \
   && LC_ALL=C apt-get install -y locales \
   && LC_ALL=C locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
-  && apt-get install -y ca-certificates ssl-cert systemd systemd-sysv \
+  && apt-get install -y tzdata ca-certificates ssl-cert systemd systemd-sysv \
   && (cd /lib/systemd/system/sysinit.target.wants/ && ls | grep -v systemd-tmpfiles-setup | xargs rm -f $1) \
   && rm -f \
     /lib/systemd/system/multi-user.target.wants/* \

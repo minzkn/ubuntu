@@ -42,7 +42,7 @@ RUN apt-get autoclean -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 
 RUN apt-get install -y \
-  vim cron
+  tzdata vim cron
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \
