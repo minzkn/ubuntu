@@ -71,29 +71,35 @@ LABEL \
   version="${HWPORT_VERSION}"
 
 WORKDIR /
+COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
+COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
   && yes | unminimize \
-  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
+  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales wget curl \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
 
-RUN apt-get install -y ssh sed \
-  && mkdir -p /run/sshd \
-  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
-  && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
-  && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
-  && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
+# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
+RUN add-apt-repository -y ppa:mozillateam/ppa \
+  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
 
-RUN apt-get install -y \
+# additional repository setup : for android-studio (need 'sudo apt update && sudo apt install android-studio')
+RUN add-apt-repository -y ppa:maarten-fonville/android-studio
+
+RUN apt-get update --list-cleanup \
+  && apt-get install -y \
   sudo \
+  ssh \
+  sed \
   build-essential \
   binutils \
   gcc \
@@ -123,7 +129,6 @@ RUN apt-get install -y \
   net-tools \
   ccache \
   git subversion \
-  wget curl \
   screen \
   genromfs \
   rsync \
@@ -143,16 +148,72 @@ RUN apt-get install -y \
   iproute2 \
   whois \
   dnsutils \
-  inetutils-ping
+  inetutils-ping \
+  dpkg-dev libpulse-dev \
+  cron \
+  xfce4 \
+  xfce4-terminal \
+  xfce4-clipman-plugin \
+  xfce4-cpugraph-plugin \
+  xfce4-netload-plugin \
+  xfce4-screenshooter \
+  xfce4-taskmanager \
+  xfce4-xkb-plugin \
+  xfce4-goodies \
+  libfontenc1 \
+  libxfont2 \
+  xfonts-encodings \
+  xfonts-utils \
+  xfonts-base \
+  xfonts-75dpi \
+  xorgxrdp \
+  xprintidle \
+  xrdp \
+  language-pack-ko \
+  fonts-nanum \
+  fonts-nanum-coding \
+  fonts-nanum-extra \
+  fonts-naver-d2coding \
+  ibus \
+  ibus-hangul \
+  im-config \
+  zenity \
+  gvfs-backends smbclient \
+  ssh-askpass-gnome \
+  putty \
+  virt-manager \
+  libreoffice \
+  librecad \
+  gimp \
+  ffmpeg \
+  vlc \
+  firefox \
+  && mkdir -p /run/sshd \
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
+  && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
+  && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
+  && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
+  && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
+  && sed -i \
+    -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
+    "/etc/xrdp/startwm.sh" \
+  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
+
+# pulseaudio module : for Audio XDRP redirection module
+RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
+  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
+  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 22/tcp
+EXPOSE 22/tcp 3389/tcp
 STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/sbin/sshd", "-D"]
 
 # End of Dockerfile
