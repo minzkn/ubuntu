@@ -31,6 +31,7 @@ services:
       - LANG=ko_KR.UTF-8
       - EDITOR=vim
       - XRDP_DESKTOP=yes
+      - SHELLINABOX=yes
         #    volumes:
         #      - /sys/kernel/debug:/sys/kernel/debug
         #    tmpfs:
@@ -43,6 +44,7 @@ services:
     ports:
       - "2222:22"
       - "3389:3389"
+      - "4200:4200"
     restart: unless-stopped
     #networks:
     #    default:

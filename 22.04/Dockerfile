@@ -139,6 +139,7 @@ RUN apt-get update --list-cleanup \
   man-db \
   cscope \
   exuberant-ctags \
+  shellinabox \
   ftp \
   xmlto \
   libboost-dev \
@@ -210,7 +211,7 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 22/tcp 3389/tcp
+EXPOSE 22/tcp 3389/tcp 4200/tcp
 STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 ENTRYPOINT ["/entrypoint.sh"]

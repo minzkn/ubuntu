@@ -22,6 +22,11 @@ then
 /usr/sbin/service xrdp start
 fi
 
+if [ "${SHELLINABOX}" == "yes" ]
+then
+/usr/sbin/service shellinabox start
+fi
+
 # === END   : EDIT FOR YOU ===
 
 exec "$@"
