@@ -8,7 +8,8 @@
 #     JaeHyuk Cho <mailto:minzkn@minzkn.com>
 #
 
-set -euo pipefail
+#set -euo pipefail
+set -eo pipefail
 
 #HWPORT_USER_ID=$(id -u)
 #HWPORT_GROUP_ID=$(id -g)
