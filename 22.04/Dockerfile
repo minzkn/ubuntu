@@ -124,6 +124,7 @@ RUN apt-get update --list-cleanup \
   dwarves \
   linux-tools-common \
   linux-tools-generic \
+  device-tree-compiler \
   gperf \
   vim \
   net-tools \
