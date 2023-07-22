@@ -126,6 +126,7 @@ RUN apt-get update --list-cleanup \
   grep \
   gettext \
   patch patchelf \
+  bc \
   linux-headers-generic \
   clang llvm \
   libelf-dev \
