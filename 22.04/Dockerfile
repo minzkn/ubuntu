@@ -80,6 +80,8 @@ RUN apt-get autoclean -y \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
+  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
+  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && yes | unminimize \
   && apt-get install -y tzdata ca-certificates openssl ssl-cert locales wget curl \
   && locale-gen en_US.UTF-8 \
@@ -100,23 +102,30 @@ RUN apt-get update --list-cleanup \
   sudo \
   ssh \
   sed \
+  bash \
+  file \
+  time \
+  aria2 \
+  minicom \
   build-essential \
   binutils \
   gcc \
   g++ \
   libc-dev \
+  musl-dev \
   gdb \
   perl \
   make \
   pkg-config \
-  m4 autoconf automake autopoint libtool \
+  mtools m4 autoconf autotools-dev automake autopoint libtool libtool-bin intltool \
   cmake \
+  live-build \
   bison \
   flex \
   gawk \
   grep \
   gettext \
-  patch \
+  patch patchelf \
   linux-headers-generic \
   clang llvm \
   libelf-dev \
@@ -126,25 +135,27 @@ RUN apt-get update --list-cleanup \
   linux-tools-generic \
   device-tree-compiler \
   gperf \
+  strace \
   vim \
-  net-tools \
+  net-tools bridge-utils \
   ccache \
-  git subversion \
+  git subversion cvs \
   screen \
   genromfs \
   rsync \
   texinfo \
   libncurses-dev ncurses-term \
   openssl \
-  tar gzip bzip2 xz-utils unzip zlib1g-dev \
+  tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
   man-db \
   cscope \
   exuberant-ctags \
   shellinabox \
   ftp \
   xmlto \
+  help2man \
   libboost-dev \
-  python3-dev \
+  python2-dev python2 python3-dev python-dev-is-python3 \
   libssl-dev libcurl4-openssl-dev \
   libssh-dev \
   iproute2 \
@@ -152,7 +163,16 @@ RUN apt-get update --list-cleanup \
   dnsutils \
   inetutils-ping \
   dpkg-dev libpulse-dev \
+  libmnl-dev \
   cron \
+  kmod \
+  parted \
+  udev \
+  u-boot-tools \
+  mediainfo \
+  exfatprogs \
+  expect expect-dev \
+  android-sdk-libsparse-utils \
   xfce4 \
   xfce4-terminal \
   xfce4-clipman-plugin \
@@ -206,6 +226,13 @@ RUN apt-get update --list-cleanup \
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
+
+# install friendlyelec-toolchain
+#RUN git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1 fa-toolchain \
+#  && (cat fa-toolchain/gcc-x64/toolchain-4.9.3-armhf.tar.gz* | tar xz -C /) \
+#  && (cat fa-toolchain/gcc-x64/toolchain-6.4-aarch64.tar.gz* | tar xz -C /) \
+#  && (tar xf fa-toolchain/gcc-x64/toolchain-11.3-aarch64.tar.xz -C /) \
+#  && rm -rf fa-toolchain
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \
