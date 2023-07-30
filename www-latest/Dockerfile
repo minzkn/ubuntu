@@ -49,7 +49,7 @@ RUN apt-get autoclean -y \
 RUN apt-get install -y \
   apache2 \
   libapache2-mod-security2 \
-  php php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-mysql \
+  php php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
   imagemagick \
   zip \
   p7zip \
