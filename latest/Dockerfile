@@ -159,6 +159,7 @@ RUN apt-get update --list-cleanup \
   python2-dev python2 python3-dev python-dev-is-python3 \
   libssl-dev libcurl4-openssl-dev \
   libssh-dev \
+  sshfs \
   iproute2 \
   whois \
   dnsutils \
