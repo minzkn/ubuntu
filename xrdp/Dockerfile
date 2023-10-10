@@ -69,6 +69,7 @@ RUN apt-get update --list-cleanup \
   vim \
   build-essential dpkg-dev libpulse-dev git autoconf libtool \
   cron \
+  logrotate \
   xfce4 \
   xfce4-terminal \
   xfce4-clipman-plugin \

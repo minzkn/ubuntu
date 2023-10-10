@@ -144,7 +144,9 @@ RUN apt-get install -y \
   iproute2 \
   whois \
   dnsutils \
-  inetutils-ping
+  inetutils-ping \
+  cron \
+  logrotate
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \

@@ -166,6 +166,7 @@ RUN apt-get update --list-cleanup \
   dpkg-dev libpulse-dev \
   libmnl-dev \
   cron \
+  logrotate \
   kmod \
   parted \
   udev \
