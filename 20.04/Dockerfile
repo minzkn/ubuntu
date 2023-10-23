@@ -142,6 +142,7 @@ RUN apt-get install -y \
   libssl-dev libcurl4-openssl-dev \
   libssh-dev \
   iproute2 \
+  nmap \
   whois \
   dnsutils \
   inetutils-ping \

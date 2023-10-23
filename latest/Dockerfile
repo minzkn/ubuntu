@@ -161,6 +161,7 @@ RUN apt-get update --list-cleanup \
   libssh-dev \
   sshfs \
   iproute2 \
+  nmap \
   whois \
   dnsutils \
   inetutils-ping \
