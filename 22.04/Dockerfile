@@ -206,6 +206,7 @@ RUN apt-get update --list-cleanup \
   gvfs-backends smbclient \
   ssh-askpass-gnome \
   putty \
+  remmina \
   virt-manager \
   libreoffice \
   librecad \
