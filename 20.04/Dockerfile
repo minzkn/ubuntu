@@ -113,6 +113,7 @@ RUN apt-get install -y \
   patch \
   linux-headers-generic \
   clang llvm \
+  libreadline-dev \
   libelf-dev \
   libpcap-dev \
   dwarves \

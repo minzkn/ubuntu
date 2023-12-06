@@ -129,6 +129,7 @@ RUN apt-get update --list-cleanup \
   bc \
   linux-headers-generic \
   clang llvm \
+  libreadline-dev \
   libelf-dev \
   libpcap-dev \
   dwarves \
