@@ -16,6 +16,8 @@ set -eo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
+/usr/sbin/service cron start
+
 if [[ "${XRDP_DESKTOP}" = "yes" ]]
 then
 [ -f "/var/run/xrdp/xrdp-sesman.pid" ] && rm -f "/var/run/xrdp/xrdp-sesman.pid"

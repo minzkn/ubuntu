@@ -16,6 +16,8 @@ set -eo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
+/usr/sbin/service cron start
+
 [ -f "/var/run/xrdp/xrdp-sesman.pid" ] && rm -f "/var/run/xrdp/xrdp-sesman.pid"
 [ -f "/var/run/xrdp/xrdp.pid" ] && rm -f "/var/run/xrdp/xrdp.pid"
 
