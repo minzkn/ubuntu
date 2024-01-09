@@ -148,7 +148,8 @@ RUN apt-get install -y \
   dnsutils \
   inetutils-ping \
   cron \
-  logrotate
+  logrotate \
+  parallel
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \

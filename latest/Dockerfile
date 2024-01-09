@@ -177,6 +177,7 @@ RUN apt-get update --list-cleanup \
   mediainfo \
   exfatprogs \
   expect expect-dev \
+  parallel \
   android-sdk-libsparse-utils \
   xfce4 \
   xfce4-terminal \
