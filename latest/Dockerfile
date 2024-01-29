@@ -157,7 +157,7 @@ RUN apt-get update --list-cleanup \
   xmlto \
   help2man \
   libboost-dev \
-  python2-dev python2 python3-dev python-dev-is-python3 \
+  python2-dev python2 python3-dev python-dev-is-python3 python3-pip python3-pyelftools \
   libssl-dev libcurl4-openssl-dev \
   libssh-dev \
   sshfs \
