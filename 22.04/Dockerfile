@@ -167,6 +167,7 @@ RUN apt-get update --list-cleanup \
   inetutils-ping \
   dpkg-dev libpulse-dev \
   libmnl-dev \
+  libnuma-dev \
   cron \
   logrotate \
   kmod \
