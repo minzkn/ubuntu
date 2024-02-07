@@ -119,6 +119,8 @@ RUN apt-get update --list-cleanup \
   pkg-config \
   mtools m4 autoconf autotools-dev automake autopoint libtool libtool-bin intltool \
   cmake \
+  meson \
+  ninja-build \
   live-build \
   bison \
   flex \
@@ -146,6 +148,7 @@ RUN apt-get update --list-cleanup \
   genromfs \
   rsync \
   texinfo \
+  uuid-dev \
   libncurses-dev ncurses-term \
   openssl \
   tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
@@ -157,28 +160,41 @@ RUN apt-get update --list-cleanup \
   xmlto \
   help2man \
   libboost-dev \
-  python2-dev python2 python3-dev python-dev-is-python3 python3-pip python3-pyelftools \
+  python2-dev python2 python3-dev python-dev-is-python3 python3-pip python3-pycryptodome python3-pyelftools python3-sphinx python3-sphinx-rtd-theme \
   libssl-dev libcurl4-openssl-dev \
   libssh-dev \
+  sshfs \
   iproute2 \
   nmap \
   whois \
   dnsutils \
   inetutils-ping \
   dpkg-dev libpulse-dev \
+  libconfig-dev \
+  libmbedtls-dev \
   libmnl-dev \
   libnuma-dev \
   libnl-genl-3-dev \
+  libnl-3-dev \
+  liblzma-dev \
+  libarchive-zip-perl \
+  libfdt-dev \
+  libpci-dev \
+  libyaml-dev \
   cron \
   logrotate \
   kmod \
   parted \
   udev \
   u-boot-tools \
+  dosfstools \
   mediainfo \
   exfatprogs \
   expect expect-dev \
   parallel \
+  acpica-tools \
+  doxygen \
+  asciidoc \
   android-sdk-libsparse-utils \
   xfce4 \
   xfce4-terminal \
