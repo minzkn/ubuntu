@@ -233,6 +233,7 @@ RUN apt-get update --list-cleanup \
   gimp \
   ffmpeg \
   vlc \
+  iverilog gtkwave \
   firefox \
   && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
