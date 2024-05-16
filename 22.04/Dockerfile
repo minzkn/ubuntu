@@ -181,6 +181,7 @@ RUN apt-get update --list-cleanup \
   libfdt-dev \
   libpci-dev \
   libyaml-dev \
+  libgmp-dev \
   cron \
   logrotate \
   kmod \
