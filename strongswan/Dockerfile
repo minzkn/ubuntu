@@ -22,11 +22,10 @@ ENV \
   container="docker" \
   TERM="${TERM}" \
   LC_ALL="${LC_ALL}" \
-  LANG="${LANG}" \
-  EDITER="${EDITER}"
+  LANG="${LANG}"
 
-MAINTAINER HWPORT_MAINTAINER=JaeHyuk Cho <minzkn@minzkn.com>
 LABEL \
+  maintainer="JaeHyuk Cho <minzkn@minzkn.com>" \
   description="HWPORT ${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG} dev environment" \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \

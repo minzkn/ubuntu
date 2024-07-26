@@ -17,7 +17,6 @@
 # CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
 # CMD command param1 param2 (shell form)
 # LABEL <key>=<value> <key>=<value> <key>=<value> ...
-# MAINTAINER <name>
 # EXPOSE <port> [<port>/<protocol>...]
 # ENV <key>=<value> ...
 # ADD [--chown=<user>:<group>] [--checksum=<checksum>] <src>... <dest>
@@ -54,16 +53,17 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
+ARG EDITOR=vim
 
 ENV \
   container="docker" \
   TERM="${TERM}" \
   LC_ALL="${LC_ALL}" \
   LANG="${LANG}" \
-  EDITER="${EDITER}"
+  EDITOR="${EDITOR}"
 
-MAINTAINER HWPORT_MAINTAINER=JaeHyuk Cho <minzkn@minzkn.com>
 LABEL \
+  maintainer="JaeHyuk Cho <minzkn@minzkn.com>" \
   description="HWPORT ${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG} dev environment" \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \

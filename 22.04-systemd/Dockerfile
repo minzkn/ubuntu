@@ -7,8 +7,8 @@
 #
 
 FROM ubuntu:22.04
-MAINTAINER JaeHyuk Cho <minzkn@minzkn.com>
 
+LABEL maintainer="JaeHyuk Cho <minzkn@minzkn.com>"
 LABEL description="HWPORT Ubuntu 22.04 systemd environment"
 LABEL name="hwport/ubuntu:22.04-systemd"
 LABEL url="http://www.minzkn.com/"
@@ -20,6 +20,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
+ARG EDITOR=vim
 
 # environment for run
 ENV container docker
@@ -27,7 +28,7 @@ ENV container docker
 ENV TERM xterm
 ENV LC_ALL C
 ENV LANG en_US.UTF-8
-ENV EDITER vim
+ENV EDITOR vim
 
 # ----
 
