@@ -57,6 +57,7 @@ RUN apt-get autoclean -y \
   parallel \
   ssh \
   screen \
+  fdisk \
   sed \
   build-essential \
   git \
