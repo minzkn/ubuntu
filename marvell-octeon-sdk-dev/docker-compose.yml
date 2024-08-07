@@ -7,8 +7,7 @@
 version: "2.1"
 services:
   marvell-octeon-sdk-dev:
-    image: hwport/ubuntu:22.04
-    #    image: hwport/ubuntu:latest
+    image: hwport/ubuntu:marvell-octeon-sdk-dev
     container_name: marvell-octeon-sdk-dev
     hostname: marvell-octeon-sdk-dev
     stdin_open: true
