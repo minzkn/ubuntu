@@ -1,12 +1,12 @@
 #
-#   Copyright (C) 2022 HWPORT.COM
+#   Copyright (C) 2024 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
