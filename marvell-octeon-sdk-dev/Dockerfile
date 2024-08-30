@@ -96,6 +96,7 @@ RUN apt-get autoclean -y \
   python3-sphinx-rtd-theme \
   meson \
   ninja-build \
+  doxygen \
   && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
   && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
