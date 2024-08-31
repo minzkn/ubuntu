@@ -13,6 +13,7 @@ SUBDIRS +=18.04#
 SUBDIRS +=20.04#
 SUBDIRS +=22.04#
 #SUBDIRS +=22.04-systemd#
+SUBDIRS +=24.04#
 SUBDIRS +=latest#
 SUBDIRS +=xrdp#
 SUBDIRS +=cron#
@@ -21,6 +22,7 @@ SUBDIRS +=strongswan-latest#
 SUBDIRS +=www#
 SUBDIRS +=www-20.04#
 SUBDIRS +=www-22.04#
+SUBDIRS +=www-24.04#
 SUBDIRS +=www-latest#
 
 .PHONY: all clean buildx
