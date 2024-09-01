@@ -147,7 +147,6 @@ RUN apt-get update --list-cleanup \
   screen \
   genromfs \
   rsync \
-  texinfo \
   uuid-dev \
   libncurses-dev ncurses-term \
   openssl \
