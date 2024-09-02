@@ -8,7 +8,7 @@
 
 # ----
 
-FROM ubuntu:24.04
+FROM ubuntu:22.04
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
