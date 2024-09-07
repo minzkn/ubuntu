@@ -89,6 +89,7 @@ RUN apt-get update --list-cleanup \
   xorgxrdp \
   xprintidle \
   xrdp \
+  dbus-x11 \
   language-pack-ko \
   fonts-nanum \
   fonts-nanum-coding \
@@ -124,7 +125,8 @@ RUN apt-get update --list-cleanup \
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && (userdel -r ubuntu || true)
 
 EXPOSE 3389
 STOPSIGNAL SIGTERM
