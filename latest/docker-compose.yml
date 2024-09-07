@@ -7,7 +7,6 @@
 version: "2.1"
 services:
   mzdev-test:
-    #    image: hwport/ubuntu:24.04
     image: hwport/ubuntu:latest
     container_name: mzdev-test
     hostname: mzdev-test
