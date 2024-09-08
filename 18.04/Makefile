@@ -16,7 +16,7 @@ clean:
 	@echo "clean?"
 
 buildx:
-	@docker buildx build --no-cache --push --platform "$(TARGET_PLATFORM_LIST)" --tag "$(TARGET_TAG_NAME)" .
+	@docker buildx build --push --platform "$(TARGET_PLATFORM_LIST)" --tag "$(TARGET_TAG_NAME)" .
 
 .DEFAULT:
 	@echo "unknown goal: $(@)"
