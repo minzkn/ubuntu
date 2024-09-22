@@ -42,7 +42,7 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring unminimize \
   && yes | unminimize \
   && apt-get install -y tzdata ca-certificates openssl ssl-cert locales wget curl \
   && locale-gen en_US.UTF-8 \
