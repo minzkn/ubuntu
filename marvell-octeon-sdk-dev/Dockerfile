@@ -44,13 +44,15 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
+  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
-  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales wget curl \
+  && apt-get install -y tzdata locales \
   && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
-  && apt-get install -y \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
+
+RUN apt-get install -y \
+  openssl ssl-cert \
   sudo \
   bash \
   vim \
@@ -67,6 +69,7 @@ RUN apt-get autoclean -y \
   rsync \
   bc \
   wget \
+  curl \
   texinfo \
   automake \
   libtool \
