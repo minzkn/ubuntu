@@ -40,12 +40,10 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-
-RUN apt-get install -y \
-  tzdata vim cron
-
-RUN apt-get autoclean -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && apt-get install -y \
+  tzdata vim cron \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

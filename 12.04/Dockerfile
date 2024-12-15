@@ -78,21 +78,18 @@ RUN apt-get autoclean -y \
   && sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common \
   && apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
   && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
-
-RUN apt-get install -y ssh sed \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  && apt-get install -y ssh sed \
   && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
   && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
   && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
   && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
-
-RUN apt-get install -y \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
+  && apt-get install -y \
   sudo \
   build-essential \
   binutils \
@@ -142,9 +139,8 @@ RUN apt-get install -y \
   whois \
   dnsutils \
   inetutils-ping \
-  lib32z1
-
-RUN apt-get autoclean -y \
+  lib32z1 \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
