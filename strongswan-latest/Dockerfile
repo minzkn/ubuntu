@@ -38,11 +38,11 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common \
-  && apt-get install -y tzdata ca-certificates openssl ssl-cert
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 
 RUN apt-get install -y \
+  tzdata \
+  ca-certificates openssl ssl-cert \
   iproute2 \
   iputils-ping \
   libgmp10
