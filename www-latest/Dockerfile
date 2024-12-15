@@ -41,9 +41,8 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-
-RUN apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && apt-get install -y \
