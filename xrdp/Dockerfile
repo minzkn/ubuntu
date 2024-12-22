@@ -36,33 +36,17 @@ LABEL \
 
 WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
+COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring unminimize \
-  && yes | unminimize \
-  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales wget curl \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
-
-# COPY META...
-COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
-
-# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
-RUN add-apt-repository -y ppa:mozillateam/ppa \
-  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
-
-# additional repository setup : for android-studio (need 'sudo apt update && sudo apt install android-studio')
-RUN add-apt-repository -y ppa:maarten-fonville/android-studio
-
-RUN apt-get update --list-cleanup \
   && apt-get install -y \
+  tzdata debconf-utils locales \
+  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
+  software-properties-common \
   sudo \
   tar gzip bzip2 xz-utils unzip zlib1g-dev \
   iproute2 \
@@ -108,11 +92,24 @@ RUN apt-get update --list-cleanup \
   gimp \
   ffmpeg \
   vlc \
-  firefox \
+  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
+  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
+  && locale-gen en_US.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
+
+# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
+RUN add-apt-repository -y ppa:mozillateam/ppa \
+  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && add-apt-repository -y ppa:maarten-fonville/android-studio \
+  && apt-get update -y \
+  && apt-get install -y firefox
 
 # pulseaudio module : for Audio XDRP redirection module
 RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
