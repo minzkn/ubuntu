@@ -38,16 +38,14 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-
-RUN apt-get install -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && apt-get install -y \
   tzdata \
   ca-certificates openssl ssl-cert \
   iproute2 \
   iputils-ping \
-  libgmp10
-
-RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
+  libgmp10 \
+  && DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
   && apt-get install -y $DEV_PACKAGES \ 
   && mkdir -p /strongswan-build \
   && cd /strongswan-build \
@@ -55,24 +53,24 @@ RUN DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
   && tar -xjf strongswan-$VERSION.tar.bz2 \
   && cd strongswan-$VERSION \
   && ./configure --prefix=/usr --sysconfdir=/etc \
-    --enable-charon --enable-ikev2 --enable-nonce --enable-random     \
-    --enable-openssl --enable-pem --enable-x509 --enable-pubkey       \
-    --enable-constraints --enable-pki --enable-socket-default         \
-    --enable-kernel-netlink --enable-swanctl --enable-resolve         \
-    --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-dynamic       \
-    --enable-eap-tls --enable-updown --enable-vici                    \
+    --enable-charon --enable-ikev2 --enable-nonce --enable-random \
+    --enable-openssl --enable-pem --enable-x509 --enable-pubkey \
+    --enable-constraints --enable-pki --enable-socket-default \
+    --enable-kernel-netlink --enable-swanctl --enable-resolve \
+    --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-dynamic \
+    --enable-eap-tls --enable-updown --enable-vici \
     --enable-silent-rules \
-   && make -j4 all && make install \
-   && cd / && rm -R strongswan-build \
-   && ln -s /usr/libexec/ipsec/charon charon \
-   && apt-get remove -y --purge $DEV_PACKAGES
-EXPOSE 500/udp 4500/udp
-
-RUN apt-get autoclean -y \
+  && make -j4 all \
+  && make install \
+  && cd / && rm -R strongswan-build \
+  && ln -s /usr/libexec/ipsec/charon charon \
+  && apt-get remove -y --purge $DEV_PACKAGES \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+EXPOSE 500/udp 4500/udp
 STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 CMD ["/usr/sbin/ipsec", "start", "--nofork"]

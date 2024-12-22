@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2022 HWPORT.COM
+#   Copyright (C) 2024 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -79,26 +79,9 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils software-properties-common apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
-  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
-  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
-  && yes | unminimize \
-  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales wget curl \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
-
-# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
-RUN add-apt-repository -y ppa:mozillateam/ppa \
-  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
-
-# additional repository setup : for android-studio (need 'sudo apt update && sudo apt install android-studio')
-RUN add-apt-repository -y ppa:maarten-fonville/android-studio
-
-RUN apt-get update --list-cleanup \
   && apt-get install -y \
+  tzdata debconf-utils locales \
+  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
   sudo \
   ssh \
   sed \
@@ -147,10 +130,9 @@ RUN apt-get update --list-cleanup \
   screen \
   genromfs \
   rsync \
-  texinfo \
   uuid-dev \
   libncurses-dev ncurses-term \
-  openssl \
+  openssl ssl-cert \
   tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
   man-db \
   cscope \
@@ -160,8 +142,8 @@ RUN apt-get update --list-cleanup \
   xmlto \
   help2man \
   libboost-dev \
-  python2-dev python2 python3-dev python-dev-is-python3 python3-pip python3-pycryptodome python3-pyelftools python3-sphinx python3-sphinx-rtd-theme \
-  libssl-dev libcurl4-openssl-dev \
+  python3-dev python-dev-is-python3 python3-pip python3-pycryptodome python3-pyelftools python3-sphinx python3-sphinx-rtd-theme \
+  libssl-dev libcurl4-openssl-dev curl wget \
   libssh-dev \
   sshfs \
   iproute2 \
@@ -193,7 +175,6 @@ RUN apt-get update --list-cleanup \
   exfatprogs \
   expect expect-dev \
   parallel \
-  acpica-tools \
   doxygen \
   asciidoc \
   android-sdk-libsparse-utils \
@@ -215,6 +196,7 @@ RUN apt-get update --list-cleanup \
   xorgxrdp \
   xprintidle \
   xrdp \
+  dbus-x11 \
   language-pack-ko \
   fonts-nanum \
   fonts-nanum-coding \
@@ -235,7 +217,11 @@ RUN apt-get update --list-cleanup \
   ffmpeg \
   vlc \
   iverilog gtkwave \
-  firefox \
+  && yes | unminimize \
+  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
+  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
+  && locale-gen en_US.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
   && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
@@ -248,22 +234,27 @@ RUN apt-get update --list-cleanup \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 
+# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
+RUN apt-get install -y software-properties-common \
+  && add-apt-repository -y ppa:mozillateam/ppa \
+  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && add-apt-repository -y ppa:maarten-fonville/android-studio \
+  && apt-get update -y \
+  && apt-get install -y firefox
+
 # pulseaudio module : for Audio XDRP redirection module
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
 
-# install friendlyelec-toolchain
-#RUN git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1 fa-toolchain \
-#  && (cat fa-toolchain/gcc-x64/toolchain-4.9.3-armhf.tar.gz* | tar xz -C /) \
-#  && (cat fa-toolchain/gcc-x64/toolchain-6.4-aarch64.tar.gz* | tar xz -C /) \
-#  && (tar xf fa-toolchain/gcc-x64/toolchain-11.3-aarch64.tar.xz -C /) \
-#  && rm -rf fa-toolchain
-
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && (userdel -r ubuntu || true)
 
 EXPOSE 22/tcp 3389/tcp 4200/tcp
 STOPSIGNAL SIGTERM

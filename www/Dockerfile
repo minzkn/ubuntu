@@ -41,12 +41,9 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-
-RUN apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && apt-get install -y \
+  tzdata ca-certificates openssl ssl-cert locales \
   apache2 \
   libapache2-mod-security2 \
   php php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
@@ -62,6 +59,8 @@ RUN apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
   iputils-ping \
   ffmpeg \
   libsubtitles-perl \
+  && locale-gen en_US.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel cgi \
   && a2ensite default-ssl.conf \
   && apt-get autoclean -y \

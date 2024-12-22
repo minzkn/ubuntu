@@ -44,14 +44,9 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get install -y debconf-utils apt-utils apt-transport-https ca-certificates gnupg2 ubuntu-keyring \
-  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
-  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
-  && apt-get install -y tzdata locales \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
-
-RUN apt-get install -y \
+  && apt-get install -y \
+  tzdata debconf-utils locales \
+  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
   openssl ssl-cert \
   sudo \
   bash \
@@ -100,6 +95,10 @@ RUN apt-get install -y \
   meson \
   ninja-build \
   doxygen \
+  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
+  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
+  && locale-gen en_US.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
   && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
