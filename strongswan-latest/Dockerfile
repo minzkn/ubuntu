@@ -45,8 +45,8 @@ RUN apt-get autoclean -y \
   iproute2 \
   iputils-ping \
   libgmp10 \
-  && DEV_PACKAGES="wget bzip2 make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
-  && apt-get install -y $DEV_PACKAGES \ 
+  && DEV_PACKAGES="wget bzip2 build-essential make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
+  && (apt-get install -y $DEV_PACKAGES \ 
   && mkdir -p /strongswan-build \
   && cd /strongswan-build \
   && wget --no-check-certificate https://download.strongswan.org/strongswan-$VERSION.tar.bz2 \
@@ -64,7 +64,7 @@ RUN apt-get autoclean -y \
   && make install \
   && cd / && rm -R strongswan-build \
   && ln -s /usr/libexec/ipsec/charon charon \
-  && apt-get remove -y --purge $DEV_PACKAGES \
+  && apt-get remove -y --purge $DEV_PACKAGES) \
   && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
