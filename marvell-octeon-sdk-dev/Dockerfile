@@ -43,6 +43,7 @@ RUN apt-get autoclean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update --list-cleanup \
+  && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && apt-get install -y \
   tzdata debconf-utils locales \

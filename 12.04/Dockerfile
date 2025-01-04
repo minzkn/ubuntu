@@ -77,6 +77,7 @@ RUN apt-get autoclean -y \
   && rm -rf /var/lib/apt/lists/* \
   && sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
   && apt-get update --list-cleanup \
+  && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
   && locale-gen en_US.UTF-8 \
