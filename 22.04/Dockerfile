@@ -80,6 +80,7 @@ RUN apt-get autoclean -y \
   && apt-get update --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && yes | unminimize \
   && apt-get install -y \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
@@ -218,7 +219,6 @@ RUN apt-get autoclean -y \
   ffmpeg \
   vlc \
   iverilog gtkwave \
-  && yes | unminimize \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && locale-gen en_US.UTF-8 \
