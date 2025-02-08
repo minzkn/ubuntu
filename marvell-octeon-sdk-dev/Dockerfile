@@ -67,6 +67,7 @@ RUN apt-get autoclean -y \
   wget \
   curl \
   texinfo \
+  autoconf \
   automake \
   libtool \
   pkg-config \
@@ -90,12 +91,27 @@ RUN apt-get autoclean -y \
   libyaml-dev \
   libssl-dev \
   libnl-genl-3-dev \
-  libnl-3-dev \
+  libnl-3-dev libnl-route-3-dev libmnl-dev \
   python3-sphinx \
   python3-sphinx-rtd-theme \
   meson \
   ninja-build \
   doxygen \
+  ccache \
+  debhelper dkms libapr1-dev dh-python \
+  libconfuse-dev git-review exuberant-ctags cscope \
+  gcovr lcov chrpath \
+  python3-all python3-setuptools check \
+  libffi-dev python3-ply \
+  cmake uuid-dev python3-jsonschema python3-yaml \
+  python3-venv \
+  python3-dev python3-pip \
+  python3-virtualenv \
+  libelf-dev libpcap-dev \
+  iperf3 \
+  nasm \
+  iperf ethtool \
+  tshark \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && locale-gen en_US.UTF-8 \
