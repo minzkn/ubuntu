@@ -46,7 +46,7 @@ RUN apt-get autoclean -y \
   iproute2 \
   iputils-ping \
   libgmp10 \
-  && DEV_PACKAGES="wget bzip2 build-essential make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
+  && DEV_PACKAGES="wget bzip2 build-essential autotools-dev make gcc libssl-dev libgmp-dev" VERSION=5.9.14 \
   && (apt-get install -y $DEV_PACKAGES \ 
   && mkdir -p /strongswan-build \
   && cd /strongswan-build \
@@ -61,7 +61,7 @@ RUN apt-get autoclean -y \
     --enable-eap-identity --enable-eap-md5 --enable-eap-mschapv2 --enable-eap-dynamic \
     --enable-eap-tls --enable-updown --enable-vici \
     --enable-silent-rules \
-  && make -j4 all \
+  && make all \
   && make install \
   && cd / && rm -R strongswan-build \
   && ln -s /usr/libexec/ipsec/charon charon \

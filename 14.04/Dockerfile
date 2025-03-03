@@ -42,7 +42,7 @@
 
 # ----
 
-FROM ubuntu:14.04
+FROM ubuntu:14.04.5
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
