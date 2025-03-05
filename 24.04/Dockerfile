@@ -215,6 +215,7 @@ RUN apt-get autoclean -y \
   virt-manager \
   libreoffice \
   librecad \
+  kicad \
   gimp \
   ffmpeg \
   vlc \
