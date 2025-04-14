@@ -8,8 +8,10 @@
 #    && docker buildx inspect --bootstrap \
 #    && true
 
+# https://hub.docker.com/r/moby/buildkit
+ 
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes \
-    && docker buildx create --name multiarch --driver docker-container --use \
+    && docker buildx create --name multiarch --driver docker-container --driver-opt "image=moby/buildkit:v0.20.2" --use \
     && docker buildx inspect --bootstrap \
     && true
 
