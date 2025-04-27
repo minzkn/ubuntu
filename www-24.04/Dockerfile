@@ -47,7 +47,8 @@ RUN apt-get autoclean -y \
   tzdata ca-certificates openssl ssl-cert locales \
   apache2 \
   libapache2-mod-security2 \
-  php php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
+  libapache2-mod-fcgid \
+  php php-fpm php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
   cron \
   logrotate \
   imagemagick \
@@ -62,7 +63,7 @@ RUN apt-get autoclean -y \
   libsubtitles-perl \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
-  && a2enmod security2 ssl rewrite headers proxy proxy_http proxy_wstunnel cgi \
+  && a2enmod security2 proxy_fcgi setenvif deflate ssl http2 rewrite headers proxy proxy_http proxy_wstunnel cgi \
   && a2ensite default-ssl.conf \
   && apt-get autoclean -y \
   && apt-get clean -y \
