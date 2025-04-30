@@ -29,6 +29,7 @@ services:
       - LC_ALL=C
       - LANG=ko_KR.UTF-8
       - EDITOR=vim
+      - CLAMAV=yes
       - XRDP_DESKTOP=yes
       - SHELLINABOX=yes
         #    volumes:
