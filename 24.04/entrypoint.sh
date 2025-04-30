@@ -17,6 +17,7 @@ set -eo pipefail
 # === BEGIN : EDIT FOR YOU ===
 
 /usr/sbin/service cron start
+/usr/sbin/service clamav-freshclam start
 
 if [[ "${XRDP_DESKTOP}" = "yes" ]]
 then

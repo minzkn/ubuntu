@@ -219,6 +219,7 @@ RUN apt-get autoclean -y \
   ffmpeg \
   vlc \
   iverilog gtkwave \
+  clamav \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && locale-gen en_US.UTF-8 \
