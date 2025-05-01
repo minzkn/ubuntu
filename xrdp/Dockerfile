@@ -110,7 +110,7 @@ RUN add-apt-repository -y ppa:mozillateam/ppa \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
   && add-apt-repository -y ppa:maarten-fonville/android-studio \
   && apt-get update -y \
-  && apt-get install -y firefox
+  && (apt-get install -y firefox || true)
 
 # pulseaudio module : for Audio XDRP redirection module
 RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \

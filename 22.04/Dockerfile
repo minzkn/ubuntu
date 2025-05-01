@@ -213,12 +213,12 @@ RUN apt-get autoclean -y \
   putty \
   remmina \
   virt-manager \
-  libreoffice \
   librecad \
   gimp \
   ffmpeg \
   vlc \
   iverilog gtkwave \
+  && (apt-get install -y libreoffice || true) \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && locale-gen en_US.UTF-8 \
@@ -244,7 +244,8 @@ RUN apt-get install -y software-properties-common \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
   && add-apt-repository -y ppa:maarten-fonville/android-studio \
   && apt-get update -y \
-  && apt-get install -y firefox
+  && (apt-get install -y firefox || true) \
+  && (apt-get install -y android-studio || true)
 
 # pulseaudio module : for Audio XDRP redirection module
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
