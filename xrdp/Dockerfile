@@ -88,11 +88,11 @@ RUN apt-get autoclean -y \
   ssh-askpass-gnome \
   putty \
   virt-manager \
-  libreoffice \
   librecad \
   gimp \
   ffmpeg \
   vlc \
+  && (apt-get install -y libreoffice || true) \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && locale-gen en_US.UTF-8 \
