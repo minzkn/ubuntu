@@ -218,6 +218,7 @@ RUN apt-get autoclean -y \
   ffmpeg \
   vlc \
   iverilog gtkwave \
+  clamav \
   && (apt-get install -y libreoffice || true) \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
