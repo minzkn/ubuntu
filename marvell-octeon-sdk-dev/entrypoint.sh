@@ -16,6 +16,8 @@ set -eo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
+/usr/sbin/service cron start
+
 # === END   : EDIT FOR YOU ===
 
 exec "$@"
