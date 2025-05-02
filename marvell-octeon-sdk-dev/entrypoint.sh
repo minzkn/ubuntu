@@ -16,6 +16,7 @@ set -eo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
+[ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
 /usr/sbin/service cron start
 
 # === END   : EDIT FOR YOU ===

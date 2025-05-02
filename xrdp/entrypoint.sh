@@ -16,11 +16,11 @@ set -eo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
+[ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
 /usr/sbin/service cron start
 
 [ -f "/var/run/xrdp/xrdp-sesman.pid" ] && rm -f "/var/run/xrdp/xrdp-sesman.pid"
 [ -f "/var/run/xrdp/xrdp.pid" ] && rm -f "/var/run/xrdp/xrdp.pid"
-
 /usr/sbin/service xrdp start
 
 # === END   : EDIT FOR YOU ===

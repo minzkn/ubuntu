@@ -2,7 +2,7 @@
 set -e
 
 [ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
-service cron start
+/usr/sbin/service cron start
 
 export APACHE_RUN_DIR=/var/run/apache2
 export APACHE_ARGUMENTS="-DFOREGROUND $@"
