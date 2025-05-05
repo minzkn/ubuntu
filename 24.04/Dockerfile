@@ -220,6 +220,7 @@ RUN apt-get autoclean -y \
   vlc \
   iverilog gtkwave \
   clamav \
+  && (apt-get install -y kicad || true) \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
   && locale-gen en_US.UTF-8 \
