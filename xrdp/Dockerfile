@@ -75,7 +75,7 @@ RUN apt-get autoclean -y \
   xprintidle \
   xrdp \
   dbus-x11 \
-  language-pack-ko \
+  language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum \
   fonts-nanum-coding \
   fonts-nanum-extra \
