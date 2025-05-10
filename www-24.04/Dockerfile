@@ -19,6 +19,15 @@ ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 ARG EDITOR=vim
 
+ARG BUILDPLATFORM
+ARG BUILDOS
+ARG BUILDARCH
+ARG BUILDVARIANT
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
 ENV \
   container="docker" \
   TERM="${TERM}" \
@@ -36,7 +45,16 @@ LABEL \
 
 WORKDIR /
 COPY --chown=root:root ["./apache2-foreground", "/usr/bin/apache2-foreground"]
-RUN apt-get autoclean -y \
+RUN echo "# Powered by ${HWPORT_URL}" >> /usr/bin/apache2-foreground \
+  && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /usr/bin/apache2-foreground \
+  && echo "# BUILDOS: ${BUILDOS}" >> /usr/bin/apache2-foreground \
+  && echo "# BUILDARCH: ${BUILDARCH}" >> /usr/bin/apache2-foreground \
+  && echo "# BUILDVARIANT: ${BUILDVARIANT}" >> /usr/bin/apache2-foreground \
+  && echo "# TARGETPLATFORM: ${TARGETPLATFORM}" >> /usr/bin/apache2-foreground \
+  && echo "# TARGETOS: ${TARGETOS}" >> /usr/bin/apache2-foreground \
+  && echo "# TARGETARCH: ${TARGETARCH}" >> /usr/bin/apache2-foreground \
+  && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /usr/bin/apache2-foreground \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \

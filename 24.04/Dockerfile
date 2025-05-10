@@ -55,6 +55,15 @@ ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 ARG EDITOR=vim
 
+ARG BUILDPLATFORM
+ARG BUILDOS
+ARG BUILDARCH
+ARG BUILDVARIANT
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
 ENV \
   container="docker" \
   TERM="${TERM}" \
@@ -73,7 +82,16 @@ LABEL \
 WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
-RUN apt-get autoclean -y \
+RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
+  && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /entrypoint.sh \
+  && echo "# BUILDOS: ${BUILDOS}" >> /entrypoint.sh \
+  && echo "# BUILDARCH: ${BUILDARCH}" >> /entrypoint.sh \
+  && echo "# BUILDVARIANT: ${BUILDVARIANT}" >> /entrypoint.sh \
+  && echo "# TARGETPLATFORM: ${TARGETPLATFORM}" >> /entrypoint.sh \
+  && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
+  && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
+  && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
@@ -254,6 +272,9 @@ RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubun
   && git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
+
+# nvidia CUDA&NVENC
+RUN if [ "${TARGETARCH}" == "amd64" ]; then apt-get install -y nvida-cuda-toolkit libnvidia-encode-570-server libnvidia-decode-570-server; fi
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \
