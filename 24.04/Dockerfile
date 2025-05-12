@@ -274,7 +274,7 @@ RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubun
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
 
 # nvidia CUDA&NVENC
-RUN if [ "${TARGETARCH}" == "amd64" ]; then apt-get install -y nvida-cuda-toolkit libnvidia-comute-570-server libnvidia-encode-570-server libnvidia-decode-570-server; fi
+RUN if [ "${TARGETARCH}" == "amd64" ]; then apt-get install -y nvidia-cuda-toolkit libnvidia-comute-570-server libnvidia-encode-570-server libnvidia-decode-570-server; fi
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \
