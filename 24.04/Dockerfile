@@ -238,6 +238,7 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   vlc \
   iverilog gtkwave \
   clamav \
+  $(if [ "${TARGETARCH}" == "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-comute-570" "libnvidia-encode-570" "libnvidia-decode-570"; fi) \
   && (apt-get install -y kicad || true) \
   && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
   && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
@@ -272,9 +273,6 @@ RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubun
   && git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
-
-# nvidia CUDA&NVENC
-RUN if [ "${TARGETARCH}" == "amd64" ]; then apt-get install -y nvidia-cuda-toolkit libnvidia-comute-570 libnvidia-encode-570 libnvidia-decode-570; fi
 
 RUN apt-get autoclean -y \
   && apt-get clean -y \
