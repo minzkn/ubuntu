@@ -54,15 +54,20 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /usr/bin/apache2-foreground \
   && echo "# TARGETOS: ${TARGETOS}" >> /usr/bin/apache2-foreground \
   && echo "# TARGETARCH: ${TARGETARCH}" >> /usr/bin/apache2-foreground \
   && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /usr/bin/apache2-foreground \
+  && echo "# buildx cores: $(nproc)" >> /usr/bin/apache2-foreground \
   && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
-  && apt-get update --list-cleanup \
+  && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && apt-get install -y \
-  tzdata ca-certificates openssl ssl-cert locales \
+  tzdata locales ca-certificates openssl ssl-cert \
+  && locale-gen en_US.UTF-8 \
+  && locale-gen ko_KR.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  && apt-get install -y \
   apache2 \
   libapache2-mod-security2 \
   libapache2-mod-fcgid \
@@ -79,8 +84,6 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /usr/bin/apache2-foreground \
   iputils-ping \
   ffmpeg \
   libsubtitles-perl \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && a2enmod security2 proxy_fcgi setenvif deflate ssl http2 rewrite headers proxy proxy_http proxy_wstunnel cgi \
   && a2ensite default-ssl.conf \
   && apt-get autoclean -y \

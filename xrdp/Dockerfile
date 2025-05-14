@@ -6,6 +6,42 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
+# reference : https://docs.docker.com/engine/reference/builder/
+# FROM [--platform=<platform>] <image> [AS <name>]
+# FROM [--platform=<platform>] <image>[:<tag>] [AS <name>]
+# FROM [--platform=<platform>] <image>[@<digest>] [AS <name>]
+# RUN <command> (shell form, the command is run in a shell, which by default is /bin/sh -c on Linux or cmd /S /C on Windows)
+# RUN ["executable", "param1", "param2"] (exec form)
+# RUN --mount=[type=<TYPE>][,option=<value>[,option=<value>]...]
+# CMD ["executable","param1","param2"] (exec form, this is the preferred form)
+# CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+# CMD command param1 param2 (shell form)
+# LABEL <key>=<value> <key>=<value> <key>=<value> ...
+# EXPOSE <port> [<port>/<protocol>...]
+# ENV <key>=<value> ...
+# ADD [--chown=<user>:<group>] [--checksum=<checksum>] <src>... <dest>
+# ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]
+# COPY [--chown=<user>:<group>] <src>... <dest>
+# COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
+# ENTRYPOINT ["executable", "param1", "param2"]
+# ENTRYPOINT command param1 param2
+# VOLUME ["/data"]
+# USER <user>[:<group>]
+# USER <UID>[:<GID>]
+# WORKDIR /path/to/workdir
+# ARG <name>[=<default value>]
+# ONBUILD <INSTRUCTION>
+# STOPSIGNAL signal
+# HEALTHCHECK [OPTIONS] CMD command (check container health by running a command inside the container)
+#     --interval=DURATION (default: 30s)
+#     --timeout=DURATION (default: 30s)
+#     --start-period=DURATION (default: 0s)
+#     --retries=N (default: 3)
+# HEALTHCHECK NONE (disable any healthcheck inherited from the base image)
+# SHELL ["executable", "parameters"]
+
+# ----
+
 FROM ubuntu:24.04
 
 ARG HWPORT_NAMESPACE=hwport
@@ -55,17 +91,32 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
   && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
   && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
+  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh \
+  && (userdel -r ubuntu || true) \
   && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
-  && apt-get update --list-cleanup \
+  && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
+  && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && apt-get install -y unminimize && yes | unminimize \
   && apt-get install -y \
+  software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
-  software-properties-common \
+  && locale-gen en_US.UTF-8 \
+  && locale-gen ko_KR.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  && add-apt-repository -y ppa:mozillateam/ppa \
+  && add-apt-repository -y ppa:maarten-fonville/android-studio \
+  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && apt-get update -y --list-cleanup
+RUN apt-get install -y \
   sudo \
   tar gzip bzip2 xz-utils unzip zlib1g-dev \
   iproute2 \
@@ -74,6 +125,7 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   build-essential dpkg-dev libpulse-dev git autoconf libtool \
   cron \
   logrotate \
+  ssh \
   xfce4 \
   xfce4-terminal \
   xfce4-clipman-plugin \
@@ -105,48 +157,32 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   gvfs-backends smbclient \
   ssh-askpass-gnome \
   putty \
+  remmina \
   virt-manager \
-  libreoffice \
   librecad \
   gimp \
   ffmpeg \
   vlc \
-  && (apt-get install -y kicad || true) \
-  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
-  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  iverilog gtkwave \
+  clamav \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-compute-570" "libnvidia-encode-570" "libnvidia-decode-570"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
-  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
-
-# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
-RUN add-apt-repository -y ppa:mozillateam/ppa \
-  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && add-apt-repository -y ppa:maarten-fonville/android-studio \
-  && apt-get update -y \
-  && (apt-get install -y firefox || true)
-
-# pulseaudio module : for Audio XDRP redirection module
-RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
+  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
   && git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
-  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make -j4 && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
-
-# nvidia CUDA&NVENC
-RUN if [ "${TARGETARCH}" == "amd64" ]; then apt-get install -y nvida-cuda-toolkit libnvidia-encode-570-server libnvidia-decode-570-server; fi
-
-RUN apt-get autoclean -y \
+  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
+  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && (userdel -r ubuntu || true)
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-EXPOSE 3389
+EXPOSE 3389/tcp
 STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
 ENTRYPOINT ["/entrypoint.sh"]

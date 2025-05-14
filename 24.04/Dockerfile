@@ -91,17 +91,40 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
   && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
   && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
+  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh \
+  && (userdel -r ubuntu || true) \
   && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
-  && apt-get update --list-cleanup \
+  && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
+  && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && apt-get install -y unminimize && yes | unminimize \
+  && (apt-get install -y unminimize || true) && yes | unminimize \
   && apt-get install -y \
+  software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
+  openssh-server \
+  && locale-gen en_US.UTF-8 \
+  && locale-gen ko_KR.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  && mkdir -p /run/sshd \
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
+  && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
+  && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
+  && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
+  && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
+  && add-apt-repository -y ppa:mozillateam/ppa \
+  && add-apt-repository -y ppa:maarten-fonville/android-studio \
+  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && apt-get update -y --list-cleanup \
+  && apt-get install -y \
   sudo \
   ssh \
   sed \
@@ -231,54 +254,28 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   putty \
   remmina \
   virt-manager \
-  libreoffice \
   librecad \
   gimp \
   ffmpeg \
   vlc \
   iverilog gtkwave \
   clamav \
-  $(if [ "${TARGETARCH}" == "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-comute-570" "libnvidia-encode-570" "libnvidia-decode-570"; fi) \
-  && (apt-get install -y kicad || true) \
-  && echo 'tzdata tzdata/Areas select Asia' | debconf-set-selections \
-  && echo 'tzdata tzdata/Zones/Asia select Seoul' | debconf-set-selections \
-  && locale-gen en_US.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
-  && mkdir -p /run/sshd \
-  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
-  && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
-  && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
-  && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-compute-570" "libnvidia-encode-570" "libnvidia-decode-570"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
-  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
-
-# additional repository setup : fix for 'mozilla-firefox without snap', 'android-studio'
-RUN apt-get install -y software-properties-common \
-  && add-apt-repository -y ppa:mozillateam/ppa \
-  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && add-apt-repository -y ppa:maarten-fonville/android-studio \
-  && apt-get update -y \
-  && (apt-get install -y firefox || true) \
-  && (apt-get install -y android-studio || true)
-
-# pulseaudio module : for Audio XDRP redirection module
-RUN sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
+  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
   && git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
-
-RUN apt-get autoclean -y \
+  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && (userdel -r ubuntu || true)
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 22/tcp 3389/tcp 4200/tcp
 STOPSIGNAL SIGTERM
