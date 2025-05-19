@@ -165,9 +165,9 @@ RUN apt-get install -y \
   vlc \
   iverilog gtkwave \
   clamav \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "libreoffice"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "kicad"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-compute-570" "libnvidia-encode-570" "libnvidia-decode-570"; fi) \
   && sed -i \

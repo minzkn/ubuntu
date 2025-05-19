@@ -168,6 +168,7 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   ninja-build \
   doxygen \
   ccache \
+  distcc \
   debhelper dkms libapr1-dev dh-python \
   libconfuse-dev git-review exuberant-ctags cscope \
   gcovr lcov chrpath \

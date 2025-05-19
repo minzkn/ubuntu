@@ -168,6 +168,7 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   vim \
   net-tools bridge-utils \
   ccache \
+  distcc \
   git subversion cvs \
   screen \
   genromfs \
@@ -258,9 +259,9 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   vlc \
   iverilog gtkwave \
   clamav \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "libreoffice"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "kicad"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \

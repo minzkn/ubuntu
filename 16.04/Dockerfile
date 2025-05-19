@@ -128,6 +128,7 @@ RUN apt-get autoclean -y \
   vim \
   net-tools \
   ccache \
+  distcc \
   git subversion \
   wget curl \
   screen \
