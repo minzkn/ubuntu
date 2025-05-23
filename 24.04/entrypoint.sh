@@ -16,21 +16,21 @@ set -eo pipefail
 
 # === BEGIN : EDIT FOR YOU ===
 
-if grep -q '\<fuse\>' "/proc/misc"
-then
-  if [ ! -e "/dev/fuse" ]
-  then
-    /usr/bin/mknod "/dev/fuse" c 10 $(grep '\<fuse\>' "/proc/misc" | cut -f 1 -d' ')
-  fi
-fi
-
-if grep -q '\<kvm\>' "/proc/misc"
-then
-  if [ ! -e "/dev/kvm" ]
-  then
-    /usr/bin/mknod "/dev/kvm" c 10 $(grep '\<kvm\>' "/proc/misc" | cut -f 1 -d' ')
-  fi
-fi
+#if grep -q '\<fuse\>' "/proc/misc"
+#then
+#  if [ ! -e "/dev/fuse" ]
+#  then
+#    /usr/bin/mknod "/dev/fuse" c 10 $(grep '\<fuse\>' "/proc/misc" | cut -f 1 -d' ')
+#  fi
+#fi
+#
+#if grep -q '\<kvm\>' "/proc/misc"
+#then
+#  if [ ! -e "/dev/kvm" ]
+#  then
+#    /usr/bin/mknod "/dev/kvm" c 10 $(grep '\<kvm\>' "/proc/misc" | cut -f 1 -d' ')
+#  fi
+#fi
 
 [ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
 /usr/sbin/service cron start
