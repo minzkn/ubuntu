@@ -97,9 +97,7 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* \
-  && rm -f /var/lib/dpkg/info/libc-bin.* \
   && apt-get update -y --list-cleanup \
-  && apt-get install -y libc-bin \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
   && (apt-get install -y unminimize || true) && yes | unminimize \
