@@ -267,7 +267,7 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-compute-570" "libnvidia-encode-570" "libnvidia-decode-570" "xserver-xorg-video-nvidia-570"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-compute-570-server" "libnvidia-encode-570-server" "libnvidia-decode-570-server" "xserver-xorg-video-nvidia-570-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
