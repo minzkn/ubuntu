@@ -99,9 +99,9 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && (apt-get install -y unminimize || true) && yes | unminimize \
-  && apt-get install -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
+RUN (apt-get install -y unminimize || true) && yes | unminimize
+RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
@@ -121,8 +121,8 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && apt-get update -y --list-cleanup \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo \
   ssh \
@@ -266,11 +266,11 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
-  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
-  && git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
+  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
+RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log \
-  && apt-get autoclean -y \
+  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
+RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

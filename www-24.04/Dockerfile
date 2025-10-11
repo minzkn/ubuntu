@@ -61,13 +61,13 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /usr/bin/apache2-foreground \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && apt-get install -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
+RUN apt-get install -y \
   tzdata locales ca-certificates openssl ssl-cert \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
-  && apt-get install -y \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
+RUN apt-get install -y \
   apache2 \
   libapache2-mod-security2 \
   libapache2-mod-fcgid \
@@ -83,10 +83,10 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /usr/bin/apache2-foreground \
   git-core \
   iputils-ping \
   ffmpeg \
-  libsubtitles-perl \
-  && a2enmod security2 proxy_fcgi setenvif deflate ssl http2 rewrite headers proxy proxy_http proxy_wstunnel cgi \
-  && a2ensite default-ssl.conf \
-  && apt-get autoclean -y \
+  libsubtitles-perl
+RUN a2enmod security2 proxy_fcgi setenvif deflate ssl http2 rewrite headers proxy proxy_http proxy_wstunnel cgi \
+  && a2ensite default-ssl.conf
+RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

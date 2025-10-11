@@ -98,9 +98,9 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && (apt-get install -y unminimize || true) && yes | unminimize \
-  && apt-get install -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
+RUN (apt-get install -y unminimize || true) && yes | unminimize
+RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
@@ -114,8 +114,8 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
   && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
-  && apt-get install -y \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
+RUN apt-get install -y \
   openssl ssl-cert \
   sudo \
   bash \
@@ -182,8 +182,8 @@ RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   iperf ethtool \
   tshark \
   cron \
-  logrotate \
-  && apt-get autoclean -y \
+  logrotate
+RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

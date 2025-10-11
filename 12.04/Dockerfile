@@ -87,8 +87,8 @@ RUN apt-get autoclean -y \
   && sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
+RUN apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
   && locale-gen en_US.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && apt-get install -y ssh sed \
@@ -98,8 +98,8 @@ RUN apt-get autoclean -y \
   && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
   && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
-  && apt-get install -y \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
+RUN apt-get install -y \
   sudo \
   build-essential \
   binutils \
@@ -150,8 +150,8 @@ RUN apt-get autoclean -y \
   whois \
   dnsutils \
   inetutils-ping \
-  lib32z1 \
-  && apt-get autoclean -y \
+  lib32z1
+RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
