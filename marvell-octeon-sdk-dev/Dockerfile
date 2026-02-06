@@ -127,6 +127,7 @@ RUN apt-get install -y \
   sed \
   build-essential \
   git \
+  gh \
   cpio \
   python3 \
   unzip \

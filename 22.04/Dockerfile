@@ -169,7 +169,7 @@ RUN apt-get update -y --list-cleanup \
   net-tools bridge-utils \
   ccache \
   distcc \
-  git subversion cvs \
+  git subversion cvs gh \
   screen \
   genromfs \
   rsync \
