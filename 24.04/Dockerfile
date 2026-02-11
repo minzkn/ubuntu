@@ -158,7 +158,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # System utilities and libraries: networking, compression, development libs, and Python
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+    apt-get update -y --list-cleanup \
+  && apt-get install -y \
   ssh aria2 minicom ftp \
   net-tools bridge-utils iproute2 \
   nmap whois dnsutils inetutils-ping \
@@ -179,7 +180,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Desktop environment: XFCE4, X11/remote desktop, Korean language, and applications
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+    apt-get update -y --list-cleanup \
+  && apt-get install -y \
   xfce4 xfce4-terminal xfce4-goodies \
   xfce4-clipman-plugin xfce4-cpugraph-plugin \
   xfce4-netload-plugin xfce4-screenshooter \
@@ -198,7 +200,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Multimedia, services, and specialized packages: graphics tools, Mesa, arch-specific software
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+    apt-get update -y --list-cleanup \
+  && apt-get install -y \
   gimp ffmpeg vlc \
   librecad iverilog gtkwave \
   mediainfo dosfstools exfatprogs \
