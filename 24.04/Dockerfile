@@ -103,22 +103,15 @@ RUN (userdel -r ubuntu || true) \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/*
 
-# Configure apt sources and update system
+# System initialization: Configure apt sources, update, and install base packages
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-# Unminimize Ubuntu
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    (apt-get install -y unminimize || true) && yes | unminimize
-
-# Install base system packages and configure SSH
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && (apt-get install -y unminimize || true) && yes | unminimize \
+  && apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
@@ -138,7 +131,7 @@ RUN mkdir -p /run/sshd \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
   && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
 
-# Add PPAs for additional software
+# Development environment: PPAs, compilers, build tools, kernel dev, and version control
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     add-apt-repository -y ppa:mozillateam/ppa \
@@ -146,36 +139,23 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
-# Install core development tools and compilers
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -y --list-cleanup \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
+  && apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo bash sed file time \
   build-essential binutils gcc g++ clang llvm \
   libc-dev musl-dev gdb perl make pkg-config \
   mtools m4 autoconf autotools-dev automake autopoint libtool libtool-bin intltool \
-  cmake meson ninja-build bison flex gawk grep gettext patch patchelf bc
-
-# Install kernel development tools
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  cmake meson ninja-build bison flex gawk grep gettext patch patchelf bc \
   linux-headers-generic linux-tools-common linux-tools-generic \
   device-tree-compiler u-boot-tools \
   libelf-dev libpcap-dev dwarves \
-  kmod parted udev
-
-# Install version control and collaboration tools
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  kmod parted udev \
   git subversion cvs gh \
   ccache distcc \
   cscope universal-ctags doxygen asciidoc
 
-# Install network and system utilities
+# System utilities and libraries: networking, compression, development libs, and Python
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get install -y \
@@ -183,35 +163,20 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   net-tools bridge-utils iproute2 \
   nmap whois dnsutils inetutils-ping \
   openssl ssl-cert curl wget \
-  rsync screen vim strace gperf
-
-# Install compression and archiving tools
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  rsync screen vim strace gperf \
   tar gzip bzip2 xz-utils unzip zlib1g-dev \
-  cpio lzip pigz p7zip-full zstd
-
-# Install development libraries
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  cpio lzip pigz p7zip-full zstd \
   libreadline-dev libncurses-dev ncurses-term uuid-dev \
   libssl-dev libcurl4-openssl-dev libssh-dev \
   libconfig-dev libmbedtls-dev libmnl-dev libnuma-dev \
   libnl-genl-3-dev libnl-3-dev liblzma-dev \
   libarchive-zip-perl libfdt-dev libpci-dev libyaml-dev libgmp-dev \
-  libboost-dev dpkg-dev libpulse-dev
-
-# Install Python development environment
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  libboost-dev dpkg-dev libpulse-dev \
   python3-dev python3-pip \
   python3-pycryptodome python3-pyelftools \
   python3-sphinx python3-sphinx-rtd-theme
 
-# Install XFCE4 desktop environment
+# Desktop environment: XFCE4, X11/remote desktop, Korean language, and applications
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get install -y \
@@ -219,62 +184,32 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   xfce4-clipman-plugin xfce4-cpugraph-plugin \
   xfce4-netload-plugin xfce4-screenshooter \
   xfce4-taskmanager xfce4-xkb-plugin \
-  dbus-x11 zenity
-
-# Install X11 and remote desktop components
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  dbus-x11 zenity \
   libfontenc1 libxfont2 \
   xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi \
-  xorgxrdp xprintidle xrdp shellinabox
-
-# Install Korean language support
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  xorgxrdp xprintidle xrdp shellinabox \
   language-selector-common language-selector-gnome language-pack-ko \
   fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum fonts-nanum-coding fonts-nanum-extra fonts-naver-d2coding \
-  ibus ibus-hangul im-config
-
-# Install desktop applications
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  ibus ibus-hangul im-config \
   gvfs-backends smbclient ssh-askpass-gnome \
   flameshot putty remmina virt-manager
 
-# Install multimedia and graphics tools
+# Multimedia, services, and specialized packages: graphics tools, Mesa, arch-specific software
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get install -y \
   gimp ffmpeg vlc \
   librecad iverilog gtkwave \
-  mediainfo dosfstools exfatprogs
-
-# Install system services and utilities
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  mediainfo dosfstools exfatprogs \
   cron logrotate sshfs \
   man-db xmlto help2man \
   expect expect-dev parallel \
   genromfs live-build android-sdk-libsparse-utils \
-  clamav
-
-# Install Mesa graphics drivers
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  clamav \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers \
   mesa-common-dev mesa-utils \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi)
-
-# Install architecture-specific packages
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get install -y \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice kicad firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit nvidia-driver-580-server"; fi)
