@@ -165,7 +165,7 @@ docker run -d \
 ```bash
 # Docker Buildx 설치
 cd scripts
-./buildx_install.sh
+./__buildx_install.sh
 ```
 
 ### 이미지 빌드
@@ -175,7 +175,7 @@ cd scripts
 cd 24.04
 
 # 빌드 및 레지스트리에 푸시
-./buildx.sh
+./__buildx.sh
 
 # 또는 로컬 사용 전용 빌드
 docker buildx build --platform linux/amd64 -t ubuntu:24.04-local .
@@ -185,13 +185,13 @@ docker buildx build --platform linux/amd64 -t ubuntu:24.04-local .
 
 ```bash
 # 테스트 컨테이너 시작
-./up.sh
+./__up.sh
 
 # 로그 보기
 docker logs mzdev-test
 
 # 컨테이너 중지
-./down.sh
+./__down.sh
 ```
 
 ## 사용 사례
