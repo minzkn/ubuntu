@@ -173,7 +173,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y \
   git subversion cvs gh \
   ccache distcc \
-  cscope exuberant-ctags doxygen asciidoc
+  cscope universal-ctags doxygen asciidoc
 
 # Install network and system utilities
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -207,7 +207,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get install -y \
-  python3-dev python-dev-is-python3 python3-pip \
+  python3-dev python3-pip \
   python3-pycryptodome python3-pyelftools \
   python3-sphinx python3-sphinx-rtd-theme
 
@@ -277,7 +277,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice kicad firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi)
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit nvidia-driver-580-server"; fi)
 
 # Configure XRDP for XFCE4
 RUN sed -i \
