@@ -76,7 +76,7 @@ RUN apt-get install -y \
   logrotate \
   imagemagick \
   zip \
-  p7zip \
+  p7zip-full \
   enscript \
   rcs \
   vim \

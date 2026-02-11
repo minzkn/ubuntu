@@ -118,6 +118,8 @@ RUN apt-get install -y \
   && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
   && add-apt-repository -y ppa:mozillateam/ppa \
   && add-apt-repository -y ppa:maarten-fonville/android-studio \
+  && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
@@ -169,7 +171,7 @@ RUN apt-get update -y --list-cleanup \
   net-tools bridge-utils \
   ccache \
   distcc \
-  git subversion cvs \
+  git subversion cvs gh \
   screen \
   genromfs \
   rsync \

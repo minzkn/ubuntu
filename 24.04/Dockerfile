@@ -269,7 +269,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers \
   mesa-common-dev mesa-utils \
-  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi)
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi)
 
 # Install architecture-specific packages
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \

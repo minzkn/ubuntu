@@ -111,7 +111,7 @@ RUN apt-get install -y \
   make \
   pkg-config \
   m4 autoconf automake autopoint libtool \
-  cmake3 \
+  cmake \
   bison \
   flex \
   gawk \

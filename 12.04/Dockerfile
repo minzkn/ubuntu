@@ -119,11 +119,8 @@ RUN apt-get install -y \
   gettext \
   patch \
   linux-headers-generic \
-  clang llvm \
   libelf-dev \
   libpcap-dev \
-  dwarves \
-  linux-tools-common \
   gperf \
   vim \
   net-tools \

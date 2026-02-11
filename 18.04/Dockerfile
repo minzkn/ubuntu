@@ -137,7 +137,6 @@ RUN apt-get update -y --list-cleanup \
   gcc \
   g++ \
   libc-dev \
-  musl-dev \
   gdb \
   perl \
   make \
