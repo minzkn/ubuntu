@@ -156,6 +156,7 @@ RUN apt-get update -y --list-cleanup \
   zenity \
   gvfs-backends smbclient \
   ssh-askpass-gnome \
+  flameshot \
   putty \
   remmina \
   virt-manager \
