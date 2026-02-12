@@ -82,10 +82,7 @@ LABEL \
 WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
-
-# Security: Set proper permissions on entrypoint
-RUN chmod 755 /entrypoint.sh \
-  && echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
+RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
   && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /entrypoint.sh \
   && echo "# BUILDOS: ${BUILDOS}" >> /entrypoint.sh \
   && echo "# BUILDARCH: ${BUILDARCH}" >> /entrypoint.sh \
@@ -94,145 +91,195 @@ RUN chmod 755 /entrypoint.sh \
   && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
   && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
   && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
-  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh
-
-# Clean up default ubuntu user and prepare system
-RUN (userdel -r ubuntu || true) \
+  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh \
+  && (userdel -r ubuntu || true) \
   && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/*
-
-# System initialization: Configure apt sources, update, and install base packages
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
+  && rm -rf /var/lib/apt/lists/* \
+  && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
-  && (apt-get install -y unminimize || true) && yes | unminimize \
-  && apt-get install -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
+RUN (apt-get install -y unminimize || true) && yes | unminimize
+RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
   openssh-server \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
-  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
-
-# Configure SSH with security best practices
-RUN mkdir -p /run/sshd \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
+  && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
   && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
-  && echo "# Security and connection settings" >> /etc/ssh/sshd_config \
-  && echo "PermitRootLogin no" >> /etc/ssh/sshd_config \
   && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
   && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
-  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config
-
-# Development environment: PPAs, compilers, build tools, kernel dev, and version control
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    add-apt-repository -y ppa:mozillateam/ppa \
+  && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
+  && add-apt-repository -y ppa:mozillateam/ppa \
   && add-apt-repository -y ppa:maarten-fonville/android-studio \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox \
-  && apt-get update -y --list-cleanup \
+  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
-  sudo bash sed file time \
-  build-essential binutils gcc g++ clang llvm \
-  libc-dev musl-dev gdb perl make pkg-config \
+  sudo \
+  ssh \
+  sed \
+  bash \
+  file \
+  time \
+  aria2 \
+  minicom \
+  build-essential \
+  binutils \
+  gcc \
+  g++ \
+  libc-dev \
+  musl-dev \
+  gdb \
+  perl \
+  make \
+  pkg-config \
   mtools m4 autoconf autotools-dev automake autopoint libtool libtool-bin intltool \
-  cmake meson ninja-build bison flex gawk grep gettext patch patchelf bc \
-  linux-headers-generic linux-tools-common linux-tools-generic \
-  device-tree-compiler u-boot-tools \
-  libelf-dev libpcap-dev dwarves \
-  kmod parted udev \
+  cmake \
+  meson \
+  ninja-build \
+  live-build \
+  bison \
+  flex \
+  gawk \
+  grep \
+  gettext \
+  patch patchelf \
+  bc \
+  linux-headers-generic \
+  clang llvm \
+  libreadline-dev \
+  libelf-dev \
+  libpcap-dev \
+  dwarves \
+  linux-tools-common \
+  linux-tools-generic \
+  device-tree-compiler \
+  gperf \
+  strace \
+  vim \
+  net-tools bridge-utils \
+  ccache \
+  distcc \
   git subversion cvs gh \
-  ccache distcc \
-  cscope universal-ctags doxygen asciidoc
-
-# System utilities and libraries: networking, compression, development libs, and Python
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -y --list-cleanup \
-  && apt-get install -y \
-  ssh aria2 minicom ftp \
-  net-tools bridge-utils iproute2 \
-  nmap whois dnsutils inetutils-ping \
-  openssl ssl-cert curl wget \
-  rsync screen vim strace gperf \
-  tar gzip bzip2 xz-utils unzip zlib1g-dev \
-  cpio lzip pigz p7zip-full zstd \
-  libreadline-dev libncurses-dev ncurses-term uuid-dev \
-  libssl-dev libcurl4-openssl-dev libssh-dev \
-  libconfig-dev libmbedtls-dev libmnl-dev libnuma-dev \
-  libnl-genl-3-dev libnl-3-dev liblzma-dev \
-  libarchive-zip-perl libfdt-dev libpci-dev libyaml-dev libgmp-dev \
-  libboost-dev dpkg-dev libpulse-dev \
-  python3-dev python3-pip \
-  python3-pycryptodome python3-pyelftools \
-  python3-sphinx python3-sphinx-rtd-theme
-
-# Desktop environment: XFCE4, X11/remote desktop, Korean language, and applications
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -y --list-cleanup \
-  && apt-get install -y \
-  xfce4 xfce4-terminal xfce4-goodies \
-  xfce4-clipman-plugin xfce4-cpugraph-plugin \
-  xfce4-netload-plugin xfce4-screenshooter \
-  xfce4-taskmanager xfce4-xkb-plugin \
-  dbus-x11 zenity \
-  libfontenc1 libxfont2 \
-  xfonts-encodings xfonts-utils xfonts-base xfonts-75dpi \
-  xorgxrdp xprintidle xrdp shellinabox \
-  language-selector-common language-selector-gnome language-pack-ko \
-  fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
-  fonts-nanum fonts-nanum-coding fonts-nanum-extra fonts-naver-d2coding \
-  ibus ibus-hangul im-config \
-  gvfs-backends smbclient ssh-askpass-gnome \
-  flameshot putty remmina virt-manager
-
-# Multimedia, services, and specialized packages: graphics tools, Mesa, arch-specific software
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -y --list-cleanup \
-  && apt-get install -y \
-  gimp ffmpeg vlc \
-  librecad iverilog gtkwave \
-  mediainfo dosfstools exfatprogs \
-  cron logrotate sshfs \
-  man-db xmlto help2man \
-  expect expect-dev parallel \
-  genromfs live-build android-sdk-libsparse-utils \
+  screen \
+  genromfs \
+  rsync \
+  uuid-dev \
+  libncurses-dev ncurses-term \
+  openssl ssl-cert \
+  tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
+  man-db \
+  cscope \
+  exuberant-ctags \
+  shellinabox \
+  ftp \
+  xmlto \
+  help2man \
+  libboost-dev \
+  python3-dev python-dev-is-python3 python3-pip python3-pycryptodome python3-pyelftools python3-sphinx python3-sphinx-rtd-theme \
+  libssl-dev libcurl4-openssl-dev curl wget \
+  libssh-dev \
+  sshfs \
+  iproute2 \
+  nmap \
+  whois \
+  dnsutils \
+  inetutils-ping \
+  dpkg-dev libpulse-dev \
+  libconfig-dev \
+  libmbedtls-dev \
+  libmnl-dev \
+  libnuma-dev \
+  libnl-genl-3-dev \
+  libnl-3-dev \
+  liblzma-dev \
+  libarchive-zip-perl \
+  libfdt-dev \
+  libpci-dev \
+  libyaml-dev \
+  libgmp-dev \
+  cron \
+  logrotate \
+  kmod \
+  parted \
+  udev \
+  u-boot-tools \
+  dosfstools \
+  mediainfo \
+  exfatprogs \
+  expect expect-dev \
+  parallel \
+  doxygen \
+  asciidoc \
+  android-sdk-libsparse-utils \
+  xfce4 \
+  xfce4-terminal \
+  xfce4-clipman-plugin \
+  xfce4-cpugraph-plugin \
+  xfce4-netload-plugin \
+  xfce4-screenshooter \
+  xfce4-taskmanager \
+  xfce4-xkb-plugin \
+  xfce4-goodies \
+  libfontenc1 \
+  libxfont2 \
+  xfonts-encodings \
+  xfonts-utils \
+  xfonts-base \
+  xfonts-75dpi \
+  xorgxrdp \
+  xprintidle \
+  xrdp \
+  dbus-x11 \
+  language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
+  fonts-nanum \
+  fonts-nanum-coding \
+  fonts-nanum-extra \
+  fonts-naver-d2coding \
+  ibus \
+  ibus-hangul \
+  im-config \
+  zenity \
+  gvfs-backends smbclient \
+  ssh-askpass-gnome \
+  flameshot \
+  putty \
+  remmina \
+  virt-manager \
+  librecad \
+  gimp \
+  ffmpeg \
+  vlc \
+  iverilog gtkwave \
   clamav \
-  mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers \
-  mesa-common-dev mesa-utils \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice kicad firefox"; fi) \
+  mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
+  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit nvidia-driver-580-server"; fi)
-
-# Configure XRDP for XFCE4
-RUN sed -i \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
+  && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
-# Final cleanup and security hardening
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && find /var/log -type f -exec truncate -s 0 {} \; \
-  && rm -f /var/cache/ldconfig/aux-cache \
-  && rm -rf /root/.cache
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 22/tcp 3389/tcp 4200/tcp
 STOPSIGNAL SIGTERM
