@@ -187,6 +187,7 @@ RUN apt-get update -y --list-cleanup \
   help2man \
   libboost-dev \
   python3-dev python-dev-is-python3 python3-pip python3-pycryptodome python3-pyelftools python3-sphinx python3-sphinx-rtd-theme \
+  npm \
   libssl-dev libcurl4-openssl-dev curl wget \
   libssh-dev \
   sshfs \
