@@ -21,6 +21,15 @@ ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 ARG EDITOR=vim
 
+ARG BUILDPLATFORM
+ARG BUILDOS
+ARG BUILDARCH
+ARG BUILDVARIANT
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
 ENV \
   container="docker" \
   TERM="${TERM}" \
@@ -34,7 +43,15 @@ LABEL \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \
   vendor="${HWPORT_NAMESPACE}" \
-  version="${HWPORT_VERSION}"
+  version="${HWPORT_VERSION}" \
+  build.platform="${BUILDPLATFORM}" \
+  build.os="${BUILDOS}" \
+  build.arch="${BUILDARCH}" \
+  build.variant="${BUILDVARIANT}" \
+  target.platform="${TARGETPLATFORM}" \
+  target.os="${TARGETOS}" \
+  target.arch="${TARGETARCH}" \
+  target.variant="${TARGETVARIANT}"
 
 WORKDIR /
 
