@@ -77,25 +77,19 @@ LABEL \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \
   vendor="${HWPORT_NAMESPACE}" \
-  version="${HWPORT_VERSION}"
+  version="${HWPORT_VERSION}" \
+  build.platform="${BUILDPLATFORM}" \
+  build.os="${BUILDOS}" \
+  build.arch="${BUILDARCH}" \
+  build.variant="${BUILDVARIANT}" \
+  target.platform="${TARGETPLATFORM}" \
+  target.os="${TARGETOS}" \
+  target.arch="${TARGETARCH}" \
+  target.variant="${TARGETVARIANT}"
 
 WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
-RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
-  && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /entrypoint.sh \
-  && echo "# BUILDOS: ${BUILDOS}" >> /entrypoint.sh \
-  && echo "# BUILDARCH: ${BUILDARCH}" >> /entrypoint.sh \
-  && echo "# BUILDVARIANT: ${BUILDVARIANT}" >> /entrypoint.sh \
-  && echo "# TARGETPLATFORM: ${TARGETPLATFORM}" >> /entrypoint.sh \
-  && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
-  && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
-  && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
-  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh \
-  && (userdel -r ubuntu || true) \
-  && apt-get autoclean -y \
-  && apt-get clean -y \
-  && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* \
+RUN (userdel -r ubuntu || true) \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
@@ -187,7 +181,7 @@ RUN apt-get install -y \
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
 
 EXPOSE 22/tcp
 STOPSIGNAL SIGTERM

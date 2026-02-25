@@ -77,14 +77,18 @@ LABEL \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \
   vendor="${HWPORT_NAMESPACE}" \
-  version="${HWPORT_VERSION}"
+  version="${HWPORT_VERSION}" \
+  build.platform="${BUILDPLATFORM}" \
+  build.os="${BUILDOS}" \
+  build.arch="${BUILDARCH}" \
+  build.variant="${BUILDVARIANT}" \
+  target.platform="${TARGETPLATFORM}" \
+  target.os="${TARGETOS}" \
+  target.arch="${TARGETARCH}" \
+  target.variant="${TARGETVARIANT}"
 
 WORKDIR /
-RUN apt-get autoclean -y \
-  && apt-get clean -y \
-  && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* \
-  && apt-get update -y --list-cleanup \
+RUN apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 RUN apt-get install -y tzdata ca-certificates openssl ssl-cert locales \
@@ -154,7 +158,7 @@ RUN apt-get install -y \
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
 
 EXPOSE 22/tcp
 STOPSIGNAL SIGTERM
