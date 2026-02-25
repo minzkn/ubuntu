@@ -34,7 +34,7 @@ services:
       - INIT_USER_PASSWORD=password
 #      - INIT_USER_COMMENT=Developer
 #      - INIT_USER_GROUP=users
-#      - INIT_USER_GROUPS=users,adm,sudo,audio,input
+#      - INIT_USER_GROUPS=users,adm,sudo
 #      - INIT_USER_SHELL=/bin/bash
       - XRDP_DESKTOP=yes
       - SHELLINABOX=yes

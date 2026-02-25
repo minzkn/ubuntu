@@ -46,7 +46,7 @@ if [ -n "${INIT_USER}" ]; then
                 -c "${INIT_USER_COMMENT:-Developer}" \
                 -d "/home/${INIT_USER}" \
                 -g "${INIT_USER_GROUP:-users}" \
-                -G "${INIT_USER_GROUPS:-users,adm,sudo,audio,input}" \
+                -G "${INIT_USER_GROUPS:-users,adm,sudo}" \
                 -s "${INIT_USER_SHELL:-/bin/bash}" \
                 -M "${INIT_USER}"
         else
@@ -54,7 +54,7 @@ if [ -n "${INIT_USER}" ]; then
                 -c "${INIT_USER_COMMENT:-Developer}" \
                 -d "/home/${INIT_USER}" \
                 -g "${INIT_USER_GROUP:-users}" \
-                -G "${INIT_USER_GROUPS:-users,adm,sudo,audio,input}" \
+                -G "${INIT_USER_GROUPS:-users,adm,sudo}" \
                 -s "${INIT_USER_SHELL:-/bin/bash}" \
                 -m "${INIT_USER}"
         fi

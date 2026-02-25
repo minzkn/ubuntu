@@ -50,7 +50,8 @@ LABEL \
   target.variant="${TARGETVARIANT}"
 
 WORKDIR /
-RUN apt-get update -y --list-cleanup \
+RUN (userdel -r ubuntu || true) \
+  && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 RUN apt-get install -y \
