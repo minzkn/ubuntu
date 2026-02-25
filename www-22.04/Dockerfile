@@ -41,25 +41,19 @@ LABEL \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \
   vendor="${HWPORT_NAMESPACE}" \
-  version="${HWPORT_VERSION}"
+  version="${HWPORT_VERSION}" \
+  build.platform="${BUILDPLATFORM}" \
+  build.os="${BUILDOS}" \
+  build.arch="${BUILDARCH}" \
+  build.variant="${BUILDVARIANT}" \
+  target.platform="${TARGETPLATFORM}" \
+  target.os="${TARGETOS}" \
+  target.arch="${TARGETARCH}" \
+  target.variant="${TARGETVARIANT}"
 
 WORKDIR /
 COPY --chown=root:root ["./apache2-foreground", "/usr/bin/apache2-foreground"]
-RUN echo "# Powered by ${HWPORT_URL}" >> /usr/bin/apache2-foreground \
-  && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /usr/bin/apache2-foreground \
-  && echo "# BUILDOS: ${BUILDOS}" >> /usr/bin/apache2-foreground \
-  && echo "# BUILDARCH: ${BUILDARCH}" >> /usr/bin/apache2-foreground \
-  && echo "# BUILDVARIANT: ${BUILDVARIANT}" >> /usr/bin/apache2-foreground \
-  && echo "# TARGETPLATFORM: ${TARGETPLATFORM}" >> /usr/bin/apache2-foreground \
-  && echo "# TARGETOS: ${TARGETOS}" >> /usr/bin/apache2-foreground \
-  && echo "# TARGETARCH: ${TARGETARCH}" >> /usr/bin/apache2-foreground \
-  && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /usr/bin/apache2-foreground \
-  && echo "# buildx cores: $(nproc)" >> /usr/bin/apache2-foreground \
-  && apt-get autoclean -y \
-  && apt-get clean -y \
-  && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* \
-  && apt-get update -y --list-cleanup \
+RUN apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 RUN apt-get install -y \
@@ -89,7 +83,7 @@ RUN a2enmod security2 proxy_fcgi setenvif deflate ssl http2 rewrite headers prox
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
 
 EXPOSE 80
 EXPOSE 443
