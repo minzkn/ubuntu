@@ -77,31 +77,25 @@ LABEL \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \
   vendor="${HWPORT_NAMESPACE}" \
-  version="${HWPORT_VERSION}"
+  version="${HWPORT_VERSION}" \
+  build.platform="${BUILDPLATFORM}" \
+  build.os="${BUILDOS}" \
+  build.arch="${BUILDARCH}" \
+  build.variant="${BUILDVARIANT}" \
+  target.platform="${TARGETPLATFORM}" \
+  target.os="${TARGETOS}" \
+  target.arch="${TARGETARCH}" \
+  target.variant="${TARGETVARIANT}"
 
 WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
-RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
-  && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /entrypoint.sh \
-  && echo "# BUILDOS: ${BUILDOS}" >> /entrypoint.sh \
-  && echo "# BUILDARCH: ${BUILDARCH}" >> /entrypoint.sh \
-  && echo "# BUILDVARIANT: ${BUILDVARIANT}" >> /entrypoint.sh \
-  && echo "# TARGETPLATFORM: ${TARGETPLATFORM}" >> /entrypoint.sh \
-  && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
-  && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
-  && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
-  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh \
-  && (userdel -r ubuntu || true) \
-  && apt-get autoclean -y \
-  && apt-get clean -y \
-  && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* \
+RUN (userdel -r ubuntu || true) \
   && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-RUN apt-get install -y unminimize && yes | unminimize
+RUN (apt-get install -y unminimize || true) && yes | unminimize
 RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
@@ -172,18 +166,19 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit" "libnvidia-compute-580-server" "libnvidia-encode-580-server" "libnvidia-decode-580-server" "xserver-xorg-video-nvidia-580-server"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
+  && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log
+  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
 
 EXPOSE 3389/tcp
 STOPSIGNAL SIGTERM

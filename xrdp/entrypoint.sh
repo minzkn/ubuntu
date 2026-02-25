@@ -41,13 +41,23 @@ fi
 # initial user creation
 if [ -n "${INIT_USER}" ]; then
     if ! id "${INIT_USER}" &>/dev/null; then
-        useradd \
-            -c "${INIT_USER_COMMENT:-Developer}" \
-            -d "/home/${INIT_USER}" \
-            -g "${INIT_USER_GROUP:-users}" \
-            -G "${INIT_USER_GROUPS:-users,adm,sudo,audio,input}" \
-            -s "${INIT_USER_SHELL:-/bin/bash}" \
-            -m "${INIT_USER}"
+        if [ -d "/home/${INIT_USER}" ]; then
+            useradd \
+                -c "${INIT_USER_COMMENT:-Developer}" \
+                -d "/home/${INIT_USER}" \
+                -g "${INIT_USER_GROUP:-users}" \
+                -G "${INIT_USER_GROUPS:-users,adm,sudo,audio,input}" \
+                -s "${INIT_USER_SHELL:-/bin/bash}" \
+                -M "${INIT_USER}"
+        else
+            useradd \
+                -c "${INIT_USER_COMMENT:-Developer}" \
+                -d "/home/${INIT_USER}" \
+                -g "${INIT_USER_GROUP:-users}" \
+                -G "${INIT_USER_GROUPS:-users,adm,sudo,audio,input}" \
+                -s "${INIT_USER_SHELL:-/bin/bash}" \
+                -m "${INIT_USER}"
+        fi
         if [ -n "${INIT_USER_PASSWORD}" ]; then
             echo "${INIT_USER}:${INIT_USER_PASSWORD}" | chpasswd
         fi

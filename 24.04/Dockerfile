@@ -77,26 +77,20 @@ LABEL \
   name="${HWPORT_NAMESPACE}/${HWPORT_IMAGE_NAME}:${HWPORT_IMAGE_TAG}" \
   url="${HWPORT_URL}" \
   vendor="${HWPORT_NAMESPACE}" \
-  version="${HWPORT_VERSION}"
+  version="${HWPORT_VERSION}" \
+  build.platform="${BUILDPLATFORM}" \
+  build.os="${BUILDOS}" \
+  build.arch="${BUILDARCH}" \
+  build.variant="${BUILDVARIANT}" \
+  target.platform="${TARGETPLATFORM}" \
+  target.os="${TARGETOS}" \
+  target.arch="${TARGETARCH}" \
+  target.variant="${TARGETVARIANT}"
 
 WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
-RUN echo "# Powered by ${HWPORT_URL}" >> /entrypoint.sh \
-  && echo "# BUILDPLATFORM: ${BUILDPLATFORM}" >> /entrypoint.sh \
-  && echo "# BUILDOS: ${BUILDOS}" >> /entrypoint.sh \
-  && echo "# BUILDARCH: ${BUILDARCH}" >> /entrypoint.sh \
-  && echo "# BUILDVARIANT: ${BUILDVARIANT}" >> /entrypoint.sh \
-  && echo "# TARGETPLATFORM: ${TARGETPLATFORM}" >> /entrypoint.sh \
-  && echo "# TARGETOS: ${TARGETOS}" >> /entrypoint.sh \
-  && echo "# TARGETARCH: ${TARGETARCH}" >> /entrypoint.sh \
-  && echo "# TARGETVARIANT: ${TARGETVARIANT}" >> /entrypoint.sh \
-  && echo "# buildx cores: $(nproc)" >> /entrypoint.sh \
-  && (userdel -r ubuntu || true) \
-  && apt-get autoclean -y \
-  && apt-get clean -y \
-  && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* \
+RUN (userdel -r ubuntu || true) \
   && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
@@ -278,12 +272,13 @@ RUN apt-get update -y --list-cleanup \
 #RUN npm install -g @openai/codex
 #RUN npm install -g openclaw@latest
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
+  && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
   && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
 
 EXPOSE 22/tcp 3389/tcp 4200/tcp
 STOPSIGNAL SIGTERM
