@@ -29,6 +29,12 @@ services:
       - LC_ALL=C
       - LANG=ko_KR.UTF-8
       - EDITOR=vim
+      - INIT_USER=dev
+      - INIT_USER_PASSWORD=password
+#      - INIT_USER_COMMENT=Developer
+#      - INIT_USER_GROUP=users
+#      - INIT_USER_GROUPS=users,adm,sudo,audio,input
+#      - INIT_USER_SHELL=/bin/bash
         #    volumes:
         #      - /sys/kernel/debug:/sys/kernel/debug
         #    tmpfs:

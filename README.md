@@ -35,7 +35,23 @@ docker run -d -p 80:80 -p 443:443 hwport/ubuntu:www-latest
 
 ### 사용자 계정 생성
 
-컨테이너 시작 후:
+#### 방법 1: 환경 변수를 통한 자동 생성 (권장)
+
+컨테이너 최초 구동 시 `INIT_USER` 환경 변수를 설정하면 사용자가 자동으로 생성됩니다:
+
+```bash
+docker run -d -p 2222:22 -p 3389:3389 \
+  -e INIT_USER=dev \
+  -e INIT_USER_PASSWORD=password \
+  -e XRDP_DESKTOP=yes \
+  hwport/ubuntu:24.04
+```
+
+이미 해당 사용자가 존재하는 경우 중복 생성하지 않으므로 컨테이너 재시작 시에도 안전합니다.
+
+#### 방법 2: docker exec를 통한 수동 생성
+
+컨테이너 시작 후 직접 사용자를 생성할 수도 있습니다:
 
 ```bash
 # 사용자 생성
@@ -128,17 +144,44 @@ docker exec -i -t <container-name> \
 docker run -d \
   -e TZ=Asia/Seoul \
   -e LANG=ko_KR.UTF-8 \
+  -e INIT_USER=dev \
+  -e INIT_USER_PASSWORD=password \
   -e XRDP_DESKTOP=yes \
   -e SHELLINABOX=yes \
   -e CLAMAV=yes \
   hwport/ubuntu:24.04
 ```
 
-- `TZ`: 시간대 (기본값: Asia/Seoul)
-- `LANG`: 시스템 언어 (기본값: en_US.UTF-8)
-- `XRDP_DESKTOP`: XRDP 서비스 활성화 (yes/no)
-- `SHELLINABOX`: 웹 터미널 활성화 (yes/no)
-- `CLAMAV`: 안티바이러스 업데이트 활성화 (yes/no)
+### 시스템 설정
+
+| 환경 변수 | 기본값 | 설명 |
+|---|---|---|
+| `TZ` | - | 시간대 설정. 컨테이너 시작 시 `/etc/localtime` 및 `/etc/timezone`에 반영됩니다. (예: `Asia/Seoul`, `US/Eastern`, `Europe/London`) |
+| `LANG` | `en_US.UTF-8` | 시스템 언어 |
+| `TERM` | `xterm` | 터미널 타입 |
+| `LC_ALL` | `C` | 로케일 정렬 |
+| `EDITOR` | `vim` | 기본 에디터 |
+
+### 초기 사용자 생성
+
+| 환경 변수 | 기본값 | 설명 |
+|---|---|---|
+| `INIT_USER` | - | 생성할 사용자명. 설정하지 않으면 사용자를 자동 생성하지 않습니다. |
+| `INIT_USER_PASSWORD` | - | 사용자 패스워드. 설정하지 않으면 패스워드 없이 생성됩니다. |
+| `INIT_USER_COMMENT` | `Developer` | 사용자 설명 (GECOS 필드) |
+| `INIT_USER_GROUP` | `users` | 기본 그룹 |
+| `INIT_USER_GROUPS` | `users,adm,sudo,audio,input` | 보조 그룹 (sudo 포함) |
+| `INIT_USER_SHELL` | `/bin/bash` | 기본 셸 |
+
+컨테이너 최초 구동 시 해당 사용자가 존재하지 않는 경우에만 생성합니다. 컨테이너를 재시작해도 기존 사용자는 유지됩니다.
+
+### 서비스 제어
+
+| 환경 변수 | 기본값 | 설명 |
+|---|---|---|
+| `XRDP_DESKTOP` | - | `yes`로 설정 시 XRDP 원격 데스크톱 서비스 시작 |
+| `SHELLINABOX` | - | `yes`로 설정 시 웹 기반 터미널 (Shell In A Box) 시작 |
+| `CLAMAV` | - | `yes`로 설정 시 ClamAV 안티바이러스 업데이트 시작 |
 
 ## 포트
 
@@ -234,14 +277,28 @@ services:
     image: hwport/ubuntu:24.04
     container_name: my-dev-env
     hostname: devbox
+    stdin_open: true
+    tty: true
     privileged: true
     environment:
+      - container=docker
       - TZ=Asia/Seoul
-      - LANG=en_US.UTF-8
+      - TERM=xterm
+      - LC_ALL=C
+      - LANG=ko_KR.UTF-8
+      - EDITOR=vim
+      - INIT_USER=dev
+      - INIT_USER_PASSWORD=password
+#      - INIT_USER_COMMENT=Developer
+#      - INIT_USER_GROUP=users
+#      - INIT_USER_GROUPS=users,adm,sudo,audio,input
+#      - INIT_USER_SHELL=/bin/bash
       - XRDP_DESKTOP=yes
+      - SHELLINABOX=yes
     ports:
       - "2222:22"
       - "3389:3389"
+      - "4200:4200"
     restart: unless-stopped
 ```
 
