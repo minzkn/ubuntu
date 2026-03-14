@@ -160,6 +160,7 @@ RUN apt-get update -y --list-cleanup \
   vlc \
   iverilog gtkwave \
   clamav \
+  xpdf \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \

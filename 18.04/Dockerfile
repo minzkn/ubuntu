@@ -253,6 +253,7 @@ RUN apt-get update -y --list-cleanup \
   vlc \
   iverilog gtkwave \
   clamav \
+  xpdf \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \

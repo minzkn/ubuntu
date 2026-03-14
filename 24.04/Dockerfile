@@ -258,6 +258,7 @@ RUN apt-get update -y --list-cleanup \
   iverilog gtkwave \
   clamav \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
+  xpdf \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
