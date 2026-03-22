@@ -136,6 +136,7 @@ RUN apt-get install -y \
   git subversion \
   wget curl \
   screen \
+  tmux \
   genromfs \
   rsync \
   texinfo \

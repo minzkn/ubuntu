@@ -165,6 +165,7 @@ RUN apt-get update -y --list-cleanup \
   distcc \
   git subversion cvs \
   screen \
+  tmux \
   genromfs \
   rsync \
   uuid-dev \
