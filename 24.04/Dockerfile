@@ -260,6 +260,7 @@ RUN apt-get update -y --list-cleanup \
   clamav \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
   xpdf \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mingw-w64 mingw-w64-tools wine64"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
