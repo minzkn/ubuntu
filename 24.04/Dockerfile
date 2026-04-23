@@ -150,7 +150,6 @@ RUN apt-get update -y --list-cleanup \
   patch patchelf \
   bc \
   linux-headers-generic \
-  linux-source \
   clang llvm \
   libreadline-dev \
   libelf-dev \
