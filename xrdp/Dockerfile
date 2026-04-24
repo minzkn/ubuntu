@@ -116,7 +116,7 @@ RUN apt-get update -y --list-cleanup \
   iproute2 \
   inetutils-ping \
   vim \
-  build-essential dpkg-dev libpulse-dev git autoconf libtool \
+  build-essential dpkg-dev libpulse-dev libpipewire-0.3-dev libspa-0.2-dev git autoconf libtool \
   cron \
   logrotate \
   ssh \
@@ -161,10 +161,11 @@ RUN apt-get update -y --list-cleanup \
   clamav \
   xpdf \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "arm" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "riscv64" ]; then echo "gimp"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
+  mesa-drm-shim \
+  libreoffice \
+  $(if [ "${TARGETARCH}" != "s390x" ]; then echo "gimp"; fi) \
+  $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
@@ -172,10 +173,10 @@ RUN apt-get update -y --list-cleanup \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
-RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
-  && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
-  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
+RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
+  && git -C /root/pipewire-module-xrdp checkout v0.1 \
+  && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
+  && rm -rf /root/pipewire-module-xrdp
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
