@@ -5,7 +5,7 @@ set -euo pipefail
 [ -f "Dockerfile" ] || { echo "Error: Dockerfile not found in current directory"; exit 1; }
 
 # Configuration
-IMAGE_TAG="hwport/ubuntu:www-24.04"
+IMAGE_TAG="hwport/ubuntu:www-26.04"
 PLATFORMS="linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x"
 
 # Check if buildx builder exists
