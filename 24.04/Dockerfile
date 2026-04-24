@@ -239,7 +239,7 @@ RUN apt-get update -y --list-cleanup \
   dbus-x11 \
   language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum \
-  fonts-nanum-coding \
+  fonts-nanum-eco \
   fonts-nanum-extra \
   fonts-naver-d2coding \
   ibus \
