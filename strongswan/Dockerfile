@@ -11,7 +11,7 @@ FROM ubuntu:26.04
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
 ARG HWPORT_IMAGE_TAG=strongswan
-ARG HWPORT_VERSION=1.1
+ARG HWPORT_VERSION=1.2
 ARG HWPORT_URL=https://www.minzkn.com/
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
@@ -51,7 +51,7 @@ LABEL \
 
 WORKDIR /
 RUN (userdel -r ubuntu || true) \
-  && apt-get update -y --list-cleanup \
+  && apt-get update \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 RUN apt-get install -y \
@@ -59,7 +59,9 @@ RUN apt-get install -y \
   ca-certificates openssl ssl-cert \
   iproute2 \
   iputils-ping \
-  strongswan
+  charon-systemd \
+  strongswan-swanctl \
+  strongswan-pki
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
@@ -68,6 +70,6 @@ RUN apt-get autoclean -y \
 EXPOSE 500/udp 4500/udp
 STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
-CMD ["/usr/sbin/ipsec", "start", "--nofork"]
+CMD ["/usr/sbin/charon-systemd"]
 
 # End of Dockerfile
