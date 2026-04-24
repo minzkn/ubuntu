@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2024 HWPORT.COM
+#   Copyright (C) 2026 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -42,7 +42,7 @@
 
 # ----
 
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
@@ -141,7 +141,7 @@ RUN apt-get update -y --list-cleanup \
   dbus-x11 \
   language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum \
-  fonts-nanum-coding \
+  fonts-nanum-eco \
   fonts-nanum-extra \
   fonts-naver-d2coding \
   ibus \
@@ -155,7 +155,6 @@ RUN apt-get update -y --list-cleanup \
   remmina \
   virt-manager \
   librecad \
-  gimp \
   ffmpeg \
   vlc \
   iverilog gtkwave \
@@ -164,6 +163,7 @@ RUN apt-get update -y --list-cleanup \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mesa-drm-shim"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "arm" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "riscv64" ]; then echo "gimp"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
