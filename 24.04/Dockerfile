@@ -260,10 +260,11 @@ RUN apt-get update -y --list-cleanup \
   clamav \
   mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
   xpdf \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mingw-w64 mingw-w64-tools wine64"; fi) \
+  mingw-w64 mingw-w64-tools \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
+  libreoffice \
+  $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
