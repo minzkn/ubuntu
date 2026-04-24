@@ -257,11 +257,12 @@ RUN apt-get update -y --list-cleanup \
   iverilog gtkwave \
   clamav \
   xpdf \
-  mingw-w64 mingw-w64-tools \
+  mingw-w64 \
+  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mingw-w64-tools"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "libreoffice"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" -a "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
   && sed -i \
