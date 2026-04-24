@@ -54,6 +54,25 @@ RUN (userdel -r ubuntu || true) \
   && apt-get update \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
+
+# Architecture availability matrix (packages.ubuntu.com, Ubuntu 26.04 resolute):
+#
+#   Package               amd64  arm64  armhf  ppc64el  riscv64  s390x
+#   ─────────────────────────────────────────────────────────────────────
+#   tzdata                  ✓      ✓      ✓      ✓        ✓        ✓   (arch:all)
+#   ca-certificates         ✓      ✓      ✓      ✓        ✓        ✓   (arch:all)
+#   openssl                 ✓      ✓      ✓      ✓        ✓        ✓
+#   ssl-cert                ✓      ✓      ✓      ✓        ✓        ✓   (arch:all)
+#   iproute2                ✓      ✓      ✓      ✓        ✓        ✓
+#   iputils-ping            ✓      ✓      ✓      ✓        ✓        ✓
+#   charon-systemd          ✓      ✓      ✓      ✓        ✓        ✓
+#   strongswan-swanctl      ✓      ✓      ✓      ✓        ✓        ✓
+#   strongswan-pki          ✓      ✓      ✓      ✓        ✓        ✓
+#
+#   All packages are available on every target architecture.
+#   No TARGETARCH-conditional installation is required.
+#   Note: riscv64 is served via ports.ubuntu.com (ubuntu-ports); the
+#   official ubuntu:26.04 base image already configures the correct source.
 RUN apt-get install -y \
   tzdata \
   ca-certificates openssl ssl-cert \
@@ -62,6 +81,7 @@ RUN apt-get install -y \
   charon-systemd \
   strongswan-swanctl \
   strongswan-pki
+
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
