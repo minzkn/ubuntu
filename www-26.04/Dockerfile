@@ -10,13 +10,14 @@ FROM ubuntu:26.04
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
-ARG HWPORT_IMAGE_TAG=strongswan
+ARG HWPORT_IMAGE_TAG=www-26.04
 ARG HWPORT_VERSION=1.1
 ARG HWPORT_URL=https://www.minzkn.com/
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
+ARG EDITOR=vim
 
 ARG BUILDPLATFORM
 ARG BUILDOS
@@ -31,7 +32,8 @@ ENV \
   container="docker" \
   TERM="${TERM}" \
   LC_ALL="${LC_ALL}" \
-  LANG="${LANG}"
+  LANG="${LANG}" \
+  EDITOR="${EDITOR}"
 
 LABEL \
   maintainer="JaeHyuk Cho <minzkn@minzkn.com>" \
@@ -50,24 +52,44 @@ LABEL \
   target.variant="${TARGETVARIANT}"
 
 WORKDIR /
+COPY --chown=root:root ["./apache2-foreground", "/usr/bin/apache2-foreground"]
 RUN (userdel -r ubuntu || true) \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
 RUN apt-get install -y \
-  tzdata \
-  ca-certificates openssl ssl-cert \
-  iproute2 \
+  tzdata locales ca-certificates openssl ssl-cert \
+  && locale-gen en_US.UTF-8 \
+  && locale-gen ko_KR.UTF-8 \
+  && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US
+RUN apt-get install -y \
+  apache2 \
+  libapache2-mod-security2 \
+  libapache2-mod-fcgid \
+  php php-fpm php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
+  cron \
+  logrotate \
+  imagemagick \
+  zip \
+  p7zip-full \
+  enscript \
+  rcs \
+  vim \
+  git-core \
   iputils-ping \
-  strongswan
+  ffmpeg \
+  libsubtitles-perl
+RUN a2enmod security2 proxy_fcgi setenvif deflate ssl http2 rewrite headers proxy proxy_http proxy_wstunnel cgi \
+  && a2ensite default-ssl.conf
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
 
-EXPOSE 500/udp 4500/udp
+EXPOSE 80
+EXPOSE 443
 STOPSIGNAL SIGTERM
 HEALTHCHECK NONE
-CMD ["/usr/sbin/ipsec", "start", "--nofork"]
+CMD ["/usr/bin/apache2-foreground"]
 
 # End of Dockerfile
