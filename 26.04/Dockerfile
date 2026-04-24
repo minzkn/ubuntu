@@ -253,7 +253,6 @@ RUN apt-get update -y --list-cleanup \
   remmina \
   virt-manager \
   librecad \
-  gimp \
   ffmpeg \
   vlc \
   iverilog gtkwave \
@@ -263,6 +262,7 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "mingw-w64 mingw-w64-tools wine64"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "arm" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "riscv64" ]; then echo "gimp"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
