@@ -191,7 +191,7 @@ RUN apt-get update -y --list-cleanup \
   whois \
   dnsutils \
   inetutils-ping \
-  dpkg-dev libpulse-dev \
+  dpkg-dev libpulse-dev libpipewire-0.3-dev libspa-0.2-dev \
   libconfig-dev \
   libmbedtls-dev \
   libmnl-dev \
@@ -271,13 +271,12 @@ RUN apt-get update -y --list-cleanup \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
-RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai; fi
-RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g @openai/codex; fi
+RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g openclaw@latest; fi
-RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
-  && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
-  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
+RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
+  && git -C /root/pipewire-module-xrdp checkout v0.1 \
+  && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
+  && rm -rf /root/pipewire-module-xrdp
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
