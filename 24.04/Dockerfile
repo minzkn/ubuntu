@@ -276,7 +276,7 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
   libreoffice \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
   && sed -i \
