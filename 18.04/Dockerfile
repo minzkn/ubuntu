@@ -255,8 +255,8 @@ RUN apt-get update -y --list-cleanup \
   iverilog gtkwave \
   clamav \
   xpdf \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "libreoffice"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "kicad"; fi) \
+  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "libreoffice"; fi) \
+  $(if [ "${TARGETARCH}" != "riscv64" -a "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   && sed -i \

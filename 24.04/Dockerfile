@@ -117,6 +117,17 @@ RUN apt-get install -y \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+# Architecture availability matrix for conditional packages (packages.ubuntu.com, Ubuntu 24.04 noble):
+#
+#   Package                  amd64  arm64  armhf  ppc64el  riscv64  s390x
+#   ─────────────────────────────────────────────────────────────────────────
+#   wine64                     ✓      ✓      ✗      ✗        ✗        ✗
+#   mesa-drm-shim              ✓      ✓      ✓      ✓        ✗        ✓
+#   libreoffice                ✓      ✓      ✓      ✓        ✓        ✓
+#   kicad                      ✓      ✓      ✓      ✓        ✓        ✗   (gained riscv64 in noble)
+#   firefox (mozillateam PPA)  ✓      ✓      ✗      ✓        ✗        ✓   (armhf dropped from noble PPA)
+#   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
+#   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo \
@@ -265,7 +276,7 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mesa-drm-shim"; fi) \
   libreoffice \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
   && sed -i \

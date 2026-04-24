@@ -117,6 +117,18 @@ RUN apt-get install -y \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+# Architecture availability matrix for conditional packages (packages.ubuntu.com, Ubuntu 26.04 resolute):
+#
+#   Package                  amd64  arm64  armhf  ppc64el  riscv64  s390x
+#   ─────────────────────────────────────────────────────────────────────────
+#   wine64                     ✓      ✓      ✗      ✗        ✗        ✗
+#   mesa-drm-shim              ✓      ✓      ✓      ✓        ✓        ✓
+#   gimp                       ✓      ✓      ✓      ✓        ✓        ✗   (GIMP 3.0 dropped s390x)
+#   libreoffice                ✓      ✓      ✓      ✓        ✓        ✓
+#   kicad                      ✓      ✓      ✓      ✓        ✓        ✗
+#   firefox (mozillateam PPA)  ✓      ✓      ✗      ✓        ✗        ✓   (armhf dropped from noble+ PPA)
+#   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
+#   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo \
@@ -263,7 +275,7 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
   mesa-drm-shim \
   libreoffice \
-  gimp \
+  $(if [ "${TARGETARCH}" != "s390x" ]; then echo "gimp"; fi) \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
