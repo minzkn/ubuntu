@@ -99,12 +99,11 @@ RUN (apt-get install -y unminimize || true) && yes | unminimize
 RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
-  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
+  ca-certificates gnupg2 ubuntu-keyring \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && add-apt-repository -y ppa:mozillateam/ppa \
-  && add-apt-repository -y ppa:maarten-fonville/android-studio \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
@@ -160,21 +159,20 @@ RUN apt-get update -y --list-cleanup \
   iverilog gtkwave \
   clamav \
   xpdf \
-  mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
+  mesa-libgallium mesa-vulkan-drivers mesa-common-dev mesa-utils \
   mesa-drm-shim \
   libreoffice \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "gimp"; fi) \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-595-server libnvidia-encode-595-server libnvidia-decode-595-server xserver-xorg-video-nvidia-595-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
-  && git -C /root/pipewire-module-xrdp checkout v0.1 \
+  && git -C /root/pipewire-module-xrdp checkout v0.2 \
   && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
   && rm -rf /root/pipewire-module-xrdp
 RUN apt-get autoclean -y \

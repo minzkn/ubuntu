@@ -7,7 +7,7 @@
 version: "2.1"
 services:
   www-test:
-    image: hwport/ubuntu:www-24.04
+    image: hwport/ubuntu:www-26.04
     container_name: www-test
     hostname: www-test
     stdin_open: true

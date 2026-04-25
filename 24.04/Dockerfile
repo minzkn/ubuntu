@@ -99,7 +99,7 @@ RUN (apt-get install -y unminimize || true) && yes | unminimize
 RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
-  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
+  ca-certificates gnupg2 ubuntu-keyring \
   openssh-server \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
@@ -125,7 +125,7 @@ RUN apt-get install -y \
 #   mesa-drm-shim              ✓      ✓      ✓      ✓        ✗        ✓
 #   libreoffice                ✓      ✓      ✓      ✓        ✓        ✓
 #   kicad                      ✓      ✓      ✓      ✓        ✓        ✗   (gained riscv64 in noble)
-#   firefox (mozillateam PPA)  ✓      ✓      ✗      ✓        ✗        ✓   (armhf dropped from noble PPA)
+#   firefox (mozillateam PPA)  ✓      ✓      ✗      ✗        ✗        ✓   (armhf/ppc64el dropped from noble PPA)
 #   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
 #   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
 RUN apt-get update -y --list-cleanup \
@@ -186,7 +186,7 @@ RUN apt-get update -y --list-cleanup \
   tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
   man-db \
   cscope \
-  exuberant-ctags \
+  universal-ctags \
   shellinabox \
   ftp \
   xmlto \
@@ -278,14 +278,12 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-590-server libnvidia-encode-590-server libnvidia-decode-590-server xserver-xorg-video-nvidia-590-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
-RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai; fi
-RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g @openai/codex; fi
-#RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g openclaw@latest; fi
+RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \

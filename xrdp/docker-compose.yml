@@ -4,7 +4,6 @@
 #### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
 ####
 
-version: "2.1"
 services:
   xrdp:
     image: hwport/ubuntu:xrdp

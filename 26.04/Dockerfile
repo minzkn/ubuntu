@@ -99,7 +99,7 @@ RUN (apt-get install -y unminimize || true) && yes | unminimize
 RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
-  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
+  ca-certificates gnupg2 ubuntu-keyring \
   openssh-server \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
@@ -112,7 +112,6 @@ RUN apt-get install -y \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
   && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
   && add-apt-repository -y ppa:mozillateam/ppa \
-  && add-apt-repository -y ppa:maarten-fonville/android-studio \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
@@ -127,7 +126,6 @@ RUN apt-get install -y \
 #   libreoffice                ✓      ✓      ✓      ✓        ✓        ✓
 #   kicad                      ✓      ✓      ✓      ✓        ✓        ✗
 #   firefox (mozillateam PPA)  ✓      ✓      ✗      ✓        ✗        ✓   (armhf dropped from noble+ PPA)
-#   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
 #   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
@@ -184,10 +182,10 @@ RUN apt-get update -y --list-cleanup \
   uuid-dev \
   libncurses-dev ncurses-term \
   openssl ssl-cert \
-  tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
+  tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz 7zip zstd \
   man-db \
   cscope \
-  exuberant-ctags \
+  universal-ctags \
   shellinabox \
   ftp \
   xmlto \
@@ -269,7 +267,7 @@ RUN apt-get update -y --list-cleanup \
   vlc \
   iverilog gtkwave \
   clamav \
-  mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
+  mesa-libgallium mesa-vulkan-drivers mesa-common-dev mesa-utils \
   xpdf \
   mingw-w64 mingw-w64-tools \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
@@ -278,8 +276,7 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "gimp"; fi) \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-580-server libnvidia-encode-580-server libnvidia-decode-580-server xserver-xorg-video-nvidia-580-server"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-595-server libnvidia-encode-595-server libnvidia-decode-595-server xserver-xorg-video-nvidia-595-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
