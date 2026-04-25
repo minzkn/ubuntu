@@ -17,11 +17,6 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
       - SYS_MODULE
-    sysctls:
-      - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.accept_redirects=0
-      - net.ipv4.conf.all.send_redirects=0
-      - net.ipv6.conf.all.forwarding=1
     environment:
       - container=docker
       - TZ=Asia/Seoul
@@ -32,7 +27,8 @@ services:
     volumes:
       - ./charon.conf:/etc/strongswan.d/charon.conf:ro
       - ./strongswan.conf:/etc/strongswan.conf:ro
-      - ./swanctl.conf:/etc/swanctl/swanctl.conf:ro
+      - ./ipsec.secrets:/etc/ipsec.secrets:ro
+      - ./ipsec.conf:/etc/ipsec.conf:ro
         #      - ./ipsec.d:/etc/ipsec.d:ro
         #    tmpfs:
         #      - /tmp
@@ -60,7 +56,7 @@ services:
     #      driver: bridge
     #      enable_ipv6: true
     #      driver_opts:
-    #        com.docker.network.enable_ipv6: "false"
+    #        com.docker.network.enable_ipv6: "false" 
     #      ipam:
     #        driver: default
     #        config:
@@ -71,13 +67,13 @@ services:
     #networks:
     #  internet:
     #    ipam:
-    #      driver: default
+    #      driver: default 
     #      config:
     #        - subnet: 192.168.0.0/24
     #  intranet:
     #     ipam:
     #        driver: default
     #        config:
-    #          - subnet: 10.1.0.0/16
+    #          - subnet: 10.1.0.0/16 
 
 # End of docker-compose.yml
