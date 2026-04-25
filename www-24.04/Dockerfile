@@ -66,6 +66,7 @@ RUN apt-get install -y \
   apache2 \
   libapache2-mod-security2 \
   libapache2-mod-fcgid \
+  libapache2-mod-php \
   php php-fpm php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
   cron \
   logrotate \
