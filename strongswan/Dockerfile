@@ -59,15 +59,19 @@ RUN apt-get install -y \
   ca-certificates openssl ssl-cert \
   iproute2 \
   iputils-ping \
-  strongswan
+  strongswan \
+  strongswan-starter \
+  libcharon-extra-plugins \
+  libstrongswan-extra-plugins
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.npm
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 500/udp 4500/udp
 STOPSIGNAL SIGTERM
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD /usr/sbin/ipsec statusall >/dev/null 2>&1 || exit 1
 CMD ["/usr/sbin/ipsec", "start", "--nofork"]
 
 # End of Dockerfile

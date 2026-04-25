@@ -1,5 +1,5 @@
 ###
-#### Copyright (C) JAEHYUK CHO
+#### Copyright (C) 2026 HWPORT.COM
 #### All rights reserved.
 #### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
 ####
@@ -11,10 +11,8 @@ services:
     hostname: strongswan
     stdin_open: true
     tty: true
-    #    privileged: true
     cap_add:
       - NET_ADMIN
-      - SYS_ADMIN
     environment:
       - container=docker
       - TZ=Asia/Seoul
@@ -27,51 +25,7 @@ services:
       - ./strongswan.conf:/etc/strongswan.conf:ro
       - ./ipsec.secrets:/etc/ipsec.secrets:ro
       - ./ipsec.conf:/etc/ipsec.conf:ro
-        #      - ./ipsec.d:/etc/ipsec.d:ro
-        #    tmpfs:
-        #      - /tmp
-        #      - /run
-        #      - /run/lock
-        #    networks:
-        #      - default
-        #    networks:
-        #      internet:
-        #         ipv4_address: 192.168.0.2
-        #      intranet:
-        #         ipv4_address: 10.1.0.2
-        #    network_mode: bridge
     network_mode: host
-    #    ports:
-    #      - "500:500/udp"
-    #      - "4500:4500/udp"
     restart: unless-stopped
-    #networks:
-    #    default:
-    #      external:
-    #        name: bridge
-    #networks:
-    #    default:
-    #      driver: bridge
-    #      enable_ipv6: true
-    #      driver_opts:
-    #        com.docker.network.enable_ipv6: "false"
-    #      ipam:
-    #        driver: default
-    #        config:
-    #          - subnet: 172.21.251.0/24
-    #            gateway: 172.21.251.1
-    #          - subnet: fec0:172:21:251::/64
-    #            #            gateway: fec0:172:21:251::1
-    #networks:
-    #  internet:
-    #    ipam:
-    #      driver: default
-    #      config:
-    #        - subnet: 192.168.0.0/24
-    #  intranet:
-    #     ipam:
-    #        driver: default
-    #        config:
-    #          - subnet: 10.1.0.0/16
 
 # End of docker-compose.yml
