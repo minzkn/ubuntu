@@ -282,6 +282,7 @@ RUN apt-get update -y --list-cleanup \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
+#RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
   && git -C /root/pipewire-module-xrdp checkout v0.1 \
   && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
