@@ -283,7 +283,7 @@ RUN apt-get update -y --list-cleanup \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
-RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
+#RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
