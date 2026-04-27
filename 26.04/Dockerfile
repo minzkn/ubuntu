@@ -106,6 +106,7 @@ RUN apt-get install -y \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
   && mkdir -p /run/sshd \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/sshd \
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman \
   && cp -f /etc/ssh/sshd_config /etc/ssh/sshd_config.org \
   && echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config \
   && echo "GatewayPorts yes" >> /etc/ssh/sshd_config \
@@ -280,11 +281,12 @@ RUN apt-get update -y --list-cleanup \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
+  && grep -q "xfce4-session" /etc/xrdp/startwm.sh || echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/xrdp/startwm.sh \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex @google/gemini-cli; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
-  && git -C /root/pipewire-module-xrdp checkout v0.1 \
+  && git -C /root/pipewire-module-xrdp checkout v0.2 \
   && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
   && rm -rf /root/pipewire-module-xrdp
 RUN apt-get autoclean -y \
