@@ -112,7 +112,6 @@ RUN apt-get install -y \
   && echo "ClientAliveInterval 60" >> /etc/ssh/sshd_config \
   && echo "ClientAliveCountMax 3" >> /etc/ssh/sshd_config \
   && add-apt-repository -y ppa:mozillateam/ppa \
-  && add-apt-repository -y ppa:maarten-fonville/android-studio \
   && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
@@ -126,7 +125,6 @@ RUN apt-get install -y \
 #   libreoffice                ✓      ✓      ✓      ✓        ✓        ✓
 #   kicad                      ✓      ✓      ✓      ✓        ✓        ✗   (gained riscv64 in noble)
 #   firefox (mozillateam PPA)  ✓      ✓      ✗      ✗        ✗        ✓   (armhf/ppc64el dropped from noble PPA)
-#   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
 #   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
@@ -277,12 +275,13 @@ RUN apt-get update -y --list-cleanup \
   libreoffice \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-590-server libnvidia-encode-590-server libnvidia-decode-590-server xserver-xorg-video-nvidia-590-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
-  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
+  && grep -q "xfce4-session" /etc/xrdp/startwm.sh || echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/xrdp/startwm.sh \
+  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
