@@ -185,6 +185,9 @@ RUN apt-get update -y --list-cleanup \
   man-db \
   cscope \
   universal-ctags \
+  docker.io \
+  docker-compose-v2 \
+  docker-buildx \
   shellinabox \
   ftp \
   xmlto \

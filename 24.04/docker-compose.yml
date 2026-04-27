@@ -32,7 +32,7 @@ services:
       - INIT_USER_PASSWORD=password
 #      - INIT_USER_COMMENT=Developer
 #      - INIT_USER_GROUP=users
-#      - INIT_USER_GROUPS=users,adm,sudo
+#      - INIT_USER_GROUPS=users,adm,sudo,docker
 #      - INIT_USER_SHELL=/bin/bash
       - CLAMAV=yes
       - XRDP_DESKTOP=yes
@@ -55,6 +55,7 @@ services:
 #      - /dev/fuse:/dev/fuse
 #      - /dev/kvm:/dev/kvm
 #    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
 #      - /sys/kernel/debug:/sys/kernel/debug
 #    tmpfs:
 #      - /tmp
