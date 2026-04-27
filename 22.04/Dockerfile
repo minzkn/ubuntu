@@ -98,7 +98,7 @@ RUN (apt-get install -y unminimize || true) && yes | unminimize
 RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
-  ca-certificates apt-transport-https gnupg2 ubuntu-keyring \
+  ca-certificates gnupg2 ubuntu-keyring \
   openssh-server \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
@@ -185,7 +185,10 @@ RUN apt-get update -y --list-cleanup \
   tar gzip bzip2 xz-utils unzip zlib1g-dev cpio lzip pigz p7zip-full zstd \
   man-db \
   cscope \
-  exuberant-ctags \
+  universal-ctags \
+  docker.io \
+  docker-compose-v2 \
+  docker-buildx \
   shellinabox \
   ftp \
   xmlto \
@@ -267,6 +270,7 @@ RUN apt-get update -y --list-cleanup \
   vlc \
   iverilog gtkwave \
   clamav \
+  mesa-va-drivers mesa-vdpau-drivers mesa-vulkan-drivers mesa-common-dev mesa-utils \
   xpdf \
   mingw-w64 \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mingw-w64-tools"; fi) \
@@ -279,7 +283,9 @@ RUN apt-get update -y --list-cleanup \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \
-  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession
+  && grep -q "xfce4-session" /etc/xrdp/startwm.sh || echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/xrdp/startwm.sh \
+  && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman
 RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
   && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
   && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \

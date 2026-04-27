@@ -4,7 +4,6 @@
 #### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
 ####
 
-version: "2.1"
 services:
   mzdev-test:
     image: hwport/ubuntu:18.04
@@ -30,7 +29,7 @@ services:
       - LANG=ko_KR.UTF-8
       - EDITOR=vim
       - INIT_USER=dev
-      - INIT_USER_PASSWORD=password
+#      - INIT_USER_PASSWORD=password
 #      - INIT_USER_COMMENT=Developer
 #      - INIT_USER_GROUP=users
 #      - INIT_USER_GROUPS=users,adm,sudo

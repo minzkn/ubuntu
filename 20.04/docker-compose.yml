@@ -35,18 +35,21 @@ services:
 #      - INIT_USER_GROUP=users
 #      - INIT_USER_GROUPS=users,adm,sudo
 #      - INIT_USER_SHELL=/bin/bash
+      - XRDP_DESKTOP=yes
+      - SHELLINABOX=yes
         #    volumes:
         #      - /sys/kernel/debug:/sys/kernel/debug
         #    tmpfs:
         #      - /tmp
         #      - /run
         #      - /run/lock
-        #      - /run/sshd
         #    networks:
         #      - default
     network_mode: bridge
     ports:
       - "2222:22"
+      - "3389:3389"
+      - "4200:4200"
     restart: unless-stopped
     #networks:
     #    default:

@@ -116,6 +116,18 @@ RUN apt-get install -y \
   && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
   && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+# Architecture availability matrix for conditional packages (packages.ubuntu.com, Ubuntu 20.04 focal):
+#
+#   Package                  amd64  arm64  armhf  ppc64el  riscv64  s390x
+#   ─────────────────────────────────────────────────────────────────────────
+#   mingw-w64-tools            ✓      ✓      ✓      ✓        ✗        ✓
+#   wine64                     ✓      ✓      ✗      ✗        ✗        ✗
+#   libreoffice                ✓      ✓      ✓      ✓        ✗        ✓
+#   kicad                      ✓      ✓      ✓      ✓        ✗        ✗
+#   firefox (mozillateam PPA)  ✓      ✓      ✓      ✓        ✗        ✓
+#   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
+#   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
+
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo \
@@ -255,9 +267,12 @@ RUN apt-get update -y --list-cleanup \
   vlc \
   iverilog gtkwave \
   clamav \
+  mingw-w64 \
+  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "mingw-w64-tools"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "libreoffice"; fi) \
   $(if [ "${TARGETARCH}" != "riscv64" -a "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-570-server libnvidia-encode-570-server libnvidia-decode-570-server xserver-xorg-video-nvidia-570-server"; fi) \
   && sed -i \
