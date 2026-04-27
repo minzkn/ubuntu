@@ -66,6 +66,8 @@ fi
 
 [ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
 /usr/sbin/service cron start
+/usr/sbin/service dbus start
+/usr/sbin/service polkit start 2>/dev/null || true
 
 [ -f "/var/run/xrdp/xrdp-sesman.pid" ] && rm -f "/var/run/xrdp/xrdp-sesman.pid"
 [ -f "/var/run/xrdp/xrdp.pid" ] && rm -f "/var/run/xrdp/xrdp.pid"
