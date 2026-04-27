@@ -18,8 +18,11 @@ if ! docker buildx inspect multiarch >/dev/null 2>&1; then
     exit 1
 fi
 
-# Build and push all tags
+# Build and push all tags in a single pass
+TAG_ARGS=()
 for TAG in "${IMAGE_TAGS[@]}"; do
-    echo "Building and pushing ${TAG} for platforms: ${PLATFORMS}"
-    docker buildx build --push --platform "${PLATFORMS}" --tag "${TAG}" .
+    TAG_ARGS+=(--tag "${TAG}")
 done
+echo "Building and pushing for platforms: ${PLATFORMS}"
+printf '  tag: %s\n' "${IMAGE_TAGS[@]}"
+docker buildx build --push --platform "${PLATFORMS}" "${TAG_ARGS[@]}" .

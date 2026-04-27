@@ -51,7 +51,6 @@ LABEL \
   target.arch="${TARGETARCH}" \
   target.variant="${TARGETVARIANT}"
 
-WORKDIR /
 RUN (userdel -r ubuntu || true) \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \

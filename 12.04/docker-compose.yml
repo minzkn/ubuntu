@@ -4,7 +4,6 @@
 #### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
 ####
 
-version: "2.1"
 services:
   mzdev-test:
     image: hwport/ubuntu:12.04

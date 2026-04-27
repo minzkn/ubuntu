@@ -53,17 +53,18 @@ WORKDIR /
 RUN (userdel -r ubuntu || true) \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
-  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
-RUN apt-get install -y \
-  tzdata \
-  ca-certificates openssl ssl-cert \
-  iproute2 \
-  iputils-ping \
-  strongswan \
-  strongswan-starter \
-  libcharon-extra-plugins \
-  libstrongswan-extra-plugins
-RUN apt-get autoclean -y \
+  && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y \
+  && apt-get install -y --no-install-recommends \
+    tzdata \
+    ca-certificates openssl ssl-cert \
+    iproute2 \
+    iputils-ping \
+    iptables \
+    strongswan \
+    strongswan-starter \
+    libcharon-extra-plugins \
+    libstrongswan-extra-plugins \
+  && apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

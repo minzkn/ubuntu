@@ -4,7 +4,6 @@
 #### Author: JAEHYUK CHO <mailto:minzkn@minzkn.com>
 ####
 
-version: "2.1"
 services:
   cron:
     image: hwport/ubuntu:cron
@@ -25,22 +24,18 @@ services:
     environment:
       #      - container=docker
       - TZ=Asia/Seoul
-        #      - TERM=xterm
-        #      - LC_ALL=C
-        #      - LANG=ko_KR.UTF-8
-        #      - EDITOR=vim
-        #    volumes:
-        #      - /sys/kernel/debug:/sys/kernel/debug
-        #      - ./crontabs:/var/spool/cron/crontabs
-        #    tmpfs:
-        #      - /tmp
-        #      - /run
-        #      - /run/lock
-        #    networks:
-        #      - default
+      #      - TERM=xterm
+      #      - LC_ALL=C
+      #      - LANG=ko_KR.UTF-8
+      #      - EDITOR=vim
+    volumes:
+      - ./crontabs:/var/spool/cron/crontabs
+      #      - /sys/kernel/debug:/sys/kernel/debug
+    #    tmpfs:
+    #      - /tmp
+    #      - /run
+    #      - /run/lock
     network_mode: bridge
-    ports:
-      - "2222:22"
     restart: unless-stopped
     #networks:
     #    default:
@@ -51,7 +46,7 @@ services:
     #      driver: bridge
     #      enable_ipv6: true
     #      driver_opts:
-    #        com.docker.network.enable_ipv6: "false" 
+    #        com.docker.network.enable_ipv6: "false"
     #      ipam:
     #        driver: default
     #        config:
