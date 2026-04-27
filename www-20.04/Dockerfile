@@ -1,5 +1,5 @@
 #
-#   Copyright (C) 2024 HWPORT.COM
+#   Copyright (C) 2026 HWPORT.COM
 #   All rights reserved.
 #
 #   Maintainers
@@ -66,7 +66,8 @@ RUN apt-get install -y \
   apache2 \
   libapache2-mod-security2 \
   libapache2-mod-fcgid \
-  php php-fpm php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-imagick php-sqlite3 php-mysql \
+  libapache2-mod-php \
+  php php-fpm php-intl php-bz2 php-zip php-xml php-json php-mbstring php-gd php-sqlite3 php-mysql \
   cron \
   logrotate \
   imagemagick \
@@ -75,7 +76,8 @@ RUN apt-get install -y \
   enscript \
   rcs \
   vim \
-  git-core \
+  git \
+  curl \
   iputils-ping \
   ffmpeg \
   libsubtitles-perl
@@ -89,7 +91,7 @@ RUN apt-get autoclean -y \
 EXPOSE 80
 EXPOSE 443
 STOPSIGNAL SIGTERM
-HEALTHCHECK NONE
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 CMD curl -sf http://localhost/ -o /dev/null || exit 1
 CMD ["/usr/bin/apache2-foreground"]
 
 # End of Dockerfile

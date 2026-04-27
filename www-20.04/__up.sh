@@ -17,17 +17,10 @@ sleep 2
 
 # Display next steps
 echo ""
-echo "✓ Container started successfully!"
+echo "Container started successfully!"
 echo ""
 echo "Next steps:"
-echo "1. Create a user account:"
-echo "   docker exec -i -t ${DOCKER_CONTAINER_NAME} useradd -c \"Developer\" -d \"/home/dev\" -g \"users\" -G \"users,adm,sudo,audio,input\" -s \"/bin/bash\" -m dev"
-echo ""
-echo "2. Set password:"
-echo "   docker exec -i -t ${DOCKER_CONTAINER_NAME} sh -c \"echo 'dev:password' | chpasswd\""
-echo ""
-echo "3. Connect via SSH or XRDP:"
-echo "   ssh -p 2222 dev@localhost"
-echo "   xrdp: localhost:3389"
+echo "1. HTTP:  http://localhost:8080"
+echo "2. HTTPS: https://localhost:8443"
 
 # End of __up.sh
