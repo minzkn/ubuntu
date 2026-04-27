@@ -6,42 +6,6 @@
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
 
-# reference : https://docs.docker.com/engine/reference/builder/
-# FROM [--platform=<platform>] <image> [AS <name>]
-# FROM [--platform=<platform>] <image>[:<tag>] [AS <name>]
-# FROM [--platform=<platform>] <image>[@<digest>] [AS <name>]
-# RUN <command> (shell form, the command is run in a shell, which by default is /bin/sh -c on Linux or cmd /S /C on Windows)
-# RUN ["executable", "param1", "param2"] (exec form)
-# RUN --mount=[type=<TYPE>][,option=<value>[,option=<value>]...]
-# CMD ["executable","param1","param2"] (exec form, this is the preferred form)
-# CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
-# CMD command param1 param2 (shell form)
-# LABEL <key>=<value> <key>=<value> <key>=<value> ...
-# EXPOSE <port> [<port>/<protocol>...]
-# ENV <key>=<value> ...
-# ADD [--chown=<user>:<group>] [--checksum=<checksum>] <src>... <dest>
-# ADD [--chown=<user>:<group>] ["<src>",... "<dest>"]
-# COPY [--chown=<user>:<group>] <src>... <dest>
-# COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
-# ENTRYPOINT ["executable", "param1", "param2"]
-# ENTRYPOINT command param1 param2
-# VOLUME ["/data"]
-# USER <user>[:<group>]
-# USER <UID>[:<GID>]
-# WORKDIR /path/to/workdir
-# ARG <name>[=<default value>]
-# ONBUILD <INSTRUCTION>
-# STOPSIGNAL signal
-# HEALTHCHECK [OPTIONS] CMD command (check container health by running a command inside the container)
-#     --interval=DURATION (default: 30s)
-#     --timeout=DURATION (default: 30s)
-#     --start-period=DURATION (default: 0s)
-#     --retries=N (default: 3)
-# HEALTHCHECK NONE (disable any healthcheck inherited from the base image)
-# SHELL ["executable", "parameters"]
-
-# ----
-
 FROM ubuntu:22.04
 
 ARG HWPORT_NAMESPACE=hwport
@@ -66,6 +30,7 @@ ARG TARGETVARIANT
 
 ENV \
   container="docker" \
+  DEBIAN_FRONTEND="${DEBIAN_FRONTEND}" \
   TERM="${TERM}" \
   LC_ALL="${LC_ALL}" \
   LANG="${LANG}" \

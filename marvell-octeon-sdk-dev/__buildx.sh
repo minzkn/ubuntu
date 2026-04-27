@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Configuration
 IMAGE_TAG="hwport/ubuntu:marvell-octeon-sdk-dev"
-PLATFORMS="linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/riscv64,linux/s390x"
+PLATFORMS="linux/amd64,linux/arm64/v8"
 
 # Check if buildx builder exists
 if ! docker buildx inspect multiarch >/dev/null 2>&1; then
