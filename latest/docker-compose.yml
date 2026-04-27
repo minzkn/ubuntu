@@ -12,7 +12,7 @@ services:
     hostname: mzdev-test
     stdin_open: true
     tty: true
-    privileged: true
+    #    privileged: true
     #    cap_add:
     #      - "SYS_ADMIN"
     #      - "SYS_RESOURCE"

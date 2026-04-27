@@ -12,7 +12,7 @@ services:
     hostname: www-test
     stdin_open: true
     tty: true
-    privileged: false
+    #    privileged: false
     #    environment:
     #      - container=docker
     #      - TZ=Asia/Seoul

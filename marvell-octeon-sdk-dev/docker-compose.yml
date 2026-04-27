@@ -12,7 +12,7 @@ services:
     hostname: marvell-octeon-sdk-dev
     stdin_open: true
     tty: true
-    privileged: false
+    #    privileged: false
     #    cap_add:
     #      - "SYS_ADMIN"
     #      - "SYS_RESOURCE"
