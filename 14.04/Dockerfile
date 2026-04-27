@@ -5,6 +5,8 @@
 #   Maintainers
 #     JaeHyuk Cho ( <mailto:minzkn@minzkn.com> )
 #
+#   DEPRECATED: Ubuntu 14.04 reached End of Life in April 2019 (ESM ended April 2024).
+#   This image no longer receives security updates. Use 22.04 or later.
 
 # reference : https://docs.docker.com/engine/reference/builder/
 # FROM [--platform=<platform>] <image> [AS <name>]
@@ -43,7 +45,6 @@
 # ----
 
 FROM ubuntu:14.04
-#FROM ubuntu:14.04.5
 
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
