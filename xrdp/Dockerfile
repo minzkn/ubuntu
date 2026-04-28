@@ -100,14 +100,14 @@ RUN apt-get install -y \
   software-properties-common \
   tzdata debconf-utils locales \
   ca-certificates gnupg2 ubuntu-keyring \
+  wget \
   && locale-gen en_US.UTF-8 \
   && locale-gen ko_KR.UTF-8 \
   && update-locale LANG=en_US.UTF-8 LANGUAGE=en_US \
-  && add-apt-repository -y ppa:mozillateam/ppa \
-  && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
-  && echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' > /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+  && install -d -m 0755 /etc/apt/keyrings \
+  && wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O /etc/apt/keyrings/packages.mozilla.org.asc \
+  && echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" > /etc/apt/sources.list.d/mozilla.list \
+  && printf 'Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1000\n' > /etc/apt/preferences.d/mozilla-firefox
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo \
@@ -165,12 +165,15 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "gimp"; fi) \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "wine64"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-595-server libnvidia-encode-595-server libnvidia-decode-595-server xserver-xorg-video-nvidia-595-server"; fi) \
   && printf '#!/bin/sh\nif [ -r /etc/default/locale ]; then\n  . /etc/default/locale\n  export LANG LANGUAGE\nfi\nuid=$(id -u)\nexport XDG_RUNTIME_DIR="/run/user/${uid}"\nmkdir -p "${XDG_RUNTIME_DIR}"\nchmod 0700 "${XDG_RUNTIME_DIR}"\ntest -x /usr/bin/xfce4-session && exec dbus-launch --exit-with-session /usr/bin/xfce4-session\nexec /bin/sh /etc/X11/Xsession\n' > /etc/xrdp/startwm.sh \
   && chmod +x /etc/xrdp/startwm.sh \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
-  && adduser xrdp ssl-cert
+  && adduser xrdp ssl-cert \
+  && mkdir -p /etc/xdg/xfce4/xfconf/xfce-perchannel-xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml \
+  && printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-session" version="1.0">\n  <property name="general" type="empty">\n    <property name="SaveOnExit" type="bool" value="false"/>\n    <property name="LogoutTimeout" type="int" value="10"/>\n    <property name="LockCommand" type="string" value=""/>\n  </property>\n  <property name="shutdown" type="empty">\n    <property name="ShowHibernate" type="bool" value="false"/>\n    <property name="ShowSuspend" type="bool" value="false"/>\n    <property name="ShowPowerOff" type="bool" value="false"/>\n    <property name="ShowRestart" type="bool" value="false"/>\n    <property name="ShowHybridSleep" type="bool" value="false"/>\n  </property>\n</channel>\n' > /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml \
+  && cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
 RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
   && git -C /root/pipewire-module-xrdp checkout v0.2 \
   && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \

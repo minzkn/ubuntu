@@ -64,6 +64,9 @@ if [ -n "${INIT_USER}" ]; then
     fi
 fi
 
+mkdir -p /run/user
+chmod 1777 /run/user
+
 [ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
 /usr/sbin/service cron start
 /usr/sbin/service dbus start
