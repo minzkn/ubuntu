@@ -72,6 +72,8 @@ fi
 [ -f "/var/run/xrdp/xrdp-sesman.pid" ] && rm -f "/var/run/xrdp/xrdp-sesman.pid"
 [ -f "/var/run/xrdp/xrdp.pid" ] && rm -f "/var/run/xrdp/xrdp.pid"
 /usr/sbin/service xrdp start
+chown root:xrdp /run/xrdp/sockdir
+chmod 2770 /run/xrdp/sockdir
 
 # === END   : EDIT FOR YOU ===
 
