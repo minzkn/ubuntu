@@ -64,9 +64,6 @@ if [ -n "${INIT_USER}" ]; then
     fi
 fi
 
-mkdir -p /run/user
-chmod 1777 /run/user
-
 [ -f "/var/run/crond.pid" ] && rm -f "/var/run/crond.pid"
 /usr/sbin/service cron start
 /usr/sbin/service dbus start
@@ -84,7 +81,10 @@ then
 /usr/sbin/service xrdp start
 (while sleep 0.5; do
     for _d in /run/xrdp/sockdir/[0-9]*/; do
-        [ -d "${_d}" ] && chown :xrdp "${_d}" 2>/dev/null
+        [ -d "${_d}" ] && chown :xrdp "${_d}" 2>/dev/null && chmod g+s "${_d}" 2>/dev/null
+        for _f in "${_d}"*; do
+            [ -S "${_f}" ] && chown :xrdp "${_f}" 2>/dev/null && chmod g+w "${_f}" 2>/dev/null
+        done
     done
 done) &
 fi
