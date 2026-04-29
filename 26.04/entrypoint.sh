@@ -79,14 +79,6 @@ then
 [ -f "/var/run/xrdp/xrdp-sesman.pid" ] && rm -f "/var/run/xrdp/xrdp-sesman.pid"
 [ -f "/var/run/xrdp/xrdp.pid" ] && rm -f "/var/run/xrdp/xrdp.pid"
 /usr/sbin/service xrdp start
-(while sleep 0.5; do
-    for _d in /run/xrdp/sockdir/[0-9]*/; do
-        [ -d "${_d}" ] && chown :xrdp "${_d}" 2>/dev/null && chmod g+s "${_d}" 2>/dev/null
-        for _f in "${_d}"*; do
-            [ -S "${_f}" ] && chown :xrdp "${_f}" 2>/dev/null && chmod g+w "${_f}" 2>/dev/null
-        done
-    done
-done) &
 fi
 
 if [[ "${SHELLINABOX}" = "yes" ]]
