@@ -91,7 +91,6 @@ WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
 RUN (userdel -r ubuntu || true) \
-  && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
@@ -115,7 +114,6 @@ RUN apt-get update -y --list-cleanup \
   iproute2 \
   inetutils-ping \
   vim \
-  build-essential dpkg-dev libpulse-dev libpipewire-0.3-dev libspa-0.2-dev git autoconf libtool \
   cron \
   logrotate \
   ssh \
@@ -137,6 +135,10 @@ RUN apt-get update -y --list-cleanup \
   xorgxrdp \
   xprintidle \
   xrdp \
+  pipewire \
+  pipewire-pulse \
+  wireplumber \
+  pipewire-module-xrdp \
   dbus-x11 \
   language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum \
@@ -175,10 +177,6 @@ RUN apt-get update -y --list-cleanup \
   && mkdir -p /etc/xdg/xfce4/xfconf/xfce-perchannel-xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml \
   && printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-session" version="1.0">\n  <property name="general" type="empty">\n    <property name="SaveOnExit" type="bool" value="false"/>\n    <property name="LogoutTimeout" type="int" value="10"/>\n  </property>\n  <property name="shutdown" type="empty">\n    <property name="ShowHibernate" type="bool" value="false"/>\n    <property name="ShowSuspend" type="bool" value="false"/>\n    <property name="ShowPowerOff" type="bool" value="false"/>\n    <property name="ShowRestart" type="bool" value="false"/>\n    <property name="ShowHybridSleep" type="bool" value="false"/>\n  </property>\n</channel>\n' > /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml \
   && cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
-RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
-  && git -C /root/pipewire-module-xrdp checkout v0.2 \
-  && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
-  && rm -rf /root/pipewire-module-xrdp
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \

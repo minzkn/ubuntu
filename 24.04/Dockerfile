@@ -91,7 +91,6 @@ WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
 RUN (userdel -r ubuntu || true) \
-  && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
@@ -203,7 +202,7 @@ RUN apt-get update -y --list-cleanup \
   whois \
   dnsutils \
   inetutils-ping \
-  dpkg-dev libpulse-dev \
+  dpkg-dev \
   libconfig-dev \
   libmbedtls-dev \
   libmnl-dev \
@@ -248,6 +247,10 @@ RUN apt-get update -y --list-cleanup \
   xorgxrdp \
   xprintidle \
   xrdp \
+  pipewire \
+  pipewire-pulse \
+  wireplumber \
+  pipewire-module-xrdp \
   dbus-x11 \
   language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum \
@@ -287,10 +290,6 @@ RUN apt-get update -y --list-cleanup \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
-RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
-  && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
-  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \

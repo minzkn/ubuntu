@@ -91,7 +91,6 @@ WORKDIR /
 COPY --chown=root:root ["entrypoint.sh", "/entrypoint.sh"]
 COPY --chown=root:root ["autostart", "/etc/skel/.config/autostart"]
 RUN (userdel -r ubuntu || true) \
-  && sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/ubuntu.sources \
   && apt-get update -y --list-cleanup \
   && apt-get --fix-broken install -y \
   && DEBCONF_NOWARNINGS="yes" apt-get upgrade -y
@@ -204,7 +203,7 @@ RUN apt-get update -y --list-cleanup \
   whois \
   dnsutils \
   inetutils-ping \
-  dpkg-dev libpulse-dev libpipewire-0.3-dev libspa-0.2-dev \
+  dpkg-dev \
   libconfig-dev \
   libmbedtls-dev \
   libmnl-dev \
@@ -249,6 +248,10 @@ RUN apt-get update -y --list-cleanup \
   xorgxrdp \
   xprintidle \
   xrdp \
+  pipewire \
+  pipewire-pulse \
+  wireplumber \
+  pipewire-module-xrdp \
   dbus-x11 \
   language-selector-common language-selector-gnome language-pack-ko fonts-noto-cjk-extra fonts-noto-cjk hunspell-ko \
   fonts-nanum \
@@ -290,10 +293,6 @@ RUN apt-get update -y --list-cleanup \
   && cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex @google/gemini-cli; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
-RUN git clone https://github.com/neutrinolabs/pipewire-module-xrdp.git /root/pipewire-module-xrdp \
-  && git -C /root/pipewire-module-xrdp checkout v0.2 \
-  && sh -c "cd /root/pipewire-module-xrdp && ./bootstrap && ./configure && make && make install" \
-  && rm -rf /root/pipewire-module-xrdp
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
