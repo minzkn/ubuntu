@@ -138,6 +138,7 @@ RUN apt-get update -y --list-cleanup \
   minicom \
   build-essential \
   binutils \
+  cppcheck \
   gcc \
   g++ \
   libc-dev \
