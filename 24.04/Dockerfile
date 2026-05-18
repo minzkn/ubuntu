@@ -160,7 +160,7 @@ RUN apt-get update -y --list-cleanup \
   patch patchelf \
   bc \
   linux-headers-generic \
-  clang llvm \
+  clang clangd clang-tools llvm \
   libreadline-dev \
   libelf-dev \
   libpcap-dev \
