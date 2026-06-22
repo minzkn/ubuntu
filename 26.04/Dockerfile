@@ -284,14 +284,18 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-595-server libnvidia-encode-595-server libnvidia-decode-595-server xserver-xorg-video-nvidia-595-server"; fi) \
-  && printf '#!/bin/sh\nif [ -r /etc/default/locale ]; then\n  . /etc/default/locale\n  export LANG LANGUAGE\nfi\nif [ -r /etc/profile ]; then\n  . /etc/profile\nfi\nif [ -r "${HOME}/.profile" ]; then\n  . "${HOME}/.profile"\nfi\nuid=$(id -u)\nexport XDG_RUNTIME_DIR="/tmp/runtime-${uid}"\nmkdir -p "${XDG_RUNTIME_DIR}"\nchmod 0700 "${XDG_RUNTIME_DIR}"\nunset DBUS_SESSION_BUS_ADDRESS SESSION_MANAGER\nif [ -x /usr/bin/startxfce4 ]; then\n  exec dbus-launch --exit-with-session /usr/bin/startxfce4\nfi\nif [ -x /usr/bin/xfce4-session ]; then\n  exec dbus-launch --exit-with-session /usr/bin/xfce4-session\nfi\nexec /bin/sh /etc/X11/Xsession\n' > /etc/xrdp/startwm.sh \
-  && chmod +x /etc/xrdp/startwm.sh \
+  && sed -i \
+    -e 's|^exec /etc/X11/Xsession$|exec /usr/bin/xfce4-session|g' \
+    "/etc/xrdp/startwm.sh" \
+  && grep -q "xfce4-session" /etc/xrdp/startwm.sh || echo "exec /usr/bin/xfce4-session" >> /etc/xrdp/startwm.sh \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
   && adduser xrdp ssl-cert \
   && sed -ri 's/^#?SessionSockdirGroup=.*/SessionSockdirGroup=xrdp/' /etc/xrdp/sesman.ini \
-  && mkdir -p /etc/xdg/xfce4/xfconf/xfce-perchannel-xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml \
-  && printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-session" version="1.0">\n  <property name="general" type="empty">\n    <property name="SaveOnExit" type="bool" value="false"/>\n    <property name="LogoutTimeout" type="int" value="10"/>\n  </property>\n  <property name="shutdown" type="empty">\n    <property name="ShowHibernate" type="bool" value="false"/>\n    <property name="ShowSuspend" type="bool" value="false"/>\n    <property name="ShowPowerOff" type="bool" value="false"/>\n    <property name="ShowRestart" type="bool" value="false"/>\n    <property name="ShowHybridSleep" type="bool" value="false"/>\n  </property>\n</channel>\n' > /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml \
-  && cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
+  && mkdir -p /etc/skel/.config/autostart \
+  && if [ -f /etc/xdg/autostart/pipewire-xrdp.desktop ]; then \
+    cp /etc/xdg/autostart/pipewire-xrdp.desktop /etc/skel/.config/autostart/; \
+  fi \
+  && chmod +x /etc/xrdp/startwm.sh
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex @google/gemini-cli; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN apt-get autoclean -y \
