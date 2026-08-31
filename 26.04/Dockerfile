@@ -284,10 +284,7 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-595-server libnvidia-encode-595-server libnvidia-decode-595-server xserver-xorg-video-nvidia-595-server"; fi) \
-  && sed -i \
-    -e 's|^exec /etc/X11/Xsession$|exec /usr/bin/xfce4-session|g' \
-    "/etc/xrdp/startwm.sh" \
-  && grep -q "xfce4-session" /etc/xrdp/startwm.sh || echo "exec /usr/bin/xfce4-session" >> /etc/xrdp/startwm.sh \
+  && printf '#!/bin/sh\n# xrdp X session start script (custom for HWPORT)\n\nif [ -r /etc/profile ]; then\n  . /etc/profile\nfi\nif [ -r "${HOME}/.profile" ]; then\n  . "${HOME}/.profile"\nfi\n\n# Fix XAUTHORITY mismatch: Xorg is started with -auth .Xauthority (= $HOME/.Xauthority)\n# but the session environment may point XAUTHORITY at a non-existent sockdir path,\n# which makes every X client (browser, xfce4, dbus-launch) fail with\n# "Authorization required, but no authorization protocol specified".\nif [ -f "${HOME}/.Xauthority" ] && { [ -z "${XAUTHORITY}" ] || [ ! -r "${XAUTHORITY}" ]; }; then\n  export XAUTHORITY="${HOME}/.Xauthority"\nfi\n\nuid=$(id -u)\nexport XDG_RUNTIME_DIR="/tmp/runtime-${uid}"\nmkdir -p "${XDG_RUNTIME_DIR}"\nchmod 0700 "${XDG_RUNTIME_DIR}"\nunset DBUS_SESSION_BUS_ADDRESS SESSION_MANAGER\n\nif [ -x /usr/bin/startxfce4 ]; then\n  exec dbus-launch --exit-with-session /usr/bin/startxfce4\nfi\nif [ -x /usr/bin/xfce4-session ]; then\n  exec dbus-launch --exit-with-session /usr/bin/xfce4-session\nfi\nexec /bin/sh /etc/X11/Xsession\n' > /etc/xrdp/startwm.sh \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
   && adduser xrdp ssl-cert \
   && sed -ri 's/^#?SessionSockdirGroup=.*/SessionSockdirGroup=xrdp/' /etc/xrdp/sesman.ini \
