@@ -292,7 +292,8 @@ RUN apt-get update -y --list-cleanup \
   && if [ -f /etc/xdg/autostart/pipewire-xrdp.desktop ]; then \
     cp /etc/xdg/autostart/pipewire-xrdp.desktop /etc/skel/.config/autostart/; \
   fi \
-  && chmod +x /etc/xrdp/startwm.sh
+  && chmod +x /etc/xrdp/startwm.sh \
+  && if [ -f /usr/share/im-config/initializer ]; then sed -i 's|if \[ -e /usr/bin/systemd-cat \] ; then|if [ -e /usr/bin/systemd-cat ] \&\& [ -d "/run/systemd/journal" ] ; then|' /usr/share/im-config/initializer; fi
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex @google/gemini-cli; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN apt-get autoclean -y \

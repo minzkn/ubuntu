@@ -204,7 +204,11 @@ RUN apt-get update -y --list-cleanup \
   whois \
   dnsutils \
   inetutils-ping \
-  dpkg-dev libpulse-dev \
+  dpkg-dev \
+  pipewire \
+  pipewire-pulse \
+  wireplumber \
+  pipewire-module-xrdp \
   libconfig-dev \
   libmbedtls-dev \
   libmnl-dev \
@@ -282,13 +286,14 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-590-server libnvidia-encode-590-server libnvidia-decode-590-server xserver-xorg-video-nvidia-590-server"; fi) \
   && printf '#!/bin/sh\n# xrdp X session start script (custom for HWPORT)\n\nif [ -r /etc/profile ]; then\n  . /etc/profile\nfi\nif [ -r "${HOME}/.profile" ]; then\n  . "${HOME}/.profile"\nfi\n\n# Fix XAUTHORITY mismatch: Xorg is started with -auth .Xauthority (= $HOME/.Xauthority)\n# but the session environment may point XAUTHORITY at a non-existent sockdir path,\n# which makes every X client (browser, xfce4, dbus-launch) fail with\n# "Authorization required, but no authorization protocol specified".\nif [ -f "${HOME}/.Xauthority" ] && { [ -z "${XAUTHORITY}" ] || [ ! -r "${XAUTHORITY}" ]; }; then\n  export XAUTHORITY="${HOME}/.Xauthority"\nfi\n\nuid=$(id -u)\nexport XDG_RUNTIME_DIR="/tmp/runtime-${uid}"\nmkdir -p "${XDG_RUNTIME_DIR}"\nchmod 0700 "${XDG_RUNTIME_DIR}"\nunset DBUS_SESSION_BUS_ADDRESS SESSION_MANAGER\n\nif [ -x /usr/bin/startxfce4 ]; then\n  exec dbus-launch --exit-with-session /usr/bin/startxfce4\nfi\nif [ -x /usr/bin/xfce4-session ]; then\n  exec dbus-launch --exit-with-session /usr/bin/xfce4-session\nfi\nexec /bin/sh /etc/X11/Xsession\n' > /etc/xrdp/startwm.sh \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
-  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman
+  && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman \
+  && mkdir -p /etc/skel/.config/autostart \
+  && if [ -f /etc/xdg/autostart/pipewire-xrdp.desktop ]; then \
+    cp /etc/xdg/autostart/pipewire-xrdp.desktop /etc/skel/.config/autostart/; \
+  fi \
+  && if [ -f /usr/share/im-config/initializer ]; then sed -i 's|if \[ -e /usr/bin/systemd-cat \] ; then|if [ -e /usr/bin/systemd-cat ] \&\& [ -d "/run/systemd/journal" ] ; then|' /usr/share/im-config/initializer; fi
 #RUN if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" ]; then npm install -g opencode-ai @openai/codex; fi
 #RUN curl -fsSL https://claude.ai/install.sh | bash
-RUN git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git /root/pulseaudio-module-xrdp \
-  && git -C /root/pulseaudio-module-xrdp checkout v0.8 \
-  && sudo -i sh -c "cd /root/pulseaudio-module-xrdp && (./scripts/install_pulseaudio_sources_apt.sh || (cat /var/tmp/pa-build-root-schroot.log && false)) && ./bootstrap && ./configure PULSE_DIR=/root/pulseaudio.src && make && make install" \
-  && rm -rf /root/pulseaudio-module-xrdp /root/pulseaudio.src /var/tmp/pa-build-*.log /root/pulseaudio*.xz /root/pulseaudio*.dsc
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \

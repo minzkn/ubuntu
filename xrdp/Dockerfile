@@ -187,7 +187,12 @@ RUN apt-get update -y --list-cleanup \
   && sed -ri 's/^#?SessionSockdirGroup=.*/SessionSockdirGroup=xrdp/' /etc/xrdp/sesman.ini \
   && mkdir -p /etc/xdg/xfce4/xfconf/xfce-perchannel-xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml \
   && printf '<?xml version="1.0" encoding="UTF-8"?>\n<channel name="xfce4-session" version="1.0">\n  <property name="general" type="empty">\n    <property name="SaveOnExit" type="bool" value="false"/>\n    <property name="LogoutTimeout" type="int" value="10"/>\n  </property>\n  <property name="shutdown" type="empty">\n    <property name="ShowHibernate" type="bool" value="false"/>\n    <property name="ShowSuspend" type="bool" value="false"/>\n    <property name="ShowPowerOff" type="bool" value="false"/>\n    <property name="ShowRestart" type="bool" value="false"/>\n    <property name="ShowHybridSleep" type="bool" value="false"/>\n  </property>\n</channel>\n' > /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml \
-  && cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml
+  && cp /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-session.xml \
+  && mkdir -p /etc/skel/.config/autostart \
+  && if [ -f /etc/xdg/autostart/pipewire-xrdp.desktop ]; then \
+    cp /etc/xdg/autostart/pipewire-xrdp.desktop /etc/skel/.config/autostart/; \
+  fi \
+  && if [ -f /usr/share/im-config/initializer ]; then sed -i 's|if \[ -e /usr/bin/systemd-cat \] ; then|if [ -e /usr/bin/systemd-cat ] \&\& [ -d "/run/systemd/journal" ] ; then|' /usr/share/im-config/initializer; fi
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \
