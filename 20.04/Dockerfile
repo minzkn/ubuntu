@@ -224,6 +224,7 @@ RUN apt-get update -y --list-cleanup \
   mediainfo \
   expect expect-dev \
   parallel \
+  sqlite3 \
   doxygen \
   asciidoc \
   android-sdk-libsparse-utils \

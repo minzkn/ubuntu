@@ -227,6 +227,7 @@ RUN apt-get update -y --list-cleanup \
   exfatprogs \
   expect expect-dev \
   parallel \
+  sqlite3 \
   doxygen \
   asciidoc \
   android-sdk-libsparse-utils \
