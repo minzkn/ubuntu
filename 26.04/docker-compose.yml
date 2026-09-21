@@ -37,8 +37,11 @@ services:
       - CLAMAV=yes
       - XRDP_DESKTOP=yes
       - SHELLINABOX=yes
-#      - NVIDIA_VISIBLE_DEVICES=all
-#      - NVIDIA_DRIVER_CAPABILITIES=all
+      # NVIDIA GPU (권장): 호스트의 nvidia-container-toolkit이 실행 환경 GPU(구형~신형)에
+      # 맞는 호스트 드라이버를 주입한다. 호스트가 default-runtime=nvidia (또는 CDI)로
+      # 설정되어 있으면 아래 두 환경변수만으로 GPU가 활성화된다.
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
 #    deploy:
 #      resources:
 #        limits:
@@ -49,6 +52,8 @@ services:
 #            - driver: nvidia
 #              count: all
 #              capabilities: [gpu,utility,compute,video,graphics,display]
+#      # 위 deploy 블록은 nvidia-container-toolkit이 기본 런타임이 아닌 호스트에서 참고용.
+#      # GPU가 없는 호스트에서 docker compose up 시 실패할 수 있으므로 유의.
 #    security_opt:
 #      - apparmor:unconfined
 #    devices:

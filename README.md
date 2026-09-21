@@ -136,6 +136,22 @@ docker exec -i -t <container-name> \
 - **amd64/arm64**: KiCad, LibreOffice, Firefox
 - **모든 플랫폼**: 표준 개발 도구
 
+### NVIDIA GPU 사용 (amd64)
+
+이미지에는 NVIDIA 드라이버가 포함되어 있지 않습니다. 실행 환경의 GPU 세대(구형 Maxwell ~ 신형
+Blackwell)에 맞는 드라이버는 호스트의 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)이
+컨테이너에 주입하므로, 드라이버 버전을 하드코딩하지 않고도 모든 GPU에서 동작합니다.
+(`docker-compose.yml`의 `NVIDIA_VISIBLE_DEVICES=all`, `NVIDIA_DRIVER_CAPABILITIES=all` 참고)
+
+호스트 드라이버 주입을 쓸 수 없는 환경에서 드라이버를 이미지에 임베드해야 한다면 빌드 시 브랜치를
+선택하세요:
+
+```bash
+docker build --build-arg HWPORT_NVIDIA_DRIVER_BRANCH=580 -t hwport/ubuntu:24.04 .
+# 580 : Maxwell~Blackwell 전 세대 지원 (구형 세대를 지원하는 마지막 브랜치)
+# 590+: Maxwell/Pascal/Volta 미지원, 반드시 해당 릴리스 저장소에 존재하는 브랜치 사용
+```
+
 ## 환경 변수
 
 환경 변수로 컨테이너 동작 구성:

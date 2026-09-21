@@ -11,7 +11,7 @@ FROM ubuntu:22.04
 ARG HWPORT_NAMESPACE=hwport
 ARG HWPORT_IMAGE_NAME=ubuntu
 ARG HWPORT_IMAGE_TAG=marvell-octeon-sdk-dev
-ARG HWPORT_VERSION=1.1
+ARG HWPORT_VERSION=1.2
 ARG HWPORT_URL=https://www.minzkn.com/
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TERM=xterm
@@ -83,32 +83,45 @@ RUN apt-get install -y \
   ssh \
   screen \
   fdisk \
+  file \
   sed \
   build-essential \
+  binfmt-support \
+  binutils \
   git \
   gh \
+  gcc-aarch64-linux-gnu \
+  g++-aarch64-linux-gnu \
+  binutils-aarch64-linux-gnu \
   cpio \
+  crossbuild-essential-arm64 \
   python3 \
+  u-boot-tools \
   unzip \
   rsync \
   bc \
   wget \
   curl \
   texinfo \
+  tmux \
+  tree \
   autoconf \
   automake \
   libtool \
   pkg-config \
+  fakeroot \
   flex \
   bison \
   uuid-dev \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "lib32stdc++6"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "lib32z1"; fi) \
   acpica-tools \
+  device-tree-compiler \
   dosfstools \
   libconfig-dev \
   libmbedtls-dev \
   libnuma-dev \
+  liblz4-tool \
   liblzma-dev \
   libarchive-zip-perl \
   python3-pycryptodome \
@@ -118,6 +131,8 @@ RUN apt-get install -y \
   libpci-dev \
   libyaml-dev \
   libssl-dev \
+  lintian \
+  lzma \
   libnl-genl-3-dev \
   libnl-3-dev libnl-route-3-dev libmnl-dev \
   python3-sphinx \
@@ -125,24 +140,35 @@ RUN apt-get install -y \
   meson \
   ninja-build \
   doxygen \
+  equivs \
   ccache \
   distcc \
-  debhelper dkms libapr1-dev dh-python \
+  debhelper debootstrap devscripts dh-make dkms libapr1-dev dh-python \
   libconfuse-dev git-review exuberant-ctags cscope \
   gcovr lcov chrpath \
   python3-all python3-setuptools check \
   libffi-dev python3-ply \
-  cmake uuid-dev python3-jsonschema python3-yaml \
+  cmake uuid-dev python3-jsonschema python3-packaging python3-yaml \
   python3-venv \
-  python3-dev python3-pip \
+  python3-dev python3-full python3-pip \
   python3-virtualenv \
+  python-is-python3 \
+  qemu-user \
+  qemu-user-static \
+  quilt \
+  schroot \
+  swig \
   libelf-dev libpcap-dev \
   iperf3 \
   nasm \
+  openjdk-17-jdk \
   iperf ethtool \
   tshark \
   cron \
   logrotate
+
+# 22.04 ships pip 22.0.2 (no PEP 668 enforcement, no --break-system-packages flag)
+RUN pip3 install --no-cache-dir pyyaml-include==1.4.1 pykwalify gpt_image
 RUN apt-get autoclean -y \
   && apt-get clean -y \
   && apt-get autoremove -y --purge \

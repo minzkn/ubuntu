@@ -54,6 +54,7 @@ ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 ARG EDITOR=vim
+ARG HWPORT_NVIDIA_DRIVER_BRANCH=
 
 ARG BUILDPLATFORM
 ARG BUILDOS
@@ -127,6 +128,13 @@ RUN apt-get install -y \
 #   firefox (mozillateam PPA)  ✓      ✓      ✓      ✓        ✗        ✓
 #   android-studio (PPA)       ✓      ✗      ✗      ✗        ✗        ✗
 #   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
+# NVIDIA: 드라이버는 이미지에 임베드하지 않는다 (기본값). 호스트의 nvidia-container-toolkit이
+# 실행 환경 GPU(구형 Maxwell ~ 신형 Blackwell)에 맞는 드라이버를 컨테이너에 주입하므로
+# 드라이버 버전을 하드코딩하지 않고도 모든 GPU 세대에서 동작한다.
+# 드라이버 임베드가 필요한 환경이라면 빌드 시 선택한다:
+#   --build-arg HWPORT_NVIDIA_DRIVER_BRANCH=570
+# 580 = Maxwell/Pascal/Volta ... Blackwell 전 세대 지원 (구형 세대를 지원하는 마지막 브랜치).
+# 590+ = Maxwell/Pascal/Volta 미지원. 반드시 해당 릴리스 저장소에 존재하는 브랜치를 사용할 것.
 
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
@@ -275,7 +283,8 @@ RUN apt-get update -y --list-cleanup \
   $(if [ "${TARGETARCH}" != "riscv64" -a "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "ppc64le" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" ]; then echo "android-studio"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-570-server libnvidia-encode-570-server libnvidia-decode-570-server xserver-xorg-video-nvidia-570-server"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ] && [ -n "${HWPORT_NVIDIA_DRIVER_BRANCH}" ]; then echo "libnvidia-compute-${HWPORT_NVIDIA_DRIVER_BRANCH}-server libnvidia-encode-${HWPORT_NVIDIA_DRIVER_BRANCH}-server libnvidia-decode-${HWPORT_NVIDIA_DRIVER_BRANCH}-server xserver-xorg-video-nvidia-${HWPORT_NVIDIA_DRIVER_BRANCH}-server"; fi) \
   && sed -i \
     -e 's,^test -x /etc/X11/Xsession \&\& exec /etc/X11/Xsession$,test -x /usr/bin/xfce4-session \&\& exec /usr/bin/xfce4-session,g' \
     "/etc/xrdp/startwm.sh" \

@@ -54,6 +54,7 @@ ARG TERM=xterm
 ARG LC_ALL=C
 ARG LANG=en_US.UTF-8
 ARG EDITOR=vim
+ARG HWPORT_NVIDIA_DRIVER_BRANCH=
 
 ARG BUILDPLATFORM
 ARG BUILDOS
@@ -126,6 +127,13 @@ RUN apt-get install -y \
 #   kicad                      ✓      ✓      ✓      ✓        ✓        ✗   (gained riscv64 in noble)
 #   firefox (mozillateam PPA)  ✓      ✓      ✗      ✗        ✗        ✓   (armhf/ppc64el dropped from noble PPA)
 #   nvidia-cuda-toolkit        ✓      ✗      ✗      ✗        ✗        ✗
+# NVIDIA: 드라이버는 이미지에 임베드하지 않는다 (기본값). 호스트의 nvidia-container-toolkit이
+# 실행 환경 GPU(구형 Maxwell ~ 신형 Blackwell)에 맞는 드라이버를 컨테이너에 주입하므로
+# 드라이버 버전을 하드코딩하지 않고도 모든 GPU 세대에서 동작한다.
+# 드라이버 임베드가 필요한 환경이라면 빌드 시 선택한다:
+#   --build-arg HWPORT_NVIDIA_DRIVER_BRANCH=580
+# 580 = Maxwell/Pascal/Volta ... Blackwell 전 세대 지원 (구형 세대를 지원하는 마지막 브랜치).
+# 590+ = Maxwell/Pascal/Volta 미지원. 반드시 해당 릴리스 저장소에 존재하는 브랜치를 사용할 것.
 RUN apt-get update -y --list-cleanup \
   && apt-get install -y \
   sudo \
@@ -284,7 +292,8 @@ RUN apt-get update -y --list-cleanup \
   libreoffice \
   $(if [ "${TARGETARCH}" != "s390x" ]; then echo "kicad"; fi) \
   $(if [ "${TARGETARCH}" = "amd64" -o "${TARGETARCH}" = "arm64" -o "${TARGETARCH}" = "s390x" ]; then echo "firefox"; fi) \
-  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit libnvidia-compute-590-server libnvidia-encode-590-server libnvidia-decode-590-server xserver-xorg-video-nvidia-590-server"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ]; then echo "nvidia-cuda-toolkit"; fi) \
+  $(if [ "${TARGETARCH}" = "amd64" ] && [ -n "${HWPORT_NVIDIA_DRIVER_BRANCH}" ]; then echo "libnvidia-compute-${HWPORT_NVIDIA_DRIVER_BRANCH}-server libnvidia-encode-${HWPORT_NVIDIA_DRIVER_BRANCH}-server libnvidia-decode-${HWPORT_NVIDIA_DRIVER_BRANCH}-server xserver-xorg-video-nvidia-${HWPORT_NVIDIA_DRIVER_BRANCH}-server"; fi) \
   && printf '#!/bin/sh\n# xrdp X session start script (custom for HWPORT)\n\nif [ -r /etc/profile ]; then\n  . /etc/profile\nfi\nif [ -r "${HOME}/.profile" ]; then\n  . "${HOME}/.profile"\nfi\n\n# Fix XAUTHORITY mismatch: Xorg is started with -auth .Xauthority (= $HOME/.Xauthority)\n# but the session environment may point XAUTHORITY at a non-existent sockdir path,\n# which makes every X client (browser, xfce4, dbus-launch) fail with\n# "Authorization required, but no authorization protocol specified".\nif [ -f "${HOME}/.Xauthority" ] && { [ -z "${XAUTHORITY}" ] || [ ! -r "${XAUTHORITY}" ]; }; then\n  export XAUTHORITY="${HOME}/.Xauthority"\nfi\n\nuid=$(id -u)\nexport XDG_RUNTIME_DIR="/tmp/runtime-${uid}"\nmkdir -p "${XDG_RUNTIME_DIR}"\nchmod 0700 "${XDG_RUNTIME_DIR}"\nunset DBUS_SESSION_BUS_ADDRESS SESSION_MANAGER\n\nif [ -x /usr/bin/startxfce4 ]; then\n  exec dbus-launch --exit-with-session /usr/bin/startxfce4\nfi\nif [ -x /usr/bin/xfce4-session ]; then\n  exec dbus-launch --exit-with-session /usr/bin/xfce4-session\nfi\nexec /bin/sh /etc/X11/Xsession\n' > /etc/xrdp/startwm.sh \
   && echo "test -x /usr/bin/xfce4-session && exec /usr/bin/xfce4-session" >> /etc/skel/.Xsession \
   && sed -ri 's/^session\s+required\s+pam_loginuid.so$/session optional pam_loginuid.so/' /etc/pam.d/xrdp-sesman \
