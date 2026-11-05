@@ -14,6 +14,9 @@ services:
 #    privileged: true
 #    cap_add:
 #      - "SYS_ADMIN"
+#      - "SYS_CHROOT"
+#      - "SETUID"
+#      - "SETGID"
 #      - "SYS_RESOURCE"
 #      - "SYS_PTRACE"
 #      - "NET_ADMIN"
@@ -37,11 +40,8 @@ services:
       - CLAMAV=yes
       - XRDP_DESKTOP=yes
       - SHELLINABOX=yes
-      # NVIDIA GPU (권장): 호스트의 nvidia-container-toolkit이 실행 환경 GPU(구형~신형)에
-      # 맞는 호스트 드라이버를 주입한다. 호스트가 default-runtime=nvidia (또는 CDI)로
-      # 설정되어 있으면 아래 두 환경변수만으로 GPU가 활성화된다.
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=all
+#      - NVIDIA_VISIBLE_DEVICES=all
+#      - NVIDIA_DRIVER_CAPABILITIES=all
 #    deploy:
 #      resources:
 #        limits:
@@ -52,10 +52,16 @@ services:
 #            - driver: nvidia
 #              count: all
 #              capabilities: [gpu,utility,compute,video,graphics,display]
-#      # 위 deploy 블록은 nvidia-container-toolkit이 기본 런타임이 아닌 호스트에서 참고용.
-#      # GPU가 없는 호스트에서 docker compose up 시 실패할 수 있으므로 유의.
+# 셸 샌드박스(bubblewrap)는 uid 1000 의 비특권 user namespace 로 동작한다.
+# 호스트가 kernel.apparmor_restrict_unprivileged_userns=1 이면 docker-default
+# 프로파일이 userns 생성을 막으므로, 컨테이너 단위로 AppArmor 만 해제한다.
+# privileged / cap_add(SYS_ADMIN) 는 필요 없고, seccomp·capability 는 그대로다.
+# (호스트 AppArmor 를 유지하려면 이 항목을 지우고 호스트에서
+#  sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 적용)
 #    security_opt:
+#      - seccomp:unconfined
 #      - apparmor:unconfined
+#      - systempaths:unconfined
 #    devices:
 #      - /dev/fuse:/dev/fuse
 #      - /dev/kvm:/dev/kvm
@@ -74,22 +80,22 @@ services:
       - "3389:3389"
       - "4200:4200"
     restart: unless-stopped
-    #networks:
-    #    default:
-    #      external:
-    #        name: bridge
-    #networks:
-    #    default:
-    #      driver: bridge
-    #      enable_ipv6: true
-    #      driver_opts:
-    #        com.docker.network.enable_ipv6: "false" 
-    #      ipam:
-    #        driver: default
-    #        config:
-    #          - subnet: 172.21.251.0/24
-    #            gateway: 172.21.251.1
-    #          - subnet: fec0:172:21:251::/64
-    #            #            gateway: fec0:172:21:251::1
+#networks:
+#    default:
+#      external:
+#        name: bridge
+#networks:
+#    default:
+#      driver: bridge
+#      enable_ipv6: true
+#      driver_opts:
+#        com.docker.network.enable_ipv6: "false" 
+#      ipam:
+#        driver: default
+#        config:
+#          - subnet: 172.21.251.0/24
+#            gateway: 172.21.251.1
+#          - subnet: fec0:172:21:251::/64
+#            #            gateway: fec0:172:21:251::1
 
 # End of docker-compose.yml

@@ -178,6 +178,7 @@ RUN apt-get update -y --list-cleanup \
   device-tree-compiler \
   gperf \
   strace \
+  bubblewrap \
   vim \
   net-tools bridge-utils \
   ccache \

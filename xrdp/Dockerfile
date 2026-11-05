@@ -132,6 +132,7 @@ RUN apt-get update -y --list-cleanup \
   tar gzip bzip2 xz-utils unzip zlib1g-dev \
   iproute2 \
   inetutils-ping \
+  bubblewrap \
   vim \
   cron \
   logrotate \
