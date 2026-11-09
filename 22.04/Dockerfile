@@ -206,6 +206,7 @@ RUN apt-get update -y --list-cleanup \
   libssl-dev libcurl4-openssl-dev curl wget \
   libssh-dev \
   sshfs \
+  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "ripgrep"; fi) \
   iproute2 \
   nmap \
   whois \

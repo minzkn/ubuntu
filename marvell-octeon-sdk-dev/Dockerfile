@@ -135,6 +135,7 @@ RUN apt-get install -y \
   lzma \
   libnl-genl-3-dev \
   libnl-3-dev libnl-route-3-dev libmnl-dev \
+  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "ripgrep"; fi) \
   python3-sphinx \
   python3-sphinx-rtd-theme \
   meson \
