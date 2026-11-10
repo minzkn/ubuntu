@@ -116,7 +116,6 @@ RUN apt-get install -y \
   python3-dev \
   libssl-dev libcurl4-openssl-dev \
   libssh-dev \
-  $(if [ "${TARGETARCH}" != "riscv64" ]; then echo "ripgrep"; fi) \
   iproute2 \
   whois \
   dnsutils \
